@@ -14,7 +14,7 @@ set(SOURCE_FILES
         src/actor.h
         src/main.c
         src/player.c
-        src/player.h)
+        src/player.h src/game.h src/game.c src/palette.c src/palette.h src/util.h src/util.c src/sfx.c src/sfx.h)
 
 include_directories(src)
 
