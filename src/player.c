@@ -1,4 +1,6 @@
+#include "actor.h"
 #include "sfx.h"
+#include "map.h"
 #include "util.h"
 
 int player_is_grabbing_wall_flag = 0;
@@ -17,28 +19,52 @@ int player_input_jump_related_flag = 0;
 int player_bounce_height_counter = 0;
 int player_bounce_flag_maybe = 0;
 
+int num_bombs = 0;
+
+int teleporter_state_maybe = 0;
+
 int word_28F7E;
+int word_28F94;
+int word_2E1F8;
+int word_32B88;
 
 extern int mapwindow_x_offset;
 extern int mapwindow_y_offset;
 
+typedef enum {
+    NOT_BLOCKED = 0,
+    BLOCKED = 1,
+    SLOPE = 2
+} BlockingType;
+
+BlockingType player_check_movement(int direction, int x_pos, int y_pos)
+{
+    //FIXME
+    return NOT_BLOCKED;
+}
+
+void push_player()
+{
+    //FIXME
+}
+
 void handle_player_input_maybe()
 {
     int var_4=0;
-    int player_movement_status = 0;
+    BlockingType player_movement_status = NOT_BLOCKED;
 
-    si = 0;
-    player_is_grabbing_wall_flag = si;
-    if(player_death_counter != si || teleporter_state_maybe != si || word_32B88 != si || player_walk_anim_index != si || word_2E1F8 != si)
+    //si = 0;
+    player_is_grabbing_wall_flag = 0;
+    if(player_death_counter != 0 || teleporter_state_maybe != 0 || word_32B88 != 0 || player_walk_anim_index != 0 || word_2E1F8 != 0)
     {
-        return ;
+        return;
     }
     word_28F94 = word_28F94 + 1;
     push_player();
     if(player_is_being_pushed_flag != 0)
     {
         player_hanging_on_wall_direction = 0;
-        return ax;
+        return;
     }
     if(player_hanging_on_wall_direction != 0)
     {
@@ -52,8 +78,7 @@ void handle_player_input_maybe()
         }
         if((* (& tileattr_mni_data + (var_4 >> 3)) & 0x10) != 0 && (* (tileattr_mni_data + (var_4 >> 3)) & 0x80) != 0)
         {
-            ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
-            if(ax == 0)
+            if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED)
             {
                 player_y_pos = player_y_pos + 1;
                 si = 1;
@@ -133,7 +158,7 @@ void handle_player_input_maybe()
                                 }
                                 else
                                 {
-                                    ax = actor_add_new(0x18, player_x_pos - 2, player_y_pos - 2);
+                                    actor_add_new(0x18, player_x_pos - 2, player_y_pos - 2);
                                     num_bombs = num_bombs - 1;
                                     display_num_bombs_left();
                                     play_sfx(0x1d);
@@ -169,7 +194,7 @@ void handle_player_input_maybe()
                         {
                             if(num_bombs > 0)
                             {
-                                ax = actor_add_new(0x18, player_x_pos + 3, player_y_pos - 2);
+                                actor_add_new(0x18, player_x_pos + 3, player_y_pos - 2);
                                 num_bombs = num_bombs - 1;
                                 display_num_bombs_left();
                                 play_sfx(0x1d);
@@ -195,7 +220,7 @@ void handle_player_input_maybe()
     if(byte_2E182 != 0 || bomb_key_pressed == 0 || byte_2E2E4 != 0 || player_hanging_on_wall_direction != 0 || jump_key_pressed != 0 && player_input_jump_related_flag == 0)
     {
         word_2E214 = 0;
-        ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
+        //ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
         if(is_standing_slipry_slope_left_flg == 0 || is_standing_slipry_slope_right_flg == 0)
         {
             if(is_standing_slipry_slope_right_flg != 0)
