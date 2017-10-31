@@ -1,6 +1,9 @@
 #include "actor.h"
+#include "dialog.h"
+#include "hud.h"
 #include "sfx.h"
 #include "map.h"
+#include "input.h"
 #include "util.h"
 
 int player_is_grabbing_wall_flag = 0;
@@ -12,6 +15,7 @@ int player_hanging_on_wall_direction = 0;
 int player_y_pos = 0;
 int player_x_pos = 0;
 int player_direction = 0;
+int player_direction_related_32E98 = 0;
 
 int player_sprite_dir_frame_offset = 0;
 int player_input_jump_related_flag = 0;
@@ -19,14 +23,27 @@ int player_input_jump_related_flag = 0;
 int player_bounce_height_counter = 0;
 int player_bounce_flag_maybe = 0;
 
+int is_standing_slipry_slope_left_flg = 0;
+int is_standing_slipry_slope_right_flg = 0;
+
 int num_bombs = 0;
+int has_had_bomb_flag = 0;
 
 int teleporter_state_maybe = 0;
+int player_is_teleporting_flag = 0;
 
 int word_28F7E;
 int word_28F94;
+int word_2E180;
 int word_2E1F8;
+int word_2E1DE;
+int word_2E214;
 int word_32B88;
+int word_32EAC;
+int word_32EB2;
+
+unsigned char byte_2E182;
+unsigned char byte_2E2E4;
 
 extern int mapwindow_x_offset;
 extern int mapwindow_y_offset;
@@ -50,10 +67,12 @@ void push_player()
 
 void handle_player_input_maybe()
 {
+    static int local_bomb_key_counter = 0;
     int var_4=0;
+    int top_bomb_check_flag = 0;
     BlockingType player_movement_status = NOT_BLOCKED;
 
-    //si = 0;
+    int si = 0;
     player_is_grabbing_wall_flag = 0;
     if(player_death_counter != 0 || teleporter_state_maybe != 0 || word_32B88 != 0 || player_walk_anim_index != 0 || word_2E1F8 != 0)
     {
@@ -134,9 +153,9 @@ void handle_player_input_maybe()
                 if(player_direction == 0)
                 {
                     ax = map_get_tile_cell(player_x_pos - 1, player_y_pos - 2) >> 3;
-                    top_bomb_check_flag = al & 4;
+                    top_bomb_check_flag = al & 4; //FIXME tileattr
                     ax = map_get_tile_cell(player_x_pos - 2, player_y_pos - 2) >> 3;
-                    ax = al & 4;
+                    ax = al & 4; //FIXME tileattr
                     var_4 = ax;
                     if(num_bombs != 0 || has_had_bomb_flag != 0)
                     {
@@ -237,8 +256,7 @@ void handle_player_input_maybe()
                 {
                     mapwindow_y_offset = mapwindow_y_offset + 1;
                 }
-                ax = player_x_pos - mapwindow_x_offset;
-                if(ax < 12 && mapwindow_x_offset > 0)
+                if(player_x_pos - mapwindow_x_offset < 12 && mapwindow_x_offset > 0)
                 {
                     mapwindow_x_offset = mapwindow_x_offset - 1;
                 }
@@ -258,11 +276,9 @@ void handle_player_input_maybe()
                 {
                     mapwindow_y_offset = mapwindow_y_offset + 1;
                 }
-                ax = player_x_pos - mapwindow_x_offset;
-                if(ax > 0x17)
+                if(player_x_pos - mapwindow_x_offset > 0x17)
                 {
-                    ax = map_width_in_tiles + 0xffffffda;
-                    if(ax > mapwindow_x_offset)
+                    if(map_width_in_tiles - 38 > mapwindow_x_offset)
                     {
                         mapwindow_x_offset = mapwindow_x_offset + 1;
                     }
@@ -272,8 +288,8 @@ void handle_player_input_maybe()
         }
         if(left_key_pressed != 0 && player_hanging_on_wall_direction == 0 && right_key_pressed == 0)
         {
-            ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
-            di = ax;
+            BlockingType di = player_check_movement(1, player_x_pos, player_y_pos + 1);
+
             if(player_direction_related_32E98 != 2)
             {
                 player_direction_related_32E98 = 2;
@@ -285,13 +301,11 @@ void handle_player_input_maybe()
             player_direction = 0;
             if(player_x_pos >= 1)
             {
-                ax = player_check_movement(2, player_x_pos, player_y_pos);
-                player_movement_status = ax;
-                if(ax == 1)
+                player_movement_status = player_check_movement(2, player_x_pos, player_y_pos);
+                if(player_movement_status == BLOCKED)
                 {
                     player_x_pos = player_x_pos + 1;
-                    ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
-                    if(ax == 0 && player_is_grabbing_wall_flag != 0)
+                    if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED && player_is_grabbing_wall_flag != 0)
                     {
                         player_hanging_on_wall_direction = 2;
                         player_bounce_flag_maybe = 0;
@@ -317,10 +331,9 @@ void handle_player_input_maybe()
             }
             if(player_movement_status != 2)
             {
-                if(di == 2)
+                if(di == SLOPE)
                 {
-                    ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
-                    if(ax == 0)
+                    if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED)
                     {
                         byte_2E2E4 = 0;
                         byte_2E182 = 0;
@@ -335,7 +348,7 @@ void handle_player_input_maybe()
         }
         if(right_key_pressed != 0 && player_hanging_on_wall_direction == 0 && left_key_pressed == 0)
         {
-            di = player_check_movement(1, player_x_pos, player_y_pos + 1);
+            BlockingType di = player_check_movement(1, player_x_pos, player_y_pos + 1);
             if(player_direction_related_32E98 != 3)
             {
                 player_direction_related_32E98 = 3;
@@ -345,15 +358,13 @@ void handle_player_input_maybe()
                 player_x_pos = player_x_pos + 1;
             }
             player_direction = 0x17;
-            ax = map_width_in_tiles - 4;
-            if(ax >= player_x_pos)
+            if(map_width_in_tiles - 4 >= player_x_pos)
             {
                 player_movement_status = player_check_movement(3, player_x_pos, player_y_pos);
-                if(player_movement_status == 1)
+                if(player_movement_status == BLOCKED)
                 {
                     player_x_pos = player_x_pos - 1;
-                    ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
-                    if(ax == 0 && player_is_grabbing_wall_flag != 0)
+                    if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED && player_is_grabbing_wall_flag != 0)
                     {
                         player_hanging_on_wall_direction = 3;
                         player_bounce_flag_maybe = 0;
@@ -379,10 +390,9 @@ void handle_player_input_maybe()
             }
             if(player_movement_status != 2)
             {
-                if(di == 2)
+                if(di == SLOPE)
                 {
-                    ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
-                    if(ax == 0)
+                    if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED)
                     {
                         byte_2E2E4 = 0;
                         word_2E180 = 0;
@@ -476,8 +486,8 @@ void handle_player_input_maybe()
                 var_4 = 1;
             }
             player_hanging_on_wall_direction = 0;
-            ax = player_check_movement(0, player_x_pos, player_y_pos);
-            if(ax == 0)
+            BlockingType blockingCheck = player_check_movement(0, player_x_pos, player_y_pos);
+            if(blockingCheck == NOT_BLOCKED)
             {
                 if(var_4 != 0 && byte_2E182 == 0)
                 {
@@ -493,8 +503,8 @@ void handle_player_input_maybe()
                 }
                 player_bounce_height_counter = 0;
                 player_bounce_flag_maybe = 0;
-                ax = player_check_movement(0, player_x_pos, player_y_pos + 1);
-                if(ax != 0)
+                blockingCheck = player_check_movement(0, player_x_pos, player_y_pos + 1);
+                if(blockingCheck != blockingCheck)
                 {
                     player_y_pos = player_y_pos + 1;
                 }
@@ -509,7 +519,7 @@ void handle_player_input_maybe()
             }
             if(player_bounce_flag_maybe == 0)
             {
-                ax = ax & 0xff00 | byte_2E182;
+                ax = ax & 0xff00 | byte_2E182; //FIXME
                 byte_2E182 = byte_2E182 + 1;
                 if(al > 6)
                 {
@@ -536,8 +546,7 @@ void handle_player_input_maybe()
             if(byte_2E2E4 != 0 && player_bounce_flag_maybe == 0)
             {
                 player_y_pos = player_y_pos + 1;
-                ax = player_check_movement(1, player_x_pos, player_y_pos);
-                if(ax != 0)
+                if(player_check_movement(1, player_x_pos, player_y_pos) != NOT_BLOCKED)
                 {
                     if(word_2E180 != 0)
                     {
@@ -560,8 +569,7 @@ void handle_player_input_maybe()
                 {
                     player_y_pos = player_y_pos + 1;
                     mapwindow_y_offset = mapwindow_y_offset + 1;
-                    ax = player_check_movement(1, player_x_pos, player_y_pos);
-                    if(ax != 0)
+                    if(player_check_movement(1, player_x_pos, player_y_pos) != NOT_BLOCKED)
                     {
                         play_sfx(3);
                         byte_2E2E4 = 0;
@@ -654,7 +662,7 @@ void handle_player_input_maybe()
         {
             player_sprite_dir_frame_offset = 11;
         }
-        return ax;
+        return;
     }
     if(down_key_pressed == 0)
     {
@@ -876,12 +884,12 @@ void handle_player_input_maybe()
     if(player_x_pos - mapwindow_x_offset > 0x17 && map_width_in_tiles + 0xffffffda > mapwindow_x_offset && map_stride_bit_shift_amt > 5)
     {
         mapwindow_x_offset = mapwindow_x_offset + 1;
-        return ax;
+        return;
     }
     if(player_x_pos - mapwindow_x_offset < 12 && mapwindow_x_offset > 0)
     {
         mapwindow_x_offset = mapwindow_x_offset - 1;
-        return ax;
+        return;
     }
 
 // node 0001e96f-0001e972 #insn=4 use={} def={si, di} in={} out={} pred={ 1E615 1E8D8} RETURN

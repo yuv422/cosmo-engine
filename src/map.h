@@ -5,7 +5,8 @@
 #ifndef COSMO_ENGINE_MAP_H
 #define COSMO_ENGINE_MAP_H
 
-extern map_width_in_tiles;
+extern int map_width_in_tiles;
+extern int map_stride_bit_shift_amt;
 
 int map_get_tile_cell(int x, int y);
 
