@@ -37,4 +37,5 @@ void actor_add_new(int image_index, int x_pos, int y_pos)
 int actor_init(int actor_num, int image_index, int x, int y_pos)
 {
     //FIXME
+    return 0;
 }

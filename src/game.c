@@ -3,6 +3,7 @@
 //
 
 #include "palette.h"
+#include "player.h"
 #include "game.h"
 
 typedef enum
@@ -35,6 +36,6 @@ void game_loop()
 
         } while(input_state == PAUSED);
 
-
+        handle_player_input_maybe();
     }
 }

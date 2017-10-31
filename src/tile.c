@@ -3,3 +3,5 @@
 //
 
 #include "tile.h"
+
+uint8 tileattr_mni_data[7000];
