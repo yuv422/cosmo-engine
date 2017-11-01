@@ -15,9 +15,6 @@ uint32 calculate_filesize(FILE *fp) {
 }
 
 bool file_open(const char *filename, const char *mode, File *file) {
-    if(file->fp) //We already have a file open lets bail.
-        return false;
-
     file->fp = fopen(filename,mode);
 
     if(file->fp == NULL)

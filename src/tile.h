@@ -30,4 +30,6 @@ enum TileAttr
 
 extern uint8 tileattr_mni_data[7000];
 
+void tile_attr_load();
+
 #endif //COSMO_ENGINE_TILE_H
