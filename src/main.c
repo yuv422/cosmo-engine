@@ -4,6 +4,7 @@
 
 #include <SDL.h>
 #include "game.h"
+#include "dialog.h"
 
 int main(int argc, char *argv[]) {
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
@@ -11,6 +12,8 @@ int main(int argc, char *argv[]) {
     }
 
     game_init();
+    //do while here
+    game_play_mode = main_menu();
 
     SDL_Quit();
     return 0;
