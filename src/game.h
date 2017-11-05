@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include "defines.h"
+#include "files/file.h"
 
 typedef enum {
     PLAY_GAME=0,
@@ -17,10 +18,12 @@ typedef enum {
 extern game_play_mode_enum game_play_mode;
 
 unsigned char *load_file(const char *filename, unsigned char *buf, uint32 buf_size);
+unsigned char *load_file_in_new_buf(const char *filename, uint32 *file_size);
+bool open_file(const char *filename, File *file);
 
 void game_init();
 void game_loop();
 void set_initial_game_state();
-
+void reset_game_state();
 
 #endif //COSMO_ENGINE_GAME_H

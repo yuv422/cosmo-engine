@@ -5,9 +5,12 @@
 #include "util.h"
 #include "sfx.h"
 #include "palette.h"
+#include "defines.h"
 
 int next_pal_colour = 0;
-int palette_anim_type;
+uint8 palette_anim_type = 0;
+int palette_index = 0;
+int palette_2E1EE = 0;
 
 void set_palette_color(char pal_reg, char color)
 {
@@ -44,21 +47,21 @@ unsigned char palette_anim_type_4_tbl[] =
 
 void palette_cycle_reg_5_from_tbl(unsigned char *palette_cycle_tbl_ptr)
 {
-    static int pal_index = 0;
-    pal_index++;
+    palette_index++;
+    //FIXME need to hook up palette_2E1EE into this logic.
 
-    if (palette_cycle_tbl_ptr[pal_index] == 0xff)
+    if (palette_cycle_tbl_ptr[palette_index] == 0xff)
     {
-        pal_index = 0;
+        palette_index = 0;
     }
 
-    if (palette_cycle_tbl_ptr[pal_index] >= 8)
+    if (palette_cycle_tbl_ptr[palette_index] >= 8)
     {
-        set_palette_color(5, (char)(palette_cycle_tbl_ptr[pal_index] + 8));
+        set_palette_color(5, (char)(palette_cycle_tbl_ptr[palette_index] + 8));
     }
     else
     {
-        set_palette_color(5, (char)palette_cycle_tbl_ptr[pal_index]);
+        set_palette_color(5, (char)palette_cycle_tbl_ptr[palette_index]);
     }
 
     return;
@@ -112,4 +115,9 @@ void update_palette_anim()
     }
 
     return;
+}
+
+void update_palette_related_delay_3()
+{
+
 }

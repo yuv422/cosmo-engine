@@ -25,6 +25,35 @@ bool file_open(const char *filename, const char *mode, File *file) {
 
     file->size = calculate_filesize(file->fp);
     file->pos = 0;
+    file->initial_offset = 0;
+
+    return true;
+}
+
+bool file_open_at_offset(const char *filename, const char *mode, File *file, uint32 offset, uint32 size)
+{
+    file->fp = fopen(filename,mode);
+
+    if(file->fp == NULL)
+    {
+        printf("Failed opening '%s'\n",filename);
+        return false;
+    }
+
+    uint32 actual_size = calculate_filesize(file->fp);
+
+    if(offset + size >= actual_size)
+    {
+        printf("Failed opening '%s' offset + size >= actual_size\n",filename);
+        fclose(file->fp);
+        return false;
+    }
+
+    fseek(file->fp, offset, SEEK_SET);
+    file->initial_offset = offset;
+
+    file->pos = 0;
+    file->size = size;
 
     return true;
 }
@@ -93,10 +122,11 @@ void file_close(File *file) {
 void file_seek(File *file, uint32 new_position) {
     if(file->fp && new_position <= file->size)
     {
-        fseek(file->fp,new_position,SEEK_SET);
+        fseek(file->fp,file->initial_offset + new_position,SEEK_SET);
         file->pos = new_position;
     }
 
     return;
 }
+
 

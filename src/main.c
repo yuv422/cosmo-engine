@@ -4,6 +4,7 @@
 
 #include <SDL.h>
 #include "game.h"
+#include "map.h"
 #include "dialog.h"
 
 int main(int argc, char *argv[]) {
@@ -14,7 +15,7 @@ int main(int argc, char *argv[]) {
     game_init();
     //do while here
     game_play_mode = main_menu();
-
+    load_level(current_level);
     SDL_Quit();
     return 0;
 }

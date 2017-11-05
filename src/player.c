@@ -32,7 +32,23 @@ int has_had_bomb_flag = 0;
 
 int teleporter_state_maybe = 0;
 int player_is_teleporting_flag = 0;
+int teleporter_counter = 0;
 
+uint8 player_in_pneumatic_tube_flag = 0;
+
+int player_invincibility_counter = 0;
+
+int player_fall_off_map_bottom_counter = 0;
+int num_hits_since_touching_ground = 0;
+
+uint16 player_push_direction = 0;
+uint16 player_push_anim_duration_maybe = 0;
+uint16 player_push_anim_counter = 0;
+uint16 player_push_duration = 0;
+uint16 player_push_frame_num = 0;
+uint16 player_dont_push_while_jumping_flag = 0;
+
+uint8 word_28BEA;
 int word_28F7E;
 int word_28F94;
 int word_2E180;
@@ -903,4 +919,27 @@ void handle_player_input_maybe()
     /* pop  */
     /* pop  */
     return ;
+}
+
+void sub_11062()
+{
+    word_32EB2 = 0;
+    player_walk_anim_index = 0;
+    return;
+}
+
+void player_reset_push_variables()
+{
+    player_is_being_pushed_flag = 0;
+    player_push_direction = 0;
+    player_push_anim_duration_maybe = 0;
+    player_push_anim_counter = 0;
+    player_push_duration = 0;
+    player_push_frame_num = 0;
+    player_dont_push_while_jumping_flag = 0;
+    player_bounce_flag_maybe = 0;
+    player_bounce_height_counter = 0;
+    byte_2E2E4 = 1;
+    word_2E180 = 0;
+    return;
 }

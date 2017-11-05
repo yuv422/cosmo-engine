@@ -75,7 +75,7 @@ unsigned char *vol_file_extract_by_name(const char *vol_filename, const char *fi
     return data;
 }
 
-unsigned char *vol_file_load(const char *vol_filename, const char *filename, unsigned char *buffer, uint32 buffer_size)
+unsigned char *vol_file_load(const char *vol_filename, const char *filename, unsigned char *buffer, uint32 buffer_size, uint32 *bytesRead)
 {
     File vol_file;
 
@@ -93,10 +93,40 @@ unsigned char *vol_file_load(const char *vol_filename, const char *filename, uns
         return NULL;
     }
 
-    uint32 bytesRead = 0;
-    unsigned char *data = extract(&vol_file, index, buffer, buffer_size, &bytesRead);
+    unsigned char *data = extract(&vol_file, index, buffer, buffer_size, bytesRead);
 
     file_close(&vol_file);
 
     return data;
+}
+
+bool vol_file_open(const char *vol_filename, const char *filename, File *file)
+{
+    File vol_file;
+
+    if(!file_open(vol_filename, "rb", &vol_file))
+    {
+        printf("Error: opening %s\n", vol_filename);
+        return false;
+    }
+
+    uint16 index = get_index_of_file(&vol_file, filename);
+
+    if(index == MAX_FILES)
+    {
+        file_close(&vol_file);
+        return false;
+    }
+
+    file_seek(&vol_file, index * 20 + FILENAME_LEN);
+    uint32 offset = file_read4(&vol_file);
+    uint32 size = file_read4(&vol_file);
+    file_close(&vol_file);
+
+    if(!file_open_at_offset(vol_filename, "rb", file, offset, size))
+    {
+        return false;
+    }
+
+    return true;
 }

@@ -5,6 +5,8 @@
 #ifndef COSMO_ENGINE_DEFINES_H
 #define COSMO_ENGINE_DEFINES_H
 
+#include <stdbool.h>
+
 typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
