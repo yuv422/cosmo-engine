@@ -14,6 +14,7 @@
 #include "palette.h"
 #include "player.h"
 #include "save.h"
+#include "actor.h"
 
 //Data
 uint16 current_level;
@@ -158,5 +159,47 @@ void load_level(int level_number)
 
 void load_level_data(int level_number)
 {
-    //FIXME
+    byte_28BE3 = 0;
+    File map_file;
+    if(!open_file(level_filename_tbl[level_number], &map_file))
+    {
+        printf("Error: loading level data. %s\n", level_filename_tbl[level_number]);
+        return;
+    }
+
+    file_seek(&map_file, 2);
+    map_width_in_tiles = file_read2(&map_file);
+
+    switch(map_width_in_tiles)
+    {
+        case 32: map_stride_bit_shift_amt = 5; break;
+        case 64: map_stride_bit_shift_amt = 6; break;
+        case 128: map_stride_bit_shift_amt = 7; break;
+        case 256: map_stride_bit_shift_amt = 8; break;
+        case 512: map_stride_bit_shift_amt = 9; break;
+        case 1024: map_stride_bit_shift_amt = 10; break;
+        case 2048: map_stride_bit_shift_amt = 11; break;
+        default: break;
+    }
+
+
+    uint16 actor_data_size_in_words = file_read2(&map_file);
+
+    total_num_actors = 0;
+    num_moving_platforms = 0;
+    num_mud_fountains = 0;
+    num_brightness_objs = 0;
+    word_2E4CE = 1;
+    obj_switch_151_flag = 0;
+
+    for(int i=0;i< actor_data_size_in_words/3;i++)
+    {
+        uint16 actor_type = file_read2(&map_file);
+        uint16 x = file_read2(&map_file);
+        uint16 y = file_read2(&map_file);
+        if(total_num_actors < MAX_ACTORS)
+        {
+            load_actor(total_num_actors, actor_type, x, y);
+        }
+    }
 }

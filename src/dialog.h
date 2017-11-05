@@ -10,6 +10,7 @@
 
 //data
 extern uint8 show_one_moment_screen_flag;
+extern uint8 byte_28BE3;
 extern uint8 byte_2E21C;
 
 game_play_mode_enum main_menu();

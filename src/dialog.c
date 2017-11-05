@@ -8,6 +8,7 @@
 
 //Data
 uint8 show_one_moment_screen_flag = 0;
+uint8 byte_28BE3 = 0;
 uint8 byte_2E21C = 0;
 
 void you_havent_found_any_bombs_dialog() {

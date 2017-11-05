@@ -3,6 +3,8 @@
 
 #include "defines.h"
 
+#define MAX_ACTORS 410
+
 typedef struct
 {
     int actorInfoIndex;
@@ -28,6 +30,7 @@ typedef struct
 } ActorData;
 
 //Data
+extern int total_num_actors;
 extern uint16 word_2E22A;
 extern uint16 word_2E236;
 extern uint16 word_2E228;
@@ -49,6 +52,12 @@ extern uint8 energy_beam_enabled_flag;
 extern uint16 word_2E1E4;
 
 extern uint16 word_2E1E2;
+
+extern uint16 num_moving_platforms;
+extern uint16 num_mud_fountains;
+extern uint16 num_brightness_objs;
+extern uint16 word_2E4CE;
+extern uint16 obj_switch_151_flag;
 
 void actor_add_new(int image_index, int x_pos, int y_pos);
 int actor_init(int actor_num, int image_index, int x, int y_pos);
