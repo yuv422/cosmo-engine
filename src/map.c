@@ -26,6 +26,7 @@ int mapwindow_y_offset = 0;
 
 uint8 rain_flag = 0;
 
+uint16 map_data[32768];
 
 int map_get_tile_cell(int x, int y) {
     return 0;
@@ -169,6 +170,8 @@ void load_level_data(int level_number)
 
     file_seek(&map_file, 2);
     map_width_in_tiles = file_read2(&map_file);
+
+    printf("map width (in tiles): %d\n", map_width_in_tiles);
 
     switch(map_width_in_tiles)
     {

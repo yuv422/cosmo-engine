@@ -29,6 +29,31 @@ typedef struct
     int func_seg;
 } ActorData;
 
+typedef struct
+{
+    uint16 x;
+    uint16 y;
+    uint16 map_tiles[5];
+} MovingPlatform;
+
+typedef struct
+{
+    uint16 x;
+    uint16 y;
+    uint16 direction;
+    uint16 length_counter;
+    uint16 current_height;
+    uint16 max_height;
+    uint16 pause_counter;
+} MudFountain;
+
+typedef struct
+{
+    int type;
+    int x;
+    int y;
+} Brightness;
+
 //Data
 extern int total_num_actors;
 extern uint16 word_2E22A;
@@ -61,5 +86,6 @@ extern uint16 obj_switch_151_flag;
 
 void actor_add_new(int image_index, int x_pos, int y_pos);
 int actor_init(int actor_num, int image_index, int x, int y_pos);
+void load_actor(int actor_num, int actorType, int x_pos, int y_pos);
 
 #endif //COSMO_ENGINE_ACTOR_H

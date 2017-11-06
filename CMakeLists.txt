@@ -21,7 +21,7 @@ include_directories(src)
 add_executable(cosmo_engine ${SOURCE_FILES})
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    TARGET_LINK_LIBRARIES(cosmo_engine ${SDL_LIBS} -Wl,-framework,Cocoa)
+    TARGET_LINK_LIBRARIES(cosmo_engine -L/usr/local/lib ${SDL_LIBS} -Wl,-framework,Cocoa)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

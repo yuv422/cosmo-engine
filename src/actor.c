@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "actor.h"
 #include "defines.h"
 #include "map.h"
@@ -34,6 +35,10 @@ uint16 num_mud_fountains = 0;
 uint16 num_brightness_objs = 0;
 uint16 word_2E4CE = 0;
 uint16 obj_switch_151_flag = 0;
+
+MovingPlatform moving_platform_tbl[10];
+MudFountain mud_fountain_tbl[10];
+Brightness brightness_tbl[0xc8];
 
 void actor_add_new(int image_index, int x_pos, int y_pos)
 {
@@ -73,22 +78,21 @@ int actor_init(int actor_num, int image_index, int x, int y_pos)
 
 void load_actor(int actor_num, int actorType, int x_pos, int y_pos)
 {
-    di = y_pos;
-    si = x_pos;
+    printf("Loading Actor: %d, (%d,%d)\n", actorType, x_pos, y_pos);
     if (actorType < 0x20)
     {
         switch (actorType)
         {
             case 0:
-                if (map_width_in_tiles - 15 >= si)
+                if (map_width_in_tiles - 15 >= x_pos)
                 {
-                    if (map_stride_bit_shift_amt <= 5 || si - 15 < 0)
+                    if (map_stride_bit_shift_amt <= 5 || x_pos - 15 < 0)
                     {
                         mapwindow_x_offset = 0;
                     }
                     else
                     {
-                        mapwindow_x_offset = si - 15;
+                        mapwindow_x_offset = x_pos - 15;
                     }
                 }
                 else
@@ -96,43 +100,37 @@ void load_actor(int actor_num, int actorType, int x_pos, int y_pos)
                     mapwindow_x_offset = map_width_in_tiles - 38;
                 }
 
-                if (di - 10 < 0)
+                if (y_pos - 10 < 0)
                 {
                     mapwindow_y_offset = 0;
                 }
                 else
                 {
-                    mapwindow_y_offset = di - 10;
+                    mapwindow_y_offset = y_pos - 10;
                 }
 
-                player_x_pos = si;
-                player_y_pos = di;
+                player_x_pos = x_pos;
+                player_y_pos = y_pos;
                 break;
 
             case 1:
-                *(num_moving_platforms * ax + moving_platform_tbl) = si;
-                *num_moving_platforms * ax + moving_platform_tbl->y = di;
-                num_moving_platforms = num_moving_platforms + 1;
+                moving_platform_tbl[num_moving_platforms].x = x_pos;
+                moving_platform_tbl[num_moving_platforms].y = y_pos;
+                num_moving_platforms++;
                 break;
 
             case 2:
             case 3:
             case 4:
             case 5:
-/* push si - 1 */
-/* pop ax */
-                *(num_mud_fountains * ax + ) = si - 1;
-/* push di - 1 */
-/* pop ax */
-                *num_mud_fountains * ax + ->y = di - 1;
-                *num_mud_fountains * ax + ->direction = 0;
-                *num_mud_fountains * ax + ->length_counter = 0;
-                *num_mud_fountains * ax + ->current_height = 0;
-/* push actorType * ax */
-/* pop ax */
-                *num_mud_fountains * ax + ->max_height = actorType * 3;
-                *num_mud_fountains * ax + ->pause_counter = 0;
-                num_mud_fountains = num_mud_fountains + 1;
+                mud_fountain_tbl[num_mud_fountains].x = x_pos - 1;
+                mud_fountain_tbl[num_mud_fountains].y = y_pos - 1;
+                mud_fountain_tbl[num_mud_fountains].direction = 0;
+                mud_fountain_tbl[num_mud_fountains].length_counter = 0;
+                mud_fountain_tbl[num_mud_fountains].current_height = 0;
+                mud_fountain_tbl[num_mud_fountains].max_height = actorType * 3;
+                mud_fountain_tbl[num_mud_fountains].pause_counter = 0;
+                num_mud_fountains++;
                 break;
 
             case 6:
@@ -140,23 +138,19 @@ void load_actor(int actor_num, int actorType, int x_pos, int y_pos)
             case 8:
                 if (num_brightness_objs != 0xc7)
                 {
-/* push actorType - 6 */
-/* pop ax */
-                    *((num_brightness_objs << 3) + brightness_tbl) = ax;
-                    *(num_brightness_objs << 3) + brightness_tbl->x = si;
-                    *(num_brightness_objs << 3) + brightness_tbl->y = di;
-                    num_brightness_objs = num_brightness_objs + 1;
+                    brightness_tbl[num_brightness_objs].type = actorType - 6;
+                    brightness_tbl[num_brightness_objs].x = x_pos;
+                    brightness_tbl[num_brightness_objs].y = y_pos;
+                    num_brightness_objs++;
                 }
                 break;
-
-// node 00020224-00000000 #insn=0 use={} def={} in={} out={} pred={ 2010C 20117 20141 201DE}
+            default: break;
         }
     }
 
-// node 00020224-00020248 #insn=2 use={} def={bp, si, di} in={} out={} pred={ 2009C} RETURN
     if (actorType >= 0x1f)
     {
-        if (actor_init(actor_num, actorType - 31, si, di) != 0)
+        if (actor_init(actor_num, actorType - 31, x_pos, y_pos) != 0)
         {
             total_num_actors = total_num_actors + 1;
         }
