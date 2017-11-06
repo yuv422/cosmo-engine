@@ -84,6 +84,8 @@ extern uint16 num_brightness_objs;
 extern uint16 word_2E4CE;
 extern uint16 obj_switch_151_flag;
 
+extern MovingPlatform moving_platform_tbl[10];
+
 void actor_add_new(int image_index, int x_pos, int y_pos);
 int actor_init(int actor_num, int image_index, int x, int y_pos);
 void load_actor(int actor_num, int actorType, int x_pos, int y_pos);

@@ -23,7 +23,7 @@ void file_seek(File *file, uint32 new_position);
 uint8 file_read1(File *file);
 uint16 file_read2(File *file);
 uint32 file_read4(File *file);
-bool file_read_to_buffer(File *file, unsigned char *buf, uint32 buf_size);
+uint32 file_read_to_buffer(File *file, unsigned char *buf, uint32 num_bytes);
 void file_close(File *file);
 
 #endif //COSMO_ENGINE_FILE_H

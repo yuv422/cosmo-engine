@@ -23,6 +23,7 @@ int map_width_in_tiles = 0;
 int map_stride_bit_shift_amt;
 int mapwindow_x_offset = 0;
 int mapwindow_y_offset = 0;
+int map_max_y_offset = 0;
 
 uint8 rain_flag = 0;
 
@@ -76,7 +77,6 @@ void load_level(int level_number)
         wait_for_time_or_key(0x12c);
     }
 
-    uint32 filesize;
     File map_file;
     if(!open_file(level_filename_tbl[level_number], &map_file))
     {
@@ -205,4 +205,18 @@ void load_level_data(int level_number)
             load_actor(total_num_actors, actor_type, x, y);
         }
     }
+
+    file_read_to_buffer(&map_file, (unsigned char *)map_data, 65535);
+
+    for(int i=0;i<num_moving_platforms;i++)
+    {
+        for(int j = 2;j < 7;j++)
+        {
+            moving_platform_tbl[i].map_tiles[j-2] = map_data[moving_platform_tbl[i].x + moving_platform_tbl[i].y * map_width_in_tiles + j - 4];
+        }
+
+    }
+
+    current_level = (uint16)level_number;
+    map_max_y_offset = 0x10000 / (map_width_in_tiles * 2) - 19;
 }

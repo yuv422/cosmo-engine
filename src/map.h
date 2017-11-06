@@ -13,6 +13,8 @@ extern int map_stride_bit_shift_amt;
 extern int mapwindow_x_offset;
 extern int mapwindow_y_offset;
 
+extern int map_max_y_offset;
+
 int map_get_tile_cell(int x, int y);
 
 void load_level(int level_number);

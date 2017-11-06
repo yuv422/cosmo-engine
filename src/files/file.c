@@ -100,15 +100,15 @@ uint32 file_read4(File *file) {
     return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 }
 
-bool file_read_to_buffer(File *file, unsigned char *buf, uint32 buf_size) {
-    if(file->pos + buf_size > file->size)
-        return false;
+uint32 file_read_to_buffer(File *file, unsigned char *buf, uint32 num_bytes) {
+    if(file->pos + num_bytes > file->size)
+        num_bytes = file->size - file->pos;
 
-    fread(buf,1,buf_size,file->fp); // FIX for partial read.
+    fread(buf,1,num_bytes,file->fp); // FIX for partial read.
 
-    file->pos += buf_size;
+    file->pos += num_bytes;
 
-    return true;
+    return num_bytes;
 }
 
 void file_close(File *file) {
