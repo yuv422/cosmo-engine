@@ -40,6 +40,9 @@ uint8 move_platform_flag = 0;
 void game_init()
 {
     tile_attr_load();
+    player_load_tiles();
+    actor_load_tiles();
+    map_load_tiles();
 }
 
 void set_initial_game_state()

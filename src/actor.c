@@ -3,6 +3,7 @@
 #include "defines.h"
 #include "map.h"
 #include "player.h"
+#include "tile.h"
 
 //Data
 ActorData actors[MAX_ACTORS];
@@ -39,6 +40,8 @@ uint16 obj_switch_151_flag = 0;
 MovingPlatform moving_platform_tbl[10];
 MudFountain mud_fountain_tbl[10];
 Brightness brightness_tbl[0xc8];
+
+Tile *actor_tiles;
 
 void actor_add_new(int image_index, int x_pos, int y_pos)
 {
@@ -156,4 +159,11 @@ void load_actor(int actor_num, int actorType, int x_pos, int y_pos)
         }
     }
     return;
+}
+
+void actor_load_tiles()
+{
+    uint16 num_tiles;
+    actor_tiles = load_tiles("ACTORS.MNI", TRANSPARENT, &num_tiles);
+    printf("Loaded %d actor tiles.\n", num_tiles);
 }

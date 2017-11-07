@@ -85,17 +85,18 @@ Tile *load_tiles(const char *filename, TileType type, uint16 *num_tiles_loaded) 
     uint16 num_tiles = get_number_of_tiles(&file, type);
     Tile *tiles = (Tile *)malloc(sizeof(Tile) * num_tiles);
 
-    Tile *ptr = tiles;
+
     for(int i=0;i<num_tiles;i++)
     {
-        file_read_to_buffer(&file, &planarData, tile_size);
-        load_tile(&file, type, &tiles[i]);
+        file_read_to_buffer(&file, planarData, tile_size);
+        load_tile(planarData, type, &tiles[i]);
         if(i % (0xffff / num_tiles) == 0)
         {
+            file_seek(&file, file.pos + (0xffff % num_tiles));
             // skip a few bytes here
         }
     }
 
-
-    return NULL;
+    *num_tiles_loaded = num_tiles;
+    return tiles;
 }

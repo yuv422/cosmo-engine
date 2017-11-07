@@ -62,6 +62,8 @@ int word_32EB2;
 unsigned char byte_2E182;
 unsigned char byte_2E2E4;
 
+Tile *player_tiles;
+
 typedef enum {
     NOT_BLOCKED = 0,
     BLOCKED = 1,
@@ -942,4 +944,11 @@ void player_reset_push_variables()
     byte_2E2E4 = 1;
     word_2E180 = 0;
     return;
+}
+
+void player_load_tiles()
+{
+    uint16 num_tiles;
+    player_tiles = load_tiles("PLAYERS.MNI", TRANSPARENT, &num_tiles);
+    printf("Loading %d player tiles.\n", num_tiles);
 }

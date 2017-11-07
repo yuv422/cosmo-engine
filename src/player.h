@@ -59,4 +59,7 @@ void sub_11062(); //resets variables
 
 void player_reset_push_variables();
 
+void player_load_tiles();
+
+
 #endif //COSMO_ENGINE_PLAYER_H

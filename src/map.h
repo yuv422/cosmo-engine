@@ -19,4 +19,6 @@ int map_get_tile_cell(int x, int y);
 
 void load_level(int level_number);
 
+void map_load_tiles();
+
 #endif //COSMO_ENGINE_MAP_H

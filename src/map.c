@@ -15,6 +15,7 @@
 #include "player.h"
 #include "save.h"
 #include "actor.h"
+#include "tile.h"
 
 //Data
 uint16 current_level;
@@ -28,6 +29,9 @@ int map_max_y_offset = 0;
 uint8 rain_flag = 0;
 
 uint16 map_data[32768];
+
+Tile *map_bg_tiles;
+Tile *map_fg_tiles;
 
 int map_get_tile_cell(int x, int y) {
     return 0;
@@ -219,4 +223,13 @@ void load_level_data(int level_number)
 
     current_level = (uint16)level_number;
     map_max_y_offset = 0x10000 / (map_width_in_tiles * 2) - 19;
+}
+
+void map_load_tiles()
+{
+    uint16 num_tiles;
+    map_bg_tiles = load_tiles("TILES.MNI", SOLID, &num_tiles);
+    printf("Loading %d map bg tiles.\n", num_tiles);
+    map_fg_tiles = load_tiles("MASKTILE.MNI", TRANSPARENT, &num_tiles);
+    printf("Loading %d map fg tiles.\n", num_tiles);
 }

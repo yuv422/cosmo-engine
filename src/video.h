@@ -18,4 +18,7 @@ void struct5_clear_sprites();
 void struct6_clear_sprites();
 void struct7_clear_sprites();
 
+bool video_init();
+void video_shutdown();
+
 #endif //COSMO_ENGINE_VIDEO_H

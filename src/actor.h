@@ -89,5 +89,6 @@ extern MovingPlatform moving_platform_tbl[10];
 void actor_add_new(int image_index, int x_pos, int y_pos);
 int actor_init(int actor_num, int image_index, int x, int y_pos);
 void load_actor(int actor_num, int actorType, int x_pos, int y_pos);
+void actor_load_tiles();
 
 #endif //COSMO_ENGINE_ACTOR_H
