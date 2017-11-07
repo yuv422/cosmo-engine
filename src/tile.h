@@ -6,6 +6,10 @@
 #define COSMO_ENGINE_TILE_H
 
 #include "defines.h"
+typedef enum {
+    SOLID,
+    TRANSPARENT
+} TileType;
 
 enum TileAttr
 {
@@ -19,6 +23,11 @@ enum TileAttr
     CAN_GRAB_WALL = 0x80,
 };
 
+typedef struct {
+    TileType type;
+    uint8 pixels[64];
+} Tile;
+
 #define TILE_ATTR_BLOCK_DOWN      0x1
 #define TILE_ATTR_BLOCK_UP        0x2
 #define TILE_ATTR_BLOCK_LEFT      0x4
@@ -28,8 +37,15 @@ enum TileAttr
 #define TILE_ATTR_SLOPED         0x40
 #define TILE_ATTR_CAN_GRAB_WALL  0x80
 
+#define TILE_HEIGHT 8
+#define TILE_WIDTH 8
+
+#define TRANSPARENT_COLOR 255
+
 extern uint8 tileattr_mni_data[7000];
 
 void tile_attr_load();
+
+Tile *load_tiles(const char *filename, TileType type, uint16 *num_tiles_loaded);
 
 #endif //COSMO_ENGINE_TILE_H
