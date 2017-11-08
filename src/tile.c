@@ -93,7 +93,6 @@ Tile *load_tiles(const char *filename, TileType type, uint16 *num_tiles_loaded) 
         if(i % (0xffff / num_tiles) == 0)
         {
             file_seek(&file, file.pos + (0xffff % num_tiles));
-            // skip a few bytes here
         }
     }
 
