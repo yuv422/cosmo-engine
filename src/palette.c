@@ -2,6 +2,8 @@
 // Created by efry on 25/10/2017.
 //
 
+#include <SDL_pixels.h>
+#include <SDL_surface.h>
 #include "util.h"
 #include "sfx.h"
 #include "palette.h"
@@ -11,6 +13,30 @@ int next_pal_colour = 0;
 uint8 palette_anim_type = 0;
 int palette_index = 0;
 int palette_2E1EE = 0;
+
+SDL_Color palette[16] = {
+        {0,0,0,0},
+        {0x00,0x00,0xAA,0},
+        {0x00,0xAA,0x00,0},
+        {0x00,0xAA,0xAA,0},
+        {0xAA,0x00,0x00,0},
+        {0xAA,0x00,0xAA,0},
+        {0xAA,0x55,0x00,0},
+        {0xAA,0xAA,0xAA,0},
+        {0x55,0x55,0x55,0},
+        {0x55,0x55,0xFF,0},
+        {0x55,0xFF,0x55,0},
+        {0x55,0xFF,0xFF,0},
+        {0xFF,0x55,0x55,0},
+        {0xFF,0x55,0xFF,0},
+        {0xFF,0xFF,0x55,0},
+        {0xFF,0xFF,0xFF,0}
+};
+
+void set_palette_on_surface(SDL_Surface *surface)
+{
+    SDL_SetPaletteColors(surface->format->palette, palette, 0, 16);
+}
 
 void set_palette_color(char pal_reg, char color)
 {

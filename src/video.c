@@ -4,6 +4,8 @@
 
 #include <SDL_system.h>
 #include "video.h"
+#include "palette.h"
+#include "tile.h"
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -76,6 +78,8 @@ bool video_init()
         return false;
     }
 
+    set_palette_on_surface(surface);
+
     windowSurface = SDL_CreateRGBSurface(0,
                            surface->w, surface->h,
                            32, 0, 0, 0, 0);
@@ -97,4 +101,59 @@ void video_shutdown()
 {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+}
+
+void video_update()
+{
+    SDL_BlitSurface(surface, NULL, windowSurface, NULL);
+
+    void *pixels;
+    int pitch;
+    SDL_LockTexture(texture, NULL, &pixels, &pitch);
+    SDL_ConvertPixels(windowSurface->w, windowSurface->h,
+                      windowSurface->format->format,
+                      windowSurface->pixels, windowSurface->pitch,
+                      SDL_PIXELFORMAT_RGBA8888,
+                      pixels, pitch);
+    SDL_UnlockTexture(texture);
+
+    /* Make the modified texture visible by rendering it */
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+
+    /*
+     * Update the screen with any rendering performed since the
+     * previous call
+     */
+    SDL_RenderPresent(renderer);
+}
+
+void video_draw_tile(Tile *tile, uint16 x, uint16 y)
+{
+    uint8 *pixel = &surface->pixels[x + y * SCREEN_WIDTH];
+    uint8 *tile_pixel = tile->pixels;
+    if(tile->type == SOLID)
+    {
+        for(int i=0;i<TILE_HEIGHT;i++)
+        {
+            memcpy(pixel, tile_pixel, TILE_WIDTH);
+            pixel += SCREEN_WIDTH;
+            tile_pixel += TILE_WIDTH;
+        }
+    }
+    else
+    {
+        for(int i=0;i<TILE_HEIGHT;i++)
+        {
+            for(int j=0;j<TILE_WIDTH;j++)
+            {
+                if(*tile_pixel != TRANSPARENT_COLOR)
+                {
+                    *pixel = *tile_pixel;
+                }
+                pixel++;
+                tile_pixel++;
+            }
+            pixel += SCREEN_WIDTH - TILE_WIDTH;
+        }
+    }
 }

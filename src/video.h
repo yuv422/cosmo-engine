@@ -3,6 +3,7 @@
 //
 
 #include "defines.h"
+#include "tile.h"
 
 #ifndef COSMO_ENGINE_VIDEO_H
 #define COSMO_ENGINE_VIDEO_H
@@ -22,5 +23,9 @@ void struct7_clear_sprites();
 
 bool video_init();
 void video_shutdown();
+
+void video_update();
+
+void video_draw_tile(Tile *tile, uint16 x, uint16 y);
 
 #endif //COSMO_ENGINE_VIDEO_H

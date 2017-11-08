@@ -3,6 +3,8 @@
 //
 
 #include <MacTypes.h>
+#include <SDL_timer.h>
+#include <SDL_events.h>
 #include "actor.h"
 #include "palette.h"
 #include "player.h"
@@ -12,6 +14,10 @@
 #include "input.h"
 #include "dialog.h"
 #include "map.h"
+#include "status.h"
+#include "video.h"
+
+#define COSMO_INTERVAL 100
 
 typedef enum
 {
@@ -37,8 +43,11 @@ uint8 finished_level_flag_maybe;
 
 uint8 move_platform_flag = 0;
 
+void game_wait();
+
 void game_init()
 {
+    status_load_tiles();
     tile_attr_load();
     player_load_tiles();
     actor_load_tiles();
@@ -120,6 +129,14 @@ void reset_game_state()
 input_state_enum read_input()
 {
     //FIXME
+    SDL_Event event;
+
+    SDL_PollEvent(&event);
+    if (event.type == SDL_QUIT)
+    {
+        return QUIT;
+    }
+
     return CONTINUE;
 }
 
@@ -131,6 +148,7 @@ void game_loop()
     {
         do
         {
+            game_wait();
             //lock to 10 FPS here.
 
             update_palette_anim();
@@ -142,8 +160,33 @@ void game_loop()
         } while(input_state == PAUSED);
 
         handle_player_input_maybe();
+
+        video_update();
     }
 }
+
+uint32 time_left()
+{
+    static uint32 next_time = 0;
+    uint32 now;
+
+    now = SDL_GetTicks();
+
+    if ( next_time <= now ) {
+        next_time = now+COSMO_INTERVAL;
+        return(0);
+    }
+    Uint32 delay = next_time-now;
+    next_time += COSMO_INTERVAL;
+    return(delay);
+}
+
+void game_wait()
+{
+    SDL_Delay(time_left());
+}
+
+//Protected
 
 unsigned char *load_file(const char *filename, unsigned char *buf, uint32 buf_size)
 {

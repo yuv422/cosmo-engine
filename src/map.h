@@ -5,6 +5,9 @@
 #ifndef COSMO_ENGINE_MAP_H
 #define COSMO_ENGINE_MAP_H
 
+#define MAP_WINDOW_WIDTH 38
+#define MAP_WINDOW_HEIGHT 18
+
 //Data
 extern uint16 current_level;
 extern int map_width_in_tiles;
