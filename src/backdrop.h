@@ -13,4 +13,6 @@ extern uint8 background_y_scroll_flag;
 
 bool set_backdrop(uint16 backdrop_index);
 
+void backdrop_display();
+
 #endif //COSMO_ENGINE_BACKDROP_H

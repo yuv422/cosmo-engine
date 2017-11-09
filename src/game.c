@@ -131,10 +131,32 @@ input_state_enum read_input()
     //FIXME
     SDL_Event event;
 
-    SDL_PollEvent(&event);
-    if (event.type == SDL_QUIT)
+    if(SDL_PollEvent(&event))
     {
-        return QUIT;
+        if (event.type == SDL_QUIT)
+        {
+            return QUIT;
+        }
+        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
+        {
+            mapwindow_x_offset++;
+        }
+        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
+        {
+            mapwindow_x_offset--;
+        }
+        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+        {
+            mapwindow_y_offset--;
+        }
+        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+        {
+            mapwindow_y_offset++;
+        }
+        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q)
+        {
+            return QUIT;
+        }
     }
 
     return CONTINUE;

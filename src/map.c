@@ -37,7 +37,7 @@ int map_get_tile_cell(int x, int y) {
     return 0;
 }
 
-const char level_filename_tbl[][12] = {
+const char level_filename_tbl[][13] = {
         "A1.MNI",
         "A2.MNI",
         "BONUS1.MNI",
@@ -210,7 +210,12 @@ void load_level_data(int level_number)
         }
     }
 
-    file_read_to_buffer(&map_file, (unsigned char *)map_data, 65535);
+    //file_read_to_buffer(&map_file, (unsigned char *)map_data, 65535);
+
+    for(int i=0;i < 32764; i++)
+    {
+        map_data[i] = file_read2(&map_file);
+    }
 
     for(int i=0;i<num_moving_platforms;i++)
     {
@@ -235,22 +240,28 @@ void map_load_tiles()
 }
 
 void map_display() {
-    for(int y=mapwindow_y_offset; y < mapwindow_y_offset + MAP_WINDOW_HEIGHT; y++)
+    if(mapwindow_y_offset > map_max_y_offset)
+        mapwindow_y_offset = map_max_y_offset;
+
+    backdrop_display();
+    for(int y=0; y < MAP_WINDOW_HEIGHT; y++)
     {
-        for(int x=mapwindow_x_offset; x < mapwindow_x_offset + MAP_WINDOW_WIDTH; x++)
+        for(int x=0; x < MAP_WINDOW_WIDTH; x++)
         {
-            video_draw_tile(&map_bg_tiles[(x-mapwindow_x_offset) + (y-mapwindow_y_offset) * MAP_WINDOW_WIDTH], ((x-mapwindow_x_offset)+1)*8, ((y-mapwindow_y_offset)+1)*8);
-//            uint16 map_cell = map_data[x + y * map_width_in_tiles];
-//            if(map_cell < 16000)
-//            {
-////                video_draw_tile(&map_bg_tiles[map_cell / 8], ((x-mapwindow_x_offset)+1)*8, ((y-mapwindow_y_offset)+1)*8);
-//                video_draw_tile(&map_bg_tiles[map_cell/8], ((x-mapwindow_x_offset)+1)*8, ((y-mapwindow_y_offset)+1)*8);
-//            }
-//            else
-//            {
-//                uint16 tile =  ((map_cell/8) - 2000) / 5;
-//                video_draw_tile(&map_fg_tiles[tile], ((x-mapwindow_x_offset)+1)*8, ((y-mapwindow_y_offset)+1)*8);
-//            }
+            uint16 map_cell = map_data[(x+mapwindow_x_offset) + (y+mapwindow_y_offset) * map_width_in_tiles];
+            if(map_cell < 16000)
+            {
+                uint16 tile = map_cell/8;
+                if(tile != 0)
+                {
+                    video_draw_tile(&map_bg_tiles[tile], (x+1)*8, (y+1)*8);
+                }
+            }
+            else
+            {
+                uint16 tile =  ((map_cell/8) - 2000) / 5;
+                video_draw_tile(&map_fg_tiles[tile], (x+1)*8, (y+1)*8);
+            }
         }
     }
 }
