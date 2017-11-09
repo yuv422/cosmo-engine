@@ -233,3 +233,25 @@ void map_load_tiles()
     map_fg_tiles = load_tiles("MASKTILE.MNI", TRANSPARENT, &num_tiles);
     printf("Loading %d map fg tiles.\n", num_tiles);
 }
+
+void map_display() {
+    for(int y=mapwindow_y_offset; y < mapwindow_y_offset + MAP_WINDOW_HEIGHT; y++)
+    {
+        for(int x=mapwindow_x_offset; x < mapwindow_x_offset + MAP_WINDOW_WIDTH; x++)
+        {
+            video_draw_tile(&map_bg_tiles[(x-mapwindow_x_offset) + (y-mapwindow_y_offset) * MAP_WINDOW_WIDTH], ((x-mapwindow_x_offset)+1)*8, ((y-mapwindow_y_offset)+1)*8);
+//            uint16 map_cell = map_data[x + y * map_width_in_tiles];
+//            if(map_cell < 16000)
+//            {
+////                video_draw_tile(&map_bg_tiles[map_cell / 8], ((x-mapwindow_x_offset)+1)*8, ((y-mapwindow_y_offset)+1)*8);
+//                video_draw_tile(&map_bg_tiles[map_cell/8], ((x-mapwindow_x_offset)+1)*8, ((y-mapwindow_y_offset)+1)*8);
+//            }
+//            else
+//            {
+//                uint16 tile =  ((map_cell/8) - 2000) / 5;
+//                video_draw_tile(&map_fg_tiles[tile], ((x-mapwindow_x_offset)+1)*8, ((y-mapwindow_y_offset)+1)*8);
+//            }
+        }
+    }
+}
+

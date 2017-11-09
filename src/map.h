@@ -24,4 +24,6 @@ void load_level(int level_number);
 
 void map_load_tiles();
 
+void map_display();
+
 #endif //COSMO_ENGINE_MAP_H

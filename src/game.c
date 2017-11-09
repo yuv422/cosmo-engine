@@ -159,8 +159,9 @@ void game_loop()
 
         } while(input_state == PAUSED);
 
-        handle_player_input_maybe();
+        //handle_player_input_maybe();
 
+        map_display();
         video_update();
     }
 }
