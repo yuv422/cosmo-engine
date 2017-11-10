@@ -34,7 +34,7 @@ Tile *map_bg_tiles;
 Tile *map_fg_tiles;
 
 int map_get_tile_cell(int x, int y) {
-    return 0;
+    return map_data[x + y * map_width_in_tiles];
 }
 
 const char level_filename_tbl[][13] = {
