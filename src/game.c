@@ -19,14 +19,6 @@
 
 #define COSMO_INTERVAL 100
 
-typedef enum
-{
-    QUIT,
-    PAUSED,
-    CONTINUE
-} input_state_enum;
-
-
 //Data
 game_play_mode_enum game_play_mode = PLAY_GAME;
 uint32 score;
@@ -126,41 +118,7 @@ void reset_game_state()
     return;
 }
 
-input_state_enum read_input()
-{
-    //FIXME
-    SDL_Event event;
 
-    if(SDL_PollEvent(&event))
-    {
-        if (event.type == SDL_QUIT)
-        {
-            return QUIT;
-        }
-        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
-        {
-            mapwindow_x_offset++;
-        }
-        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
-        {
-            mapwindow_x_offset--;
-        }
-        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
-        {
-            mapwindow_y_offset--;
-        }
-        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
-        {
-            mapwindow_y_offset++;
-        }
-        else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q)
-        {
-            return QUIT;
-        }
-    }
-
-    return CONTINUE;
-}
 
 void game_loop()
 {
@@ -181,7 +139,7 @@ void game_loop()
 
         } while(input_state == PAUSED);
 
-        //handle_player_input_maybe();
+        handle_player_input_maybe();
 
         map_display();
         video_update();

@@ -72,9 +72,155 @@ typedef enum {
 
 BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 {
-    //FIXME
-    return NOT_BLOCKED;
-}
+// node 00011b54-00011b78 #insn=7 use={} def={} in={} out={} pred={} FALLTHROUGH follow=00011e3f
+        is_standing_slipry_slope_left_flg = 0;
+        is_standing_slipry_slope_right_flg = 0;
+        switch (direction) {
+// node ffffffff-00000000 #insn=0 use={} def={} in={} out={} pred={}
+// node 00011b85-00011bc1 #insn=7 use={cx, di, cl} def={ax, cx, bx, si} in={cx, di, cl} out={si} pred={ FFFFFFFF} JUMP target=00011be2
+            case 0:
+                if (player_y_pos - 3 == 0 || player_y_pos - 2 == 0) {
+                    return BLOCKED;
+                }
+
+                for(int i=0;i<3;i++)
+                {
+                    tileattr_mni_data[map_get_tile_cell(x_pos, y_pos - 4) / 8] & TILE_ATTR_BLOCK_UP
+                }
+                map_data_ptr[2] = REGISTER_29;
+                map_data_ptr = &temp_data_buffer + (y_pos - 4 << cl << 1) + (x_pos << 1);
+                si = 0;
+                goto loc_11BE2;
+
+// node 00011bc3-00011be1 #insn=3 use={si} def={si} in={si} out={si} pred={ 11BE2} FALLTHROUGH follow=00011be2
+            loc_11BC3:
+                if ((*(&tileattr_mni_data + (*(map_data_ptr + (si << 1)) >> 3)) & 2) != 0) {
+                    ax = 1;
+                    return ax;
+                }
+                si = si + 1;
+
+// node 00011be2-00011be5 #insn=2 use={si} def={} in={si} out={si} pred={ 11B85 11BC3} CONDJUMP target=00011bc3 follow=00011e3d
+            loc_11BE2:
+                if (si < 3) goto loc_11BC3;
+
+// node 00011bea-00011bf4 #insn=2 use={} def={ax} in={cx, di, cl} out={cx, di, cl} pred={ FFFFFFFF} CONDJUMP target=00011bf9 follow=00011e3d
+            case 1:
+                if (map_max_y_offset + 0x12 != player_y_pos) goto loc_11BF9;
+
+// node 00011bf9-00011ca2 #insn=9 use={} def={si} in={} out={si} pred={ 11BEA} JUMP target=00011ced
+            loc_11BF9:
+                bx = &temp_data_buffer + (y_pos << cl << 1) + (x_pos << 1);
+                map_data_ptr[2] = REGISTER_29;
+                map_data_ptr = bx;
+                ax = *bx >> 3;
+                if ((*(&tileattr_mni_data + ax) & 1) == 0 && (*(&tileattr_mni_data + (*map_data_ptr >> 3)) & 0x40) != 0 &&
+                    (*(&tileattr_mni_data + (*map_data_ptr >> 3)) & 0x10) != 0) {
+                    is_standing_slipry_slope_left_flg = 1;
+                }
+                if ((*(&tileattr_mni_data + (*(map_data_ptr + 4) >> 3)) & 1) == 0 &&
+                    (*(&tileattr_mni_data + (*(map_data_ptr + 4) >> 3)) & 0x40) != 0 &&
+                    (*(&tileattr_mni_data + (*(map_data_ptr + 4) >> 3)) & 0x10) != 0) {
+                    is_standing_slipry_slope_right_flg = 1;
+                }
+                si = 0;
+                goto loc_11CED;
+
+// node 00011ca4-00011cbd #insn=2 use={si} def={ax, bx} in={si} out={si} pred={ 11CED} CONDJUMP target=00011cc8 follow=00011cbf
+            loc_11CA4:
+                if ((*(&tileattr_mni_data + (*(map_data_ptr + (si << 1)) >> 3)) & 0x40) == 0) goto loc_11CC8;
+
+// node 00011cbf-00011cc5 #insn=2 use={} def={} in={} out={} pred={ 11CA4} JUMP target=00011e2a
+                num_hits_since_touching_ground = 0;
+                goto loc_11E2A;
+
+// node 00011cc8-00011cec #insn=3 use={si} def={si} in={si} out={si} pred={ 11CA4} FALLTHROUGH follow=00011ced
+            loc_11CC8:
+                if ((*(&tileattr_mni_data + (*(map_data_ptr + (si << 1)) >> 3)) & 1) != 0) {
+                    num_hits_since_touching_ground = 0;
+                    ax = 1;
+                    return ax;
+                }
+                si = si + 1;
+
+// node 00011ced-00011cf0 #insn=2 use={si} def={} in={si} out={si} pred={ 11BF9 11CC8} CONDJUMP target=00011ca4 follow=00011e3d
+            loc_11CED:
+                if (si < 3) goto loc_11CA4;
+
+// node 00011cf5-00011d34 #insn=8 use={cx, di, al, cl} def={ax, cx, bx, si} in={cx, di, al, cl} out={si} pred={ FFFFFFFF} JUMP target=00011d8f
+            case 2:
+                bx = &temp_data_buffer + (y_pos << cl << 1) + (x_pos << 1);
+                map_data_ptr[2] = REGISTER_29;
+                map_data_ptr = bx;
+                ax = *(bx - (map_width_in_tiles << 1 << 1)) >> 3;
+                player_is_grabbing_wall_flag = al & 0x80;
+                si = 0;
+                goto loc_11D8F;
+
+// node 00011d36-00011d50 #insn=3 use={si} def={} in={si} out={si} pred={ 11D8F} CONDJUMP target=00011d86 follow=00011e2a
+            loc_11D36:
+                if ((*(&tileattr_mni_data + (*map_data_ptr >> 3)) & 4) != 0) {
+                    ax = 1;
+                    return ax;
+                }
+                if (si != 0 || (*(&tileattr_mni_data + (*map_data_ptr >> 3)) & 0x40) == 0 ||
+                    (*(&tileattr_mni_data + (*(map_data_ptr - (map_width_in_tiles << 1)) >> 3)) & 4) != 0)
+                    goto loc_11D86;
+
+// node 00011d86-00011d8e #insn=3 use={si} def={ax, si} in={si} out={si} pred={ 11D36} FALLTHROUGH follow=00011d8f
+            loc_11D86:
+                map_data_ptr = map_data_ptr - (map_width_in_tiles << 1);
+                si = si + 1;
+
+// node 00011d8f-00011d92 #insn=2 use={si} def={} in={si} out={si} pred={ 11CF5 11D86} CONDJUMP target=00011d36 follow=00011e3d
+            loc_11D8F:
+                if (si < 5) goto loc_11D36;
+
+// node 00011d97-00011dd9 #insn=8 use={cx, di, al, cl} def={ax, cx, bx, si} in={cx, di, al, cl} out={si} pred={ FFFFFFFF} JUMP target=00011e38
+            case 3:
+                bx = &temp_data_buffer + (y_pos << cl << 1) + (x_pos << 1) + 4;
+                map_data_ptr[2] = REGISTER_29;
+                map_data_ptr = bx;
+                ax = *(bx - (map_width_in_tiles << 1 << 1)) >> 3;
+                player_is_grabbing_wall_flag = al & 0x80;
+                si = 0;
+                goto loc_11E38;
+
+// node 00011ddb-00011df7 #insn=3 use={si} def={} in={si} out={si} pred={ 11E38} CONDJUMP target=00011e2f follow=00011e2a
+            loc_11DDB:
+                if ((*(&tileattr_mni_data + (*map_data_ptr >> 3)) & 8) != 0) {
+                    return BLOCKED;
+                }
+                if (si != 0 || (*(&tileattr_mni_data + (*map_data_ptr >> 3)) & 0x40) == 0 ||
+                    (*(&tileattr_mni_data + (*(map_data_ptr - (map_width_in_tiles << 1)) >> 3)) & 8) != 0)
+                    goto loc_11E2F;
+
+// node 00011e2a-00011e3f #insn=2 use={} def={ax} in={} out={ax} pred={ 11CBF 11D36 11DDB} JUMP target=00011e3f
+                ax = SLOPE;
+                break;
+
+// node 00011e2f-00011e37 #insn=3 use={si} def={ax, si} in={si} out={si} pred={ 11DDB} FALLTHROUGH follow=00011e38
+            loc_11E2F:
+                map_data_ptr = map_data_ptr - (map_width_in_tiles << 1);
+                si = si + 1;
+
+// node 00011e38-00011e3b #insn=2 use={si} def={} in={si} out={si} pred={ 11D97 11E2F} CONDJUMP target=00011ddb follow=00011e3d
+            loc_11E38:
+                if (si < 5) goto loc_11DDB;
+
+// node 00011e3d-00011e3f #insn=2 use={} def={ax} in={} out={ax} pred={ 11BE2 11BEA 11CED 11D8F 11E38} FALLTHROUGH follow=00011e3f
+                ax = NOT_BLOCKED;
+                break;
+
+// node 00011e3f-00000000 #insn=0 use={} def={} in={} out={} pred={ 11E2A 11E3D}
+        }
+
+// node 00011e3f-00011e42 #insn=4 use={ax} def={si, di} in={ax} out={} pred={ 11B54} RETURN
+        loc_11E3F:
+/* pop  */
+/* pop  */
+        return ax;
+    }
 
 void push_player()
 {

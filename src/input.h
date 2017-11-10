@@ -7,6 +7,13 @@
 
 #include "defines.h"
 
+typedef enum
+{
+    QUIT,
+    PAUSED,
+    CONTINUE
+} input_state_enum;
+
 extern uint8 bomb_key_pressed;
 extern uint8 jump_key_pressed;
 extern uint8 up_key_pressed;
@@ -17,4 +24,6 @@ extern uint8 right_key_pressed;
 extern uint8 byte_2E17C;
 
 void wait_for_time_or_key(int delay_in_game_cycles);
+input_state_enum read_input();
+
 #endif //COSMO_ENGINE_INPUT_H
