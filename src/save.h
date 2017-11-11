@@ -6,5 +6,6 @@
 #define COSMO_ENGINE_SAVE_H
 
 void write_savegame_file(char suffix);
+void load_savegame_file(char suffix);
 
 #endif //COSMO_ENGINE_SAVE_H

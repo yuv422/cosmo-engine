@@ -167,3 +167,8 @@ void actor_load_tiles()
     actor_tiles = load_tiles("ACTORS.MNI", TRANSPARENT, &num_tiles);
     printf("Loaded %d actor tiles.\n", num_tiles);
 }
+
+void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, int y_pos, int tile_display_func_index)
+{
+    //FIXME
+}

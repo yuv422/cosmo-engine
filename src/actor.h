@@ -91,4 +91,6 @@ int actor_init(int actor_num, int image_index, int x, int y_pos);
 void load_actor(int actor_num, int actorType, int x_pos, int y_pos);
 void actor_load_tiles();
 
+void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, int y_pos, int tile_display_func_index);
+
 #endif //COSMO_ENGINE_ACTOR_H

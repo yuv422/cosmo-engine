@@ -28,6 +28,17 @@ typedef struct {
     uint8 pixels[64];
 } Tile;
 
+typedef struct {
+    uint16 height;
+    uint16 width;
+    uint16 tile_num;
+} TileInfo;
+
+typedef struct {
+    uint16 num_frames;
+    TileInfo *frames;
+} Sprite;
+
 #define TILE_ATTR_BLOCK_DOWN      0x1
 #define TILE_ATTR_BLOCK_UP        0x2
 #define TILE_ATTR_BLOCK_LEFT      0x4
@@ -47,5 +58,7 @@ extern uint8 tileattr_mni_data[7000];
 void tile_attr_load();
 
 Tile *load_tiles(const char *filename, TileType type, uint16 *num_tiles_loaded);
+
+Sprite *load_tile_info(const char *filename, uint16 *num_records_loaded);
 
 #endif //COSMO_ENGINE_TILE_H

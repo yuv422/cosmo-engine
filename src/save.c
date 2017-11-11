@@ -8,3 +8,8 @@ void write_savegame_file(char suffix)
 {
 
 }
+
+void load_savegame_file(char suffix)
+{
+
+}

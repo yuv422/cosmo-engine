@@ -6,6 +6,8 @@
 #include "input.h"
 #include "tile.h"
 #include "util.h"
+#include "video.h"
+#include "save.h"
 
 int player_is_grabbing_wall_flag = 0;
 int player_death_counter = 0;
@@ -63,6 +65,8 @@ unsigned char byte_2E182;
 unsigned char byte_2E2E4;
 
 Tile *player_tiles;
+Sprite *player_sprites;
+uint16 num_tile_info_records;
 
 typedef enum {
     NOT_BLOCKED = 0,
@@ -1056,4 +1060,156 @@ void player_load_tiles()
     uint16 num_tiles;
     player_tiles = load_tiles("PLAYERS.MNI", TRANSPARENT, &num_tiles);
     printf("Loading %d player tiles.\n", num_tiles);
+
+    player_sprites = load_tile_info("PLYRINFO.MNI", &num_tile_info_records);
+    printf("Loading %d, player tile info records.\n", num_tile_info_records);
 }
+
+void display_player_sprite(char frame_num, int x_pos, int y_pos, int tile_display_func_index)
+{
+    if(player_push_frame_num == 0xff || teleporter_state_maybe || (player_invincibility_counter & 1) || word_2E1F8)
+    {
+        return;
+    }
+
+    TileInfo *info = &player_sprites[0].frames[frame_num];
+    Tile *tile = &player_tiles[info->tile_num];
+
+    for(int y=0;y < info->height;y++)
+    {
+        for(int x=0;x < info->width; x++)
+        {
+            video_draw_tile(tile, (x_pos - mapwindow_x_offset + x + 1) * 8, (y_pos - info->height + 1 - mapwindow_y_offset + y + 1) * 8);
+            tile++;
+        }
+    }
+}
+
+int player_update_sprite()
+{
+    static uint8 byte_28FAC = 0;
+
+    if (map_max_y_offset + 0x15 < player_y_pos && player_death_counter == 0)
+    {
+        player_fall_off_map_bottom_counter = 1;
+        player_death_counter = 1;
+
+        if (map_max_y_offset + 0x16 == player_y_pos)
+        {
+            player_y_pos = player_y_pos + 1;
+        }
+        byte_28FAC++;
+        if (byte_28FAC == 5)
+        {
+            byte_28FAC = 0;
+        }
+    }
+    if (player_fall_off_map_bottom_counter != 0)
+    {
+        player_fall_off_map_bottom_counter = player_fall_off_map_bottom_counter + 1;
+        if (player_fall_off_map_bottom_counter == 2)
+        {
+            play_sfx(14);
+        }
+
+        while (player_fall_off_map_bottom_counter < 12)
+        {
+            //FIXME wait(2);
+            player_fall_off_map_bottom_counter++;
+        }
+
+        if (player_fall_off_map_bottom_counter == 13)
+        {
+            play_sfx(7);
+        }
+        if (player_fall_off_map_bottom_counter > 12 && player_fall_off_map_bottom_counter < 0x13)
+        {
+            display_actor_sprite_maybe(0xde, byte_28FAC, player_x_pos - 1,
+                                       player_y_pos - player_fall_off_map_bottom_counter + 13, 5);
+        }
+        if (player_fall_off_map_bottom_counter > 0x12)
+        {
+            display_actor_sprite_maybe(0xde, byte_28FAC, player_x_pos - 1, player_y_pos - 6, 5);
+        }
+        if (player_fall_off_map_bottom_counter > 0x1e)
+        {
+            load_savegame_file('T');
+            load_level(current_level);
+            player_fall_off_map_bottom_counter = 0;
+            return 1;
+        }
+    }
+    else
+    {
+        if (player_death_counter == 0)
+        {
+            if (player_invincibility_counter != 0x2c)
+            {
+                if (player_invincibility_counter > 0x28)
+                {
+                    display_player_sprite(player_direction + 15, player_x_pos, player_y_pos, 0);
+                }
+            }
+            else
+            {
+                display_player_sprite(player_direction + 15, player_x_pos, player_y_pos, 2);
+            }
+            if (player_invincibility_counter != 0)
+            {
+                player_invincibility_counter = player_invincibility_counter - 1;
+            }
+            if (player_invincibility_counter < 0x29)
+            {
+                if (player_is_being_pushed_flag != 0)
+                {
+                    display_player_sprite(player_push_frame_num, player_x_pos, player_y_pos, 0);
+                }
+                else
+                {
+                    display_player_sprite(player_direction + player_sprite_dir_frame_offset, player_x_pos, player_y_pos,
+                                          0);
+                }
+            }
+        }
+        else
+        {
+            if (player_death_counter >= 10)
+            {
+                if (player_death_counter > 9)
+                {
+                    if (mapwindow_y_offset > 0 && player_death_counter < 12)
+                    {
+                        mapwindow_y_offset = mapwindow_y_offset - 1;
+                    }
+                    if (player_death_counter == 10)
+                    {
+                        play_sfx(7);
+                    }
+                    player_y_pos = player_y_pos - 1;
+                    player_death_counter = player_death_counter + 1;
+
+                    display_player_sprite((player_death_counter & 1) + 0x2e, player_x_pos - 1, player_y_pos, 5);
+                    if (player_death_counter > 0x24)
+                    {
+                        load_savegame_file('T');
+                        load_level(current_level);
+                        return 1;
+                    }
+                }
+            }
+            else
+            {
+                if (player_death_counter == 1)
+                {
+                    play_sfx(14);
+                }
+                player_death_counter = player_death_counter + 1;
+
+                display_player_sprite((player_death_counter & 1) + 0x2e, player_x_pos - 1, player_y_pos, 5);
+            }
+        }
+    }
+
+    return 0;
+}
+

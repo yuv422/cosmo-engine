@@ -97,5 +97,54 @@ Tile *load_tiles(const char *filename, TileType type, uint16 *num_tiles_loaded) 
     }
 
     *num_tiles_loaded = num_tiles;
+    file_close(&file);
     return tiles;
 }
+
+uint16 get_number_of_sprite_frames(uint16 current_frame_num, uint16 offset, uint16 num_total_sprites, File *file)
+{
+    uint16 next_offset = (uint16)(file->size / 2);
+    if(current_frame_num < num_total_sprites - 1)
+    {
+        next_offset = file_read2(file);
+    }
+
+    return (uint16)((next_offset - offset) / 4);
+}
+
+Sprite *load_tile_info(const char *filename, uint16 *num_records_loaded)
+{
+    File file;
+    if(!open_file(filename, &file))
+    {
+        printf("Error: opening tileinfo file %s\n", filename);
+        return NULL;
+    }
+
+    *num_records_loaded = (uint16)file_read2(&file);
+    Sprite *sprites = (Sprite *)malloc((size_t)*num_records_loaded * sizeof(Sprite));
+
+    for(uint16 i=0;i < *num_records_loaded; i++)
+    {
+        file_seek(&file, (uint32)i*2);
+        uint16 offset = file_read2(&file);
+        sprites[i].num_frames = get_number_of_sprite_frames(i, offset, *num_records_loaded, &file);
+
+        file_seek(&file, (uint32)offset * 2);
+
+        sprites[i].frames = (TileInfo *)malloc((size_t)sprites[i].num_frames * sizeof(TileInfo));
+
+        for(int j=0;j < sprites[i].num_frames; j++)
+        {
+            sprites[i].frames[j].height = file_read2(&file);
+            sprites[i].frames[j].width = file_read2(&file);
+            uint32 frameOffset = file_read4(&file);
+            sprites[i].frames[j].tile_num = (uint16)((frameOffset >> 16) * 1638 + (frameOffset & 0xffff) / 40);
+        }
+    }
+
+    file_close(&file);
+
+    return sprites;
+}
+

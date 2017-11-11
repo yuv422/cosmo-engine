@@ -142,6 +142,9 @@ void game_loop()
         handle_player_input_maybe();
 
         map_display();
+
+        player_update_sprite();
+
         video_update();
     }
 }

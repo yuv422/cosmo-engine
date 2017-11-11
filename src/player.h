@@ -61,5 +61,7 @@ void player_reset_push_variables();
 
 void player_load_tiles();
 
+void display_player_sprite(char frame_num, int x_pos, int y_pos, int tile_display_func_index);
 
+void player_update_sprite();
 #endif //COSMO_ENGINE_PLAYER_H
