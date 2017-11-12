@@ -50,7 +50,7 @@ void struct7_clear_sprites()
 
 bool video_init()
 {
-    window = SDL_CreateWindow("Cosmo Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    window = SDL_CreateWindow("Cosmo Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*2, SCREEN_HEIGHT*2, 0);
     if(window == NULL)
     {
         printf("Error: creating SDL Window. %s\n", SDL_GetError());

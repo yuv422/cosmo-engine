@@ -68,11 +68,7 @@ Tile *player_tiles;
 Sprite *player_sprites;
 uint16 num_tile_info_records;
 
-typedef enum {
-    NOT_BLOCKED = 0,
-    BLOCKED = 1,
-    SLOPE = 2
-} BlockingType;
+
 
 BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 {
@@ -1211,5 +1207,38 @@ int player_update_sprite()
     }
 
     return 0;
+}
+
+const uint8 player_walk_frame_tbl_maybe[] = {
+        0x13, 0x14, 0x15,
+        0x14, 0x13, 0x14,
+        0x15, 0x14, 0x13
+};
+
+void player_update_walk_anim()
+{
+    if(player_hanging_on_wall_direction != 0)
+    {
+        word_32EB2 = 0;
+        player_walk_anim_index = 0;
+    }
+    if(word_32EB2 != 0 && player_check_movement(1, player_x_pos, player_y_pos + 1) != 0)
+    {
+        word_32EB2 = 0;
+        player_walk_anim_index = 8;
+        play_sfx(3);
+    }
+    if(player_walk_anim_index != 0)
+    {
+        player_sprite_dir_frame_offset = player_walk_frame_tbl_maybe[player_walk_anim_index];// * ((player_walk_anim_index << 1) + player_walk_frame_tbl_maybe);
+        player_walk_anim_index = player_walk_anim_index - 1;
+        byte_2E2E4 = 0;
+        if(player_walk_anim_index > 8)
+        {
+            sub_11062();
+        }
+    }
+
+    return;
 }
 

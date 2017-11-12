@@ -21,6 +21,11 @@ void wait_for_time_or_key(int delay_in_game_cycles)
 
 }
 
+void cosmo_wait(int delay)
+{
+    //FIXME
+}
+
 input_state_enum handle_key_down(SDL_KeyboardEvent event)
 {
     switch(event.keysym.sym)
@@ -76,7 +81,7 @@ input_state_enum read_input()
     //FIXME
     SDL_Event event;
 
-    if(SDL_PollEvent(&event))
+    while(SDL_PollEvent(&event))
     {
         if (event.type == SDL_QUIT)
         {

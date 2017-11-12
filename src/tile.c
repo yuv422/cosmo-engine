@@ -92,7 +92,7 @@ Tile *load_tiles(const char *filename, TileType type, uint16 *num_tiles_loaded) 
         load_tile(planarData, type, &tiles[i]);
         if(i != 0 && i % (0xffff / tile_size) == 0)
         {
-            file_seek(&file, file.pos + (0xffff % num_tiles));
+            file_seek(&file, file.pos + (0xffff % tile_size));
         }
     }
 

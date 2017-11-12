@@ -5,7 +5,7 @@
 
 #define MAX_ACTORS 410
 
-typedef struct
+typedef struct ActorData
 {
     int actorInfoIndex;
     int frame_num;
@@ -25,8 +25,7 @@ typedef struct
     int is_deactivated_flag_maybe;
     int falling_counter;
     int count_down_timer;
-    int func_offset;
-    int func_seg;
+    void (*update_function)(struct ActorData *);
 } ActorData;
 
 typedef struct
@@ -56,6 +55,7 @@ typedef struct
 
 //Data
 extern int total_num_actors;
+extern uint16 word_2E17E;
 extern uint16 word_2E22A;
 extern uint16 word_2E236;
 extern uint16 word_2E228;
@@ -85,12 +85,21 @@ extern uint16 word_2E4CE;
 extern uint16 obj_switch_151_flag;
 
 extern MovingPlatform moving_platform_tbl[10];
+extern uint8 move_platform_flag;
+extern uint16 actor_tile_display_func_index;
+
+int is_sprite_on_screen(int actorInfoIndex, int frame_num, int x_pos, int y_pos);
+BlockingType sprite_blocking_check(int blocking_dir, int actorInfoIndex, int frame_num, int x_pos, int y_pos);
 
 void actor_add_new(int image_index, int x_pos, int y_pos);
-int actor_init(int actor_num, int image_index, int x, int y_pos);
+int actor_init(int actor_num, int image_index, int x_pos1, int y_pos1);
 void load_actor(int actor_num, int actorType, int x_pos, int y_pos);
 void actor_load_tiles();
 
 void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, int y_pos, int tile_display_func_index);
+
+uint16 sub_1106F();
+
+void actor_update_all();
 
 #endif //COSMO_ENGINE_ACTOR_H

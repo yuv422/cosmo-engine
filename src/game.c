@@ -33,8 +33,6 @@ uint8 knows_about_powerups_flag;
 uint8 finished_game_flag_maybe = 0;
 uint8 finished_level_flag_maybe;
 
-uint8 move_platform_flag = 0;
-
 void game_wait();
 
 void game_init()
@@ -128,22 +126,34 @@ void game_loop()
     {
         do
         {
-            game_wait();
-            //lock to 10 FPS here.
+            do
+            {
+                game_wait();
+                //lock to 10 FPS here.
 
-            update_palette_anim();
+                update_palette_anim();
 
-            input_state = read_input();
-            if (input_state == QUIT)
-                return;
+                input_state = read_input();
+                if (input_state == QUIT)
+                    return;
 
-        } while(input_state == PAUSED);
+            } while (input_state == PAUSED);
 
-        handle_player_input_maybe();
+            handle_player_input_maybe();
+            if (word_32B88 != 0)
+            {
+                //FIXME player_update_from_inputs
+            }
 
-        map_display();
+            if (word_32EB2 != 0 || player_walk_anim_index != 0)
+            {
+                player_update_walk_anim(); //TODO check name I think this might be fall anim
+            }
 
-        player_update_sprite();
+            map_display();
+        } while(player_update_sprite() != 0);
+
+        actor_update_all();
 
         video_update();
     }

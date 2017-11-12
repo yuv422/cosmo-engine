@@ -15,4 +15,10 @@ typedef signed char sint8;
 typedef signed short sint16;
 typedef signed int sint32;
 
+typedef enum {
+    NOT_BLOCKED = 0,
+    BLOCKED = 1,
+    SLOPE = 2
+} BlockingType;
+
 #endif //COSMO_ENGINE_DEFINES_H

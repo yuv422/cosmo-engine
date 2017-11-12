@@ -265,4 +265,3 @@ void map_display() {
         }
     }
 }
-
