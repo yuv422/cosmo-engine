@@ -67,4 +67,6 @@ int player_update_sprite();
 
 void player_update_walk_anim();
 
+int player_check_collision_with_actor(int actorInfoIndex, int frame_num, int x_pos, int y_pos);
+
 #endif //COSMO_ENGINE_PLAYER_H

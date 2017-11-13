@@ -19,4 +19,6 @@ void you_havent_found_any_bombs_dialog();
 
 void now_entering_level_n_dialog(uint16 level_number);
 
+void ingame_hint_dialogs(uint16 hint_number);
+
 #endif //COSMO_ENGINE_DIALOG_H

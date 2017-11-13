@@ -1246,10 +1246,18 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
     {
         for(int x=0;x < info->width; x++)
         {
-            if((x_pos - mapwindow_x_offset + x + 1) * 8 >= 8 && (x_pos - mapwindow_x_offset + x + 1) * 8 <= 304 && //FIXME need a beter way of making sure we draw in the borders.
-                    (y_pos - info->height + 1 - mapwindow_y_offset + y + 1) * 8 >= 8 && (y_pos - info->height + 1 - mapwindow_y_offset + y + 1) * 8 < 152)
+            uint16 screen_x = (x_pos - mapwindow_x_offset + x + 1) * 8;
+            uint16 screen_y = (y_pos - info->height + 1 - mapwindow_y_offset + y + 1) * 8;
+
+            if(tile_display_func_index != 0)
             {
-                video_draw_tile(tile, (x_pos - mapwindow_x_offset + x + 1) * 8, (y_pos - info->height + 1 - mapwindow_y_offset + y + 1) * 8);
+                screen_y = (y_pos - info->height - mapwindow_y_offset + y + 1) * 8;
+            }
+
+            if(screen_x >= 8 && screen_x <= 304 && //FIXME need a beter way of making sure we draw in the borders.
+                    screen_y >= 8 && screen_y < 152)
+            {
+                video_draw_tile(tile, screen_x, screen_y);
             }
             tile++;
         }
@@ -1472,4 +1480,8 @@ int is_sprite_on_screen(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
     }
 
     return true;
+}
+
+TileInfo *actor_get_tile_info(int actorInfoIndex, int frame_num) {
+    return &actor_sprites[actorInfoIndex].frames[frame_num];
 }

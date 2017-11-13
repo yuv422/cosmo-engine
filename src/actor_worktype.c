@@ -6,6 +6,10 @@
 #include "actor_worktype.h"
 #include "player.h"
 #include "effects.h"
+#include "game.h"
+#include "dialog.h"
+#include "input.h"
+#include "sfx.h"
 
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
@@ -208,9 +212,42 @@ void actor_wt_green_roamer_worm(ActorData *actor)
 
 }
 
+const uint8 byte_28EFE[] = { 0, 4, 5, 6, 5, 4};
+
 void actor_wt_hint_dialog(ActorData *actor)
 {
-
+    actor->data_4 = (actor->data_4 ? -1 : 0) + 1;
+    if(actor->data_4 != 0)
+    {
+        actor->data_3 = actor->data_3 + 1;
+    }
+    
+    display_actor_sprite_maybe(0x7d, byte_28EFE[actor->data_3 % 6], actor->x, actor->y - 2, 0);
+    
+    actor->data_2 = actor->data_2 + 1;
+    if(actor->data_2 == 4)
+    {
+        actor->data_2 = 1;
+    }
+    
+    display_actor_sprite_maybe(0x7d, actor->data_2, actor->x, actor->y, 0);
+    actor_tile_display_func_index = 1;
+    
+    if(player_check_collision_with_actor(0x7d, 0, actor->x, actor->y - 2) != 0)
+    {
+        word_32EAC = 1;
+        if(game_play_mode != 0)
+        {
+            byte_2E21C = 1;
+        }
+        if(up_key_pressed != 0 && word_32B88 == 0 || byte_2E21C == 0)
+        {
+            play_sfx(0x1e);
+            ingame_hint_dialogs(actor->data_5);
+        }
+        byte_2E21C = 1;
+    }
+    return;
 }
 
 void actor_wt_horizontal_flame(ActorData *actor)

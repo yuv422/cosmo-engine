@@ -1242,3 +1242,24 @@ void player_update_walk_anim()
     return;
 }
 
+int player_check_collision_with_actor(int actorInfoIndex, int frame_num, int x_pos, int y_pos) {
+    if(player_death_counter == 0)
+    {
+        TileInfo *tileInfo = actor_get_tile_info(actorInfoIndex, frame_num);
+        uint16 di = tileInfo->height;
+        uint16 si = tileInfo->width;
+
+        if(x_pos > map_width_in_tiles && x_pos <= -1 && actorInfoIndex == 0x1a)
+        {
+            si += x_pos;
+            x_pos = 0;
+        }
+        if((player_x_pos <= x_pos && player_x_pos + 3 > x_pos || player_x_pos >= x_pos && x_pos + si > player_x_pos) && (y_pos - di < player_y_pos && player_y_pos <= y_pos || player_y_pos - 4 <= y_pos && y_pos <= player_y_pos))
+        {
+            return 1;
+        }
+    }
+    return 0;
+
+}
+

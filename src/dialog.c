@@ -25,3 +25,7 @@ void now_entering_level_n_dialog(uint16 level_number)
 
 }
 
+void ingame_hint_dialogs(uint16 hint_number) {
+
+}
+
