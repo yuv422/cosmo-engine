@@ -6,6 +6,8 @@
 
 #include "actor.h"
 
+void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_movement);
+
 void actor_wt_133_boss_purple_15411(ActorData *actor);
 void actor_wt_159_unknown(ActorData *actor);
 void actor_wt_acid(ActorData *actor);

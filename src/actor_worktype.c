@@ -10,6 +10,8 @@
 #include "dialog.h"
 #include "input.h"
 #include "sfx.h"
+#include "tile.h"
+#include "map.h"
 
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
@@ -351,9 +353,120 @@ void actor_wt_red_blue_plant(ActorData *actor)
 
 }
 
+const uint8 word_28EE6[] = { 8, 9, 10, 10, 9, 8};
+const uint8 word_28EF2[] = { 10, 9, 8, 8, 9, 10};
+
 void actor_wt_red_chomper_alien(ActorData *actor)
 {
+    actor->data_4 = (actor->data_4 ? -1 : 0) + 1;
 
+    if(sub_1106F() % 0x5f != 0)
+    {
+        if(sub_1106F() % 0x64 == 0)
+        {
+            actor->data_5 = 11;
+        }
+    }
+    else
+    {
+        actor->data_5 = 10;
+    }
+    
+    if(actor->data_5 < 11 && actor->data_5 != 0)
+    {
+        actor->data_5 = actor->data_5 - 1;
+        if(actor->data_5 <= 8)
+        {
+            
+            if(actor->data_5 != 8)
+            {
+                
+                actor->data_2 = (actor->data_2 ? -1 : 0) + 1;
+
+                actor->frame_num = actor->data_2 + 6;
+            }
+            else
+            {
+                actor->frame_num = 5;
+            }
+        }
+        else
+        {
+            actor->frame_num = 6;
+        }
+        if(actor->data_5 != 0)
+        {
+            return;
+        }
+
+        if((sub_1106F() & 1) == 0)
+        {
+            return;
+        }
+
+        if(actor->x < player_x_pos)
+        {
+            actor->data_1 = 1;
+        }
+        else
+        {
+            actor->data_1 = 0;
+        }
+    }
+    else
+    {
+        
+        if(actor->data_5 > 10)
+        {
+            if(actor->data_1 != 0)
+            {
+                actor->frame_num = word_28EF2[actor->data_5 - 11];
+            }
+            else
+            {
+                actor->frame_num = word_28EE6[actor->data_5 - 11];
+            }
+            
+            actor->data_5 = actor->data_5 + 1;
+            if(actor->data_5 == 0x11)
+            {
+                actor->data_5 = 0;
+            }
+            return;
+        }
+        
+        if(actor->data_1 == 0)
+        {
+            if(actor->data_4 != 0)
+            {
+                actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+                actor->x = actor->x - 1;
+                check_actor_move_left_or_right(actor, LEFT);
+                
+                if(actor->has_moved_left_flag == 0)
+                {
+                    actor->data_1 = 1;
+                    actor->frame_num = 4;
+                }
+            }
+            return;
+        }
+        
+        if(actor->data_4 != 0)
+        {
+            actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
+            actor->frame_num = actor->data_3 + 2;
+            actor->x++;
+            check_actor_move_left_or_right(actor, RIGHT);
+            
+            if(actor->has_moved_right_flag == 0)
+            {
+                actor->data_1 = 0;
+                actor->frame_num = 4;
+            }
+        }
+    }
+    return;
 }
 
 void actor_wt_retracting_spikes(ActorData *actor)
@@ -479,4 +592,147 @@ void actor_wt_unknown_1888E(ActorData *actor)
 void actor_wt_unknown_232(ActorData *actor)
 {
 
+}
+
+void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_movement)
+{
+    uint16 sprite_width = actor_get_tile_info(actor->actorInfoIndex, actor->frame_num)->width;
+
+    if(direction_of_movement == LEFT)
+    {
+        BlockingType block_status = sprite_blocking_check(2, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y);
+        
+        actor->has_moved_left_flag = (block_status != NOT_BLOCKED ? -1 : 0) + 1;
+        if(actor->has_moved_left_flag == 0 && block_status != SLOPE)
+        {
+            actor->x = actor->x + 1;
+            return;
+        }
+        if(block_status != SLOPE)
+        {
+            if(sprite_blocking_check(1, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == 0)
+            {
+                uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + sprite_width, actor->y + 1) / 8];
+                if((tile_attr & TILE_ATTR_SLOPED) != 0)
+                {
+
+                    tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + sprite_width - 1, actor->y + 1 + 1) / 8];
+                    if((tile_attr & TILE_ATTR_SLOPED) != 0)
+                    {
+
+                        tile_attr = tileattr_mni_data[ map_get_tile_cell(actor->x + sprite_width - 1, actor->y + 1) / 8];
+                        if((tile_attr & TILE_ATTR_BLOCK_DOWN) != 0)
+                        {
+                            return;
+                        }
+
+                        actor->has_moved_left_flag = 1;
+
+                        if((tile_attr & TILE_ATTR_SLOPED) == 0)
+                        {
+                            actor->y = actor->y + 1;
+                        }
+                        return;
+                    }
+                }
+                if(actor->has_moved_left_flag == 0)
+                {
+                    actor->x = actor->x + 1;
+                    return;
+                }
+
+                if(actor->non_blocking_flag_maybe != 0 || sprite_blocking_check(2, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) != 0)
+                {
+                    return;
+                }
+
+                tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + sprite_width - 1, actor->y + 1)/ 8];
+                if((tile_attr & TILE_ATTR_SLOPED) == 0)
+                {
+                    actor->x = actor->x + 1;
+                    actor->has_moved_left_flag = 0;
+                }
+            }
+            else
+            {
+                actor->has_moved_left_flag = 1;
+            }
+        }
+        else
+        {
+            actor->has_moved_left_flag = 1;
+            actor->y = actor->y - 1;
+        }
+    }
+    else
+    {
+        BlockingType block_status = sprite_blocking_check(3, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y);
+        
+        actor->has_moved_right_flag = (block_status != NOT_BLOCKED ? -1 : 0) + 1;
+        if(actor->has_moved_right_flag == 0 && block_status != SLOPE)
+        {
+            actor->x = actor->x - 1;
+            return;
+        }
+        if(block_status != SLOPE)
+        {
+            if(sprite_blocking_check(1, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1))
+            {
+                uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x - 1, actor->y + 1) /8];
+                if((tile_attr & TILE_ATTR_SLOPED) != 0)
+                {
+
+                    tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1 + 1) / 8];
+                    if((tile_attr & TILE_ATTR_SLOPED) != 0)
+                    {
+
+                        tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1) / 8];
+                        if((tile_attr & TILE_ATTR_BLOCK_DOWN) != 0)
+                        {
+                            return;
+                        }
+
+                        actor->has_moved_right_flag = 1;
+                        tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1) / 8];
+                        if((tile_attr & TILE_ATTR_SLOPED) == 0)
+                        {
+                            actor->y = actor->y + 1;
+                            return;
+                        }
+                        return;
+                    }
+                }
+                if(actor->has_moved_right_flag == 0)
+                {
+                    actor->x = actor->x - 1;
+                    return;
+                }
+
+                if(actor->non_blocking_flag_maybe == 0 && sprite_blocking_check(3, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == 0)
+                {
+
+                    tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1) / 8];
+                    if((tile_attr & TILE_ATTR_SLOPED) == 0)
+                    {
+
+                        actor->x = actor->x - 1;
+                        actor->has_moved_right_flag = 0;
+                        return;
+                    }
+                    return;
+                }
+            }
+            else
+            {
+                actor->has_moved_right_flag = 1;
+            }
+        }
+        else
+        {
+            actor->has_moved_right_flag = 1;
+            actor->y = actor->y - 1;
+        }
+    }
+
+    return;
 }

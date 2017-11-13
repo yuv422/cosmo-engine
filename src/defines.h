@@ -21,4 +21,11 @@ typedef enum {
     SLOPE = 2
 } BlockingType;
 
+typedef enum {
+    UP    = 0,
+    DOWN  = 1,
+    LEFT  = 2,
+    RIGHT = 3
+} Direction;
+
 #endif //COSMO_ENGINE_DEFINES_H

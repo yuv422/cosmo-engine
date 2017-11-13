@@ -1254,7 +1254,7 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
                 screen_y = (y_pos - info->height - mapwindow_y_offset + y + 1) * 8;
             }
 
-            if(screen_x >= 8 && screen_x <= 304 && //FIXME need a beter way of making sure we draw in the borders.
+            if(screen_x >= 8 && screen_x <= 304 && //FIXME need a better way of making sure we draw in the borders.
                     screen_y >= 8 && screen_y < 152)
             {
                 video_draw_tile(tile, screen_x, screen_y);
