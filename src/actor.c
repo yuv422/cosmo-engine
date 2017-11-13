@@ -1404,7 +1404,7 @@ BlockingType sprite_blocking_check(int blocking_dir, int actorInfoIndex, int fra
         case 1:
             for (int i = 0; i < sprite_width; i++)
             {
-                uint16 tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos, y_pos - sprite_height + 1)/8];
+                uint16 tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos + i, y_pos)/8];
                 if(tile_attr & TILE_ATTR_SLOPED)
                 {
                     return SLOPE;
@@ -1426,7 +1426,7 @@ BlockingType sprite_blocking_check(int blocking_dir, int actorInfoIndex, int fra
             {
                 uint16 tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos, y_pos - i)/8];
                 if(i == 0 &&
-                        tile_attr & TILE_ATTR_SLOPED &&
+                        (tile_attr & TILE_ATTR_SLOPED) &&
                         (tileattr_mni_data[map_get_tile_cell(x_pos, y_pos - 1)/8] & TILE_ATTR_BLOCK_LEFT) == 0)
                 {
                     return SLOPE;
