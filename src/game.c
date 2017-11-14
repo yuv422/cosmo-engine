@@ -22,8 +22,6 @@
 //Data
 game_play_mode_enum game_play_mode = PLAY_GAME;
 uint32 score;
-uint8 health;
-uint8 num_health_bars;
 uint16 word_2E1D6;
 uint16 num_stars_collected;
 uint16 demo_input_index;

@@ -18,3 +18,8 @@ void struct7_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos,
 {
 
 }
+
+void sub_1BA0F(int x_pos, int y_pos)
+{
+
+}

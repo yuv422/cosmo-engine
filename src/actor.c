@@ -7,6 +7,7 @@
 #include "actor_worktype.h"
 #include "effects.h"
 #include "video.h"
+#include "actor_collision.h"
 
 //Data
 ActorData actors[MAX_ACTORS];
@@ -1262,12 +1263,6 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
             tile++;
         }
     }
-}
-
-int actor_update_impl(int actor_num, int actorInfoIndex, int frame_num, int x_pos, int y_pos)
-{
-    //FIXME
-    return 0; //draw sprite
 }
 
 void actor_update(ActorData *actor)

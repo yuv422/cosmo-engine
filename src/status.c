@@ -27,3 +27,18 @@ void status_display()
         }
     }
 }
+
+void add_to_score_update_on_display(uint32 amount_to_add_low, int x_pos, int y_pos)
+{
+
+}
+
+void update_health_bar_display()
+{
+
+}
+
+void display_num_stars_collected()
+{
+
+}

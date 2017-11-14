@@ -23,6 +23,9 @@ extern int player_bounce_flag_maybe;
 extern int is_standing_slipry_slope_left_flg;
 extern int is_standing_slipry_slope_right_flg;
 
+extern uint8 health;
+extern uint8 num_health_bars;
+
 extern int num_bombs;
 extern int has_had_bomb_flag;
 
@@ -37,11 +40,13 @@ extern int player_invincibility_counter;
 extern int player_fall_off_map_bottom_counter;
 
 extern int num_hits_since_touching_ground;
+extern uint8 show_monster_attack_hint;
 
 extern uint8 word_28BEA;
 extern int word_28F7E;
 extern int word_28F94;
 extern int word_2E180;
+extern int word_2E1E8;
 extern int word_2E1F8;
 extern int word_2E1DE;
 extern int word_2E214;
@@ -68,5 +73,14 @@ int player_update_sprite();
 void player_update_walk_anim();
 
 int player_check_collision_with_actor(int actorInfoIndex, int frame_num, int x_pos, int y_pos);
+
+int player_bounce_in_the_air(int bounce_height);
+
+void player_add_score_for_actor(int actorInfoIndex);
+void player_add_to_score(uint32 amount_to_add_low);
+
+void player_decrease_health();
+
+void push_player_around(int push_direction, int push_anim_duration, int push_duration, int player_frame_num, char dont_push_while_jumping_flag, int check_for_blocking_flag);
 
 #endif //COSMO_ENGINE_PLAYER_H

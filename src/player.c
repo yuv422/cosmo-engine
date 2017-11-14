@@ -8,6 +8,7 @@
 #include "util.h"
 #include "video.h"
 #include "save.h"
+#include "status.h"
 
 int player_is_grabbing_wall_flag = 0;
 int player_death_counter = 0;
@@ -28,6 +29,9 @@ int player_bounce_flag_maybe = 0;
 
 int is_standing_slipry_slope_left_flg = 0;
 int is_standing_slipry_slope_right_flg = 0;
+
+uint8 health = 0;
+uint8 num_health_bars = 0;
 
 int num_bombs = 0;
 int has_had_bomb_flag = 0;
@@ -54,6 +58,7 @@ uint8 word_28BEA;
 int word_28F7E;
 int word_28F94;
 int word_2E180;
+int word_2E1E8;
 int word_2E1F8;
 int word_2E1DE;
 int word_2E214;
@@ -63,6 +68,9 @@ int word_32EB2;
 
 unsigned char byte_2E182;
 unsigned char byte_2E2E4;
+
+uint8 god_mode_flag = 0;
+uint8 show_monster_attack_hint = 0;
 
 Tile *player_tiles;
 Sprite *player_sprites;
@@ -1260,6 +1268,59 @@ int player_check_collision_with_actor(int actorInfoIndex, int frame_num, int x_p
         }
     }
     return 0;
+
+}
+
+int player_bounce_in_the_air(int bounce_height)
+{
+    //FIXME
+    return 0;
+}
+
+void player_add_to_score(uint32 amount_to_add_low)
+{
+    add_to_score_update_on_display(amount_to_add_low, 9, 0x16);
+}
+
+void player_add_score_for_actor(int actorInfoIndex)
+{
+
+}
+
+void player_decrease_health()
+{
+    if(player_death_counter == 0 && god_mode_flag == 0 && word_2E1F8 == 0 && teleporter_state_maybe == 0 && byte_32EB8 == 0 && player_in_pneumatic_tube_flag == 0 && player_invincibility_counter == 0)
+    {
+        player_hanging_on_wall_direction = 0;
+        if(word_28BEA == 0)
+        {
+            word_28BEA = 1;
+            actor_add_new(0xeb, player_x_pos - 1, player_y_pos - 5);
+            if(show_monster_attack_hint == 0)
+            {
+                show_monster_attack_hint = 1;
+            }
+        }
+        health--;
+        if(health != 0)
+        {
+            update_health_bar_display();
+            player_invincibility_counter = 0x2c;
+            play_sfx(14);
+        }
+        else
+        {
+            player_death_counter = 1;
+            word_32B88 = 0;
+        }
+    }
+
+    return;
+}
+
+void push_player_around(int push_direction, int push_anim_duration, int push_duration, int player_frame_num,
+                        char dont_push_while_jumping_flag, int check_for_blocking_flag)
+{
 
 }
 
