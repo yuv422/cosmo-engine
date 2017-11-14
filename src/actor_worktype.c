@@ -546,7 +546,29 @@ void actor_wt_spear_vertical(ActorData *actor)
 
 void actor_wt_spring(ActorData *actor)
 {
-
+    if(actor->data_1 <= 0)
+    {
+        actor->frame_num = 0;
+    }
+    else
+    {
+        actor->frame_num = 1;
+        actor->data_1 = actor->data_1 - 1;
+    }
+    
+    if(actor->data_5 != 0)
+    {
+        actor_tile_display_func_index = 4;
+        if(actor->frame_num != 0)
+        {
+            actor->y = actor->data_4;
+        }
+        else
+        {
+            actor->y = actor->data_3;
+        }
+    }
+    return;
 }
 
 void actor_wt_stone_head(ActorData *actor)
