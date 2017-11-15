@@ -1273,8 +1273,77 @@ int player_check_collision_with_actor(int actorInfoIndex, int frame_num, int x_p
 
 int player_bounce_in_the_air(int bounce_height)
 {
-    //FIXME
-    return 0;
+    static int word_2CAF6 = 0;
+
+    if(player_death_counter != 0 || player_walk_anim_index != 0)
+    {
+        return 0;
+    }
+
+    if((player_bounce_flag_maybe == 0 || player_bounce_flag_maybe != 0 && player_bounce_height_counter < 2) && (byte_2E2E4 != 0 && word_2E180 >= 0 || byte_2E182 > 6) && word_2E1E8 != 0)
+    {
+        player_bounce_height_counter = bounce_height + 1;
+        word_2CAF6 = bounce_height + 1;
+        player_bounce_flag_maybe = 1;
+        sub_11062();
+        if(bounce_height <= 0x12)
+        {
+            word_2E1DE = 0;
+        }
+        else
+        {
+            word_2E1DE = 1;
+        }
+        show_monster_attack_hint = 2;
+        if(bounce_height != 7)
+        {
+            num_hits_since_touching_ground = 0;
+        }
+        else
+        {
+            num_hits_since_touching_ground = num_hits_since_touching_ground + 1;
+            if(num_hits_since_touching_ground == 10)
+            {
+                num_hits_since_touching_ground = 0;
+                actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
+            }
+        }
+        return 1;
+    }
+
+    if(word_2CAF6 - 2 >= player_bounce_height_counter)
+    {
+        return 0;
+    }
+    else
+    {
+        if(word_2E1E8 == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            if(player_bounce_flag_maybe == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                sub_11062();
+                if(player_bounce_height_counter <= 0x12)
+                {
+                    word_2E1DE = 0;
+                }
+                else
+                {
+                    word_2E1DE = 1;
+                }
+                show_monster_attack_hint = 2;
+                //return 1;
+            }
+        }
+    }
+    return 1;
 }
 
 void player_add_to_score(uint32 amount_to_add_low)

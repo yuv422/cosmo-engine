@@ -44,7 +44,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             word_2E1E8 = 1;
         }
     }
-    
+
     switch (actorInfoIndex)
     {
         case 2: //33 PLAT:   Floor Spring
