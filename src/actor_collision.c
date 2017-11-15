@@ -44,12 +44,9 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             word_2E1E8 = 1;
         }
     }
-
-
+    
     switch (actorInfoIndex)
     {
-
-
         case 2: //33 PLAT:   Floor Spring
             if (actor->data_5 == 0)
             {
@@ -67,7 +64,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             }
             break;
 
-
         case 16: //47 OBJECT: Blue Mobile Trampoline Car
             if (actor->count_down_timer == 0 && player_bounce_in_the_air(0x14) != 0)
             {
@@ -75,7 +71,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 actor->data_1 = 3;
             }
             return 0;
-
 
         case 25: //56 HAZARD: Green Pruny Cabbage Ball
             if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0)
@@ -104,7 +99,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             }
             return 0;
 
-
         case 0:  //31 Unknown.
         case 29: //60 BARREL: Power Up    (health/12800)
             if (actor->count_down_timer == 0 && player_bounce_in_the_air(5) != 0)
@@ -116,7 +110,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 return 1;
             }
             return 0;
-
 
         case 51: // 82 ENEMY:  Ghost
         case 54: // 85 ENEMY:  Angry Moon (blue floating characters)
@@ -151,7 +144,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             }
             return 0;
 
-
         case 65: // 96 ENEMY:  Mini Ghost (jumps)
         case 106: // 137 ENEMY:  Suction-Cup-Legged Alien
         case 187: // 218 ENEMY:  Blue Bird
@@ -174,7 +166,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             }
             return 0;
 
-
         case 74: // 105 ENEMY:  Egg Head (special?) -- only 1x: in B2.MNI
         case 75: // 106 ENEMY:  Egg Head
             if (actor->count_down_timer != 0)
@@ -196,7 +187,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 actor->data_2 = 10;
             }
             return 0;
-
 
         case 86: // 117 ENEMY:  Blue Ball
             if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0)
@@ -255,7 +245,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             }
             return 0;
 
-
         case 101: // 132 ENEMY:  Big Red Jumper FIXME might need new logic from COSMO2 or 3 EXEs
             if (actor->count_down_timer == 0 && player_bounce_in_the_air(15) != 0)
             {
@@ -285,7 +274,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 }
             }
             return 0;
-
 
         case 113: // 144 ENEMY:  Blue Turret Alien
         case 118: // 149 ENEMY:  Red Chomper Alien
@@ -319,7 +307,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             }
             return 0;
 
-
         case 124: // 155 CREATURE/HAZARD:    Pink slug/Worm
             if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0)
             {
@@ -333,7 +320,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 return 1;
             }
             return 0;
-
 
         case 127: // 158 ENEMY:  Security Robot (shoots flashing bullet, can act as moving floor spring)
             if ((word_2E4CE == 0 && obj_switch_151_flag != 0 || word_2E4CE != 0 && obj_switch_151_flag == 0) &&
@@ -361,7 +347,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             }
             return 0;
 
-
         case 129: // 160 PLAT/HAZARD:    Dragonfly
         case 145: // 176 ENEMY:  Green Plant
             if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0)
@@ -386,7 +371,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 play_sfx(6);
             }
             return 0;
-
 
         case 152: // 183 ENEMY:  Big Red Plant (spitting Blue Balls/catapult)
 
