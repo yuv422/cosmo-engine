@@ -1484,3 +1484,8 @@ TileInfo *actor_get_tile_info(int actorInfoIndex, int frame_num) {
 void sub_1BBFE(ActorData *actor) {
 
 }
+
+void struct5_add_new_actor_sprite(int actorInfoIndex, int x_pos, int y_pos)
+{
+
+}

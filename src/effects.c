@@ -23,3 +23,8 @@ void sub_1BA0F(int x_pos, int y_pos)
 {
 
 }
+
+void struct4_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
+{
+
+}

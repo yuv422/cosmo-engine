@@ -29,3 +29,8 @@ void ingame_hint_dialogs(uint16 hint_number) {
 
 }
 
+void power_up_module_dialog()
+{
+
+}
+
