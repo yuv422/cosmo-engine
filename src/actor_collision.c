@@ -74,57 +74,85 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             return 0;
 
 // node 0001becc-0001bed4 #insn=2 use={} def={bx} in={} out={} pred={ FFFFFFFF} CONDJUMP target=0001bee7 follow=0001c31a
-        case 25:if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0) goto loc_1BEE7;
-
-// node 0001bee7-0001d0f6 #insn=7 use={} def={} in={} out={} pred={ 1BECC} FALLTHROUGH follow=0001d0f6
-            actor->count_down_timer = 5;
-            play_sfx(6);
-            actor_tile_display_func_index = 2;
-
-            actor->data_1 = actor->data_1 - 1;
-            if (actor->data_1 == 0)
+        case 25: //56 HAZARD: Green Pruny Cabbage Ball
+            if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0)
             {
-                actor->is_deactivated_flag_maybe = 1;
-                player_add_score_for_actor(0x19);
+                actor->count_down_timer = 5;
+                play_sfx(6);
+                actor_tile_display_func_index = 2;
 
-                sub_1BA0F(actor->x, actor->y);
-                ax = 1;
+                actor->data_1 = actor->data_1 - 1;
+                if (actor->data_1 == 0)
+                {
+                    actor->is_deactivated_flag_maybe = 1;
+                    player_add_score_for_actor(0x19);
+
+                    sub_1BA0F(actor->x, actor->y);
+                    return 1;
+                }
             }
             else
             {
-                default :ax = 0;
+                if (actor->count_down_timer == 0 && player_check_collision_with_actor(actorInfoIndex, frame_num, x_pos, y_pos) != 0)
+                {
+                    player_decrease_health();
+                }
             }
-            break;
+            return 0;
+
+// node 0001bee7-0001d0f6 #insn=7 use={} def={} in={} out={} pred={ 1BECC} FALLTHROUGH follow=0001d0f6
 
 // node 0001bf1e-0001d0f6 #insn=4 use={} def={} in={} out={} pred={ FFFFFFFF} FALLTHROUGH follow=0001d0f6
-        case 0:
-        case 29:
-            if (actor->count_down_timer != 0)
+        case 0:  //31 Unknown.
+        case 29: //60 BARREL: Power Up    (health/12800)
+            if (actor->count_down_timer == 0 && player_bounce_in_the_air(5) != 0)
             {
-                return 0;
-            }
-            if (player_bounce_in_the_air(5) != 0)
-            {
-                sub_1BBFE(actor_num);
+                sub_1BBFE(actor);
                 player_add_to_score(0x64);
 
                 actor_add_new(0xb1, actor->x, actor->y);
-                ax = 1;
+                return 1;
+            }
+            return 0;
+
+// node 0001bf44-0001bf4c #insn=2 use={} def={bx} in={} out={} pred={ FFFFFFFF} CONDJUMP target=0001bf5f follow=0001c31a
+        case 51: // 82 ENEMY:  Ghost
+        case 54: // 85 ENEMY:  Angry Moon (blue floating characters)
+            if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0)
+            {
+                actor->count_down_timer = 3;
+                play_sfx(6);
+
+                actor->data_5 = actor->data_5 - 1;
+                actor_tile_display_func_index = 2;
+                if(actor->data_5 != 0)
+                {
+                    return 0;
+                }
+                actor->is_deactivated_flag_maybe = 1;
+                if(actorInfoIndex == 0x33)
+                {
+                    actor_add_new(0x41, actor->x, actor->y);
+                }
+
+                sub_1BA0F(actor->x - 1, actor->y + 1);
+                player_add_score_for_actor(0x33);
+                return 1;
             }
             else
             {
-                default :ax = 0;
+                if (actor->count_down_timer == 0 && player_check_collision_with_actor(actorInfoIndex, frame_num, x_pos, y_pos) != 0)
+                {
+                    player_decrease_health();
+                }
             }
-            break;
-
-// node 0001bf44-0001bf4c #insn=2 use={} def={bx} in={} out={} pred={ FFFFFFFF} CONDJUMP target=0001bf5f follow=0001c31a
-        case 51:
-        case 54:if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0) goto loc_1BF5F;
+            return 0;
 
 // node 0001bfc2-0001bfca #insn=2 use={} def={bx} in={} out={} pred={ FFFFFFFF} CONDJUMP target=0001bfdd follow=0001c327
-        case 65:
-        case 106:
-        case 187:if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0) goto loc_1BFDD;
+        case 65: // 96 ENEMY:  Mini Ghost (jumps)
+        case 106: // 137 ENEMY:  Suction-Cup-Legged Alien
+        case 187: // 218 ENEMY:  Blue Bird
+            if (actor->count_down_timer == 0 && player_bounce_in_the_air(7) != 0) goto loc_1BFDD;
 
 // node 0001c00a-0001d0f6 #insn=7 use={} def={} in={} out={} pred={ FFFFFFFF} FALLTHROUGH follow=0001d0f6
         case 74:
@@ -315,28 +343,34 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 return 0;
             }
 
-// node 0001c31a-0001c322 #insn=2 use={} def={} in={} out={} pred={ 1BECC 1BF44 1C04B 1C14D 1C1B9 1C288 1C2ED} FALLTHROUGH follow=0001c327
-        loc_1C31A:
-            if (actor->count_down_timer != 0)
+            //FIXME remove this, 5 usages remaining
+            if (actor->count_down_timer == 0 && player_check_collision_with_actor(actorInfoIndex, frame_num, x_pos, y_pos) != 0)
             {
-                return 0;
+                player_decrease_health();
             }
-
-// node 0001c327-0001d0f6 #insn=2 use={} def={} in={} out={} pred={ 1BFC2 1C31A} FALLTHROUGH follow=0001d0f6
-            if (player_check_collision_with_actor(actorInfoIndex, frame_num, x_pos, y_pos) != 0)
-            {
-                case 62:
-                case 110:
-                case 111:
-                case 127:
-                case 201:player_decrease_health();
-                default :ax = 0;
-            }
-            else
-            {
-                default :ax = 0;
-            }
-            break;
+//// node 0001c31a-0001c322 #insn=2 use={} def={} in={} out={} pred={ 1BECC 1BF44 1C04B 1C14D 1C1B9 1C288 1C2ED} FALLTHROUGH follow=0001c327
+//        loc_1C31A:
+//
+//            if (actor->count_down_timer != 0)
+//            {
+//                return 0;
+//            }
+//
+//// node 0001c327-0001d0f6 #insn=2 use={} def={} in={} out={} pred={ 1BFC2 1C31A} FALLTHROUGH follow=0001d0f6
+//            if (player_check_collision_with_actor(actorInfoIndex, frame_num, x_pos, y_pos) != 0)
+//            {
+//                case 62:
+//                case 110:
+//                case 111:
+//                case 127:
+//                case 201:player_decrease_health();
+//                default :ax = 0;
+//            }
+//            else
+//            {
+//                default :ax = 0;
+//            }
+//            break;
 
 // node 0001c344-0001d0f6 #insn=6 use={} def={} in={} out={} pred={ FFFFFFFF} FALLTHROUGH follow=0001d0f6
         case 188:
@@ -1329,27 +1363,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
 
 // node 0001d0f6-00000000 #insn=0 use={} def={} in={} out={} pred={ 1C7E9 1C802 1C812 1C862 1C872 1C88C 1C89C 1C959 1CA4C 1CB03 1CC31 1CCF7 1CD5B 1CDC8 1CF5D 1C799 1C9BB 1CC27 1C931 1CFD2 1CE49 1CE87 1CEC5 1D09A 1D0F4 1CA37 1CAAB 1D021 1CD54 1CA40} 
             }
-
-// node 0001bf5f-0001d0f6 #insn=13 use={} def={ax} in={} out={ax} pred={ 1BF44} JUMP target=0001d0f6
-            actor->count_down_timer = 3;
-            play_sfx(6);
-            
-            actor->data_5 = actor->data_5 - 1;
-            actor_tile_display_func_index = 2;
-            if(actor->data_5 != 0)
-            {
-                return 0;
-            }
-            actor->is_deactivated_flag_maybe = 1;
-            if(actorInfoIndex == 0x33)
-            {
-                actor_add_new(0x41, actor->x, actor->y);
-            }
-            
-            sub_1BA0F(actor->x - 1, actor->y + 1);
-            player_add_score_for_actor(0x33);
-            ax = 1;
-            break;
 
 // node 0001bfdd-0001d0f6 #insn=7 use={} def={ax} in={} out={ax} pred={ 1BFC2} JUMP target=0001d0f6
             play_sfx(6);

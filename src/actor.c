@@ -1480,3 +1480,7 @@ int is_sprite_on_screen(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
 TileInfo *actor_get_tile_info(int actorInfoIndex, int frame_num) {
     return &actor_sprites[actorInfoIndex].frames[frame_num];
 }
+
+void sub_1BBFE(ActorData *actor) {
+
+}
