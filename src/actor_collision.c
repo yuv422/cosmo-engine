@@ -103,7 +103,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
         case 29: //60 BARREL: Power Up    (health/12800)
             if (actor->count_down_timer == 0 && player_bounce_in_the_air(5) != 0)
             {
-                sub_1BBFE(actor);
+                actor_explode_container(actor);
                 player_add_to_score(0x64);
 
                 actor_add_new(0xb1, actor->x, actor->y);
@@ -1043,5 +1043,33 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
         default :break;
     }
 
-    return 0; //FIXME
+    return 0;
+}
+
+void actor_explode_container(ActorData *actor)
+{
+    actor->is_deactivated_flag_maybe = 1;
+    struct4_add_sprite(actor->data_2, 0, actor->x - 1, actor->y);
+
+    struct4_add_sprite(actor->data_2, 1, actor->x + 1, actor->y - 1);
+
+    struct4_add_sprite(actor->data_2, 2, actor->x + 3, actor->y);
+
+    struct4_add_sprite(actor->data_2, 3, actor->x + 1 + 1, actor->y + 2);
+    if((sub_1106F() & 1) == 0)
+    {
+        play_sfx(0x3d);
+    }
+    else
+    {
+        play_sfx(12);
+    }
+
+    struct5_add_new_actor_sprite(actor->data_1, actor->x + 1, actor->y);
+    if(word_2E1E4 == 1)
+    {
+        actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
+    }
+    word_2E1E4--;
+    return ;
 }

@@ -81,8 +81,8 @@ void actor_wt_switch(ActorData *actor);
 void actor_wt_switch_multi_use(ActorData *actor);
 void actor_wt_teleporter(ActorData *actor);
 void actor_wt_two_tons(ActorData *actor);
-void actor_wt_unknown_177_184(ActorData *actor);
-void actor_wt_unknown_1888E(ActorData *actor);
+void actor_wt_floating_score_effect(ActorData *actor);
+void actor_wt_speech_bubble(ActorData *actor);
 void actor_wt_unknown_232(ActorData *actor);
 
 

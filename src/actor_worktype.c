@@ -604,7 +604,7 @@ void actor_wt_two_tons(ActorData *actor)
 const sint8 score_effect_x_tbl[] = {
         -2, -1, 0, 1, 2, 2, 1, 0, -1, -2
 };
-void actor_wt_unknown_177_184(ActorData *actor)
+void actor_wt_floating_score_effect(ActorData *actor)
 {
     actor_tile_display_func_index = 1;
     actor->data_1 = actor->data_1 + 1;
@@ -630,9 +630,29 @@ void actor_wt_unknown_177_184(ActorData *actor)
     return;
 }
 
-void actor_wt_unknown_1888E(ActorData *actor)
+void actor_wt_speech_bubble(ActorData *actor)
 {
+    actor_tile_display_func_index = 1;
+    if(actor->data_1 == 0)
+    {
+        play_sfx(0x39);
+        if(actor->actorInfoIndex == 0xf6)
+        {
+            player_add_to_score(0xc350);
+        }
+    }
+    
+    actor->data_1 = actor->data_1 + 1;
+    if(actor->data_1 != 0x14)
+    {
+        display_actor_sprite_maybe(actor->actorInfoIndex, 0, player_x_pos - 1, player_y_pos - 5, 5);
+    }
+    else
+    {
+        actor->is_deactivated_flag_maybe = 1;
+    }
 
+    return;
 }
 
 void actor_wt_unknown_232(ActorData *actor)

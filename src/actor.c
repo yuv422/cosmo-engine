@@ -779,35 +779,35 @@ int actor_init(int actor_num, int image_index, int x_pos, int y_pos)
             break;
 
         case 177:
-            actor_init_struct(actor_num, 0xb1, x_pos, y_pos, 0, 1, 0, 0, actor_wt_unknown_177_184, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0xb1, x_pos, y_pos, 0, 1, 0, 0, actor_wt_floating_score_effect, 0, 0, 0, 0, 0);
             break;
 
         case 178:
-            actor_init_struct(actor_num, 0xb2, x_pos, y_pos, 0, 1, 0, 0, actor_wt_unknown_177_184, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0xb2, x_pos, y_pos, 0, 1, 0, 0, actor_wt_floating_score_effect, 0, 0, 0, 0, 0);
             break;
 
         case 179:
-            actor_init_struct(actor_num, 0xb3, x_pos, y_pos, 0, 1, 0, 0, actor_wt_unknown_177_184, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0xb3, x_pos, y_pos, 0, 1, 0, 0, actor_wt_floating_score_effect, 0, 0, 0, 0, 0);
             break;
 
         case 180:
-            actor_init_struct(actor_num, 0xb4, x_pos, y_pos, 0, 1, 0, 0, actor_wt_unknown_177_184, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0xb4, x_pos, y_pos, 0, 1, 0, 0, actor_wt_floating_score_effect, 0, 0, 0, 0, 0);
             break;
 
         case 181:
-            actor_init_struct(actor_num, 0xb5, x_pos, y_pos, 0, 1, 0, 0, actor_wt_unknown_177_184, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0xb5, x_pos, y_pos, 0, 1, 0, 0, actor_wt_floating_score_effect, 0, 0, 0, 0, 0);
             break;
 
         case 182:
-            actor_init_struct(actor_num, 0xb6, x_pos, y_pos, 0, 1, 0, 0, actor_wt_unknown_177_184, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0xb6, x_pos, y_pos, 0, 1, 0, 0, actor_wt_floating_score_effect, 0, 0, 0, 0, 0);
             break;
 
         case 183:
-            actor_init_struct(actor_num, 0xb7, x_pos, y_pos, 0, 1, 0, 0, actor_wt_unknown_177_184, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0xb7, x_pos, y_pos, 0, 1, 0, 0, actor_wt_floating_score_effect, 0, 0, 0, 0, 0);
             break;
 
         case 184:
-            actor_init_struct(actor_num, 0xb8, x_pos, y_pos, 0, 1, 0, 0, actor_wt_unknown_177_184, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0xb8, x_pos, y_pos, 0, 1, 0, 0, actor_wt_floating_score_effect, 0, 0, 0, 0, 0);
             break;
 
         case 186:
@@ -1046,20 +1046,16 @@ int actor_init(int actor_num, int image_index, int x_pos, int y_pos)
             actor_init_struct(actor_num, 0x7d, x_pos, y_pos, 0, 0, 0, 0, actor_wt_hint_dialog, 0, 0, 0, 0, 15);
             break;
 
-        case 235:
-            actor_init_struct(actor_num, 0xeb, x_pos, y_pos, 1, 0, 0, 0, actor_wt_unknown_1888E, 0, 0, 0, 0, 0);
+        case 235:actor_init_struct(actor_num, 0xeb, x_pos, y_pos, 1, 0, 0, 0, actor_wt_speech_bubble, 0, 0, 0, 0, 0);
             break;
 
-        case 244:
-            actor_init_struct(actor_num, 0xf4, x_pos, y_pos, 1, 0, 0, 0, actor_wt_unknown_1888E, 0, 0, 0, 0, 0);
+        case 244:actor_init_struct(actor_num, 0xf4, x_pos, y_pos, 1, 0, 0, 0, actor_wt_speech_bubble, 0, 0, 0, 0, 0);
             break;
 
-        case 245:
-            actor_init_struct(actor_num, 0xf5, x_pos, y_pos, 1, 0, 0, 0, actor_wt_unknown_1888E, 0, 0, 0, 0, 0);
+        case 245:actor_init_struct(actor_num, 0xf5, x_pos, y_pos, 1, 0, 0, 0, actor_wt_speech_bubble, 0, 0, 0, 0, 0);
             break;
 
-        case 246:
-            actor_init_struct(actor_num, 0xf6, x_pos, y_pos, 1, 0, 0, 0, actor_wt_unknown_1888E, 0, 0, 0, 0, 0);
+        case 246:actor_init_struct(actor_num, 0xf6, x_pos, y_pos, 1, 0, 0, 0, actor_wt_speech_bubble, 0, 0, 0, 0, 0);
             break;
 
         case 247:
@@ -1479,10 +1475,6 @@ int is_sprite_on_screen(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
 
 TileInfo *actor_get_tile_info(int actorInfoIndex, int frame_num) {
     return &actor_sprites[actorInfoIndex].frames[frame_num];
-}
-
-void sub_1BBFE(ActorData *actor) {
-
 }
 
 void struct5_add_new_actor_sprite(int actorInfoIndex, int x_pos, int y_pos)
