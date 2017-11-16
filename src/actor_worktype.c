@@ -601,9 +601,33 @@ void actor_wt_two_tons(ActorData *actor)
 
 }
 
+const sint8 score_effect_x_tbl[] = {
+        -2, -1, 0, 1, 2, 2, 1, 0, -1, -2
+};
 void actor_wt_unknown_177_184(ActorData *actor)
 {
+    actor_tile_display_func_index = 1;
+    actor->data_1 = actor->data_1 + 1;
+    actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+    if(actor->data_1 > 0x1f)
+    {
+        actor->y = actor->y - 1;
+        actor->x = actor->x + score_effect_x_tbl[(actor->data_1 - 32) % 10];
+    }
 
+    if(actor->data_1 < 4)
+    {
+        actor->y = actor->y - 1;
+    }
+
+    if(actor->data_1 == 0x64 || is_sprite_on_screen(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) == 0)
+    {
+        actor->is_deactivated_flag_maybe = 1;
+        actor_tile_display_func_index = 1;
+    }
+
+    display_actor_sprite_maybe(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y, 5);
+    return;
 }
 
 void actor_wt_unknown_1888E(ActorData *actor)
