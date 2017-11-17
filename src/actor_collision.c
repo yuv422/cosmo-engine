@@ -11,6 +11,7 @@
 #include "input.h"
 #include "hud.h"
 #include "dialog.h"
+#include "actor_toss.h"
 
 const int green_roamer_worm_tbl[] = {0xAC, 0x22, 0xB0, 0xAE};
 
@@ -675,7 +676,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 play_sfx(6);
             }
 
-            struct5_add_new_actor_sprite(green_roamer_worm_tbl[sub_1106F() & 3], actor->x, actor->y + 1);
+            actor_toss_add_new(green_roamer_worm_tbl[sub_1106F() & 3], actor->x, actor->y + 1);
             play_sfx(0x11);
             actor_tile_display_func_index = 2;
 
@@ -1065,7 +1066,7 @@ void actor_explode_container(ActorData *actor)
         play_sfx(12);
     }
 
-    struct5_add_new_actor_sprite(actor->data_1, actor->x + 1, actor->y);
+    actor_toss_add_new(actor->data_1, actor->x + 1, actor->y);
     if(word_2E1E4 == 1)
     {
         actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);

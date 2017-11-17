@@ -16,6 +16,7 @@
 #include "save.h"
 #include "actor.h"
 #include "tile.h"
+#include "actor_toss.h"
 
 //Data
 uint16 current_level;
@@ -139,7 +140,7 @@ void load_level(int level_number)
     struct6_clear_sprites();
     struct7_clear_sprites();
     player_reset_push_variables();
-    struct5_clear_sprites();
+    actor_toss_clear_all();
     load_status_panel_into_video_mem();
 //    update_ega_mem_ptr(ega_page_index_maybe);
 //    ax = (ega_page_index_maybe ? -1 : 0) + 1;

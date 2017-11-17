@@ -17,7 +17,6 @@ void load_status_panel_into_video_mem();
 
 //FIXME where should these functions live?
 void struct4_clear_sprites();
-void struct5_clear_sprites();
 void struct6_clear_sprites();
 void struct7_clear_sprites();
 

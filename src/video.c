@@ -33,11 +33,6 @@ void struct4_clear_sprites()
 
 }
 
-void struct5_clear_sprites()
-{
-
-}
-
 void struct6_clear_sprites()
 {
 

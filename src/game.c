@@ -16,6 +16,7 @@
 #include "map.h"
 #include "status.h"
 #include "video.h"
+#include "actor_toss.h"
 
 #define COSMO_INTERVAL 100
 
@@ -152,6 +153,8 @@ void game_loop()
         } while(player_update_sprite() != 0);
 
         actor_update_all();
+
+        actor_toss_update();
 
         video_update();
     }
