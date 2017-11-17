@@ -2,6 +2,7 @@
 // Created by efry on 3/11/2017.
 //
 
+#include <SDL_pixels.h>
 #include "defines.h"
 #include "tile.h"
 
@@ -18,7 +19,6 @@ void load_status_panel_into_video_mem();
 //FIXME where should these functions live?
 void struct4_clear_sprites();
 void struct6_clear_sprites();
-void struct7_clear_sprites();
 
 bool video_init();
 void video_shutdown();
@@ -26,5 +26,7 @@ void video_shutdown();
 void video_update();
 
 void video_draw_tile(Tile *tile, uint16 x, uint16 y);
+
+void video_update_palette(int palette_index, SDL_Color new_color);
 
 #endif //COSMO_ENGINE_VIDEO_H

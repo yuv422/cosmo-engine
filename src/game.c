@@ -17,6 +17,7 @@
 #include "status.h"
 #include "video.h"
 #include "actor_toss.h"
+#include "effects.h"
 
 #define COSMO_INTERVAL 100
 
@@ -155,6 +156,8 @@ void game_loop()
         actor_update_all();
 
         actor_toss_update();
+
+        struct7_update_sprites();
 
         video_update();
     }

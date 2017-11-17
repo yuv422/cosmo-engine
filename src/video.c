@@ -38,11 +38,6 @@ void struct6_clear_sprites()
 
 }
 
-void struct7_clear_sprites()
-{
-
-}
-
 bool video_init()
 {
     window = SDL_CreateWindow("Cosmo Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*2, SCREEN_HEIGHT*2, 0);
@@ -151,4 +146,9 @@ void video_draw_tile(Tile *tile, uint16 x, uint16 y)
             pixel += SCREEN_WIDTH - TILE_WIDTH;
         }
     }
+}
+
+void video_update_palette(int palette_index, SDL_Color new_color)
+{
+    SDL_SetPaletteColors(surface->format->palette, &new_color, palette_index, 1);
 }

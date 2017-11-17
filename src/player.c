@@ -10,6 +10,9 @@
 #include "save.h"
 #include "status.h"
 
+const sint16 player_x_offset_tbl[] = { 0, 0, 1, 1, 1, 0, -1, -1, -1 };
+const sint16 player_y_offset_tbl[] = { 0, -1, -1, 0, 1, 1, 1, 0, -1 };
+
 int player_is_grabbing_wall_flag = 0;
 int player_death_counter = 0;
 int player_walk_anim_index = 0;

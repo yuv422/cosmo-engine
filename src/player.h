@@ -2,6 +2,9 @@
 #ifndef COSMO_ENGINE_PLAYER_H
 #define COSMO_ENGINE_PLAYER_H
 
+extern const sint16 player_x_offset_tbl[];
+extern const sint16 player_y_offset_tbl[];
+
 //Data
 extern int player_is_grabbing_wall_flag;
 extern int player_death_counter;

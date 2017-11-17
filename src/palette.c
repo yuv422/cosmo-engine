@@ -8,6 +8,7 @@
 #include "sfx.h"
 #include "palette.h"
 #include "defines.h"
+#include "video.h"
 
 int next_pal_colour = 0;
 uint8 palette_anim_type = 0;
@@ -40,8 +41,9 @@ void set_palette_on_surface(SDL_Surface *surface)
 
 void set_palette_color(char pal_reg, char color)
 {
-    //FIXME
+    video_update_palette(pal_reg, palette[color]);
 }
+
 unsigned char palette_anim_type_1_tbl[] =
         {
                 0x04, 0x04, 0x0C, 0x0C, 0x0E, 0x0E, 0x0F, 0x0F, 0x0E, 0x0E,
