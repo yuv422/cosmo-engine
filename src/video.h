@@ -14,7 +14,6 @@
 
 void display_fullscreen_image(uint8 image_number);
 void fade_to_black_speed_3();
-void load_status_panel_into_video_mem();
 
 //FIXME where should these functions live?
 void struct4_clear_sprites();
@@ -28,5 +27,7 @@ void video_update();
 void video_draw_tile(Tile *tile, uint16 x, uint16 y);
 
 void video_update_palette(int palette_index, SDL_Color new_color);
+
+void fade_to_black(uint16 wait_time);
 
 #endif //COSMO_ENGINE_VIDEO_H

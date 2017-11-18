@@ -14,7 +14,12 @@ set(SOURCE_FILES
         src/actor.h
         src/main.c
         src/player.c
-        src/player.h src/game.h src/game.c src/palette.c src/palette.h src/util.h src/util.c src/sfx.c src/sfx.h src/map.c src/map.h src/defines.h src/input.c src/input.h src/dialog.c src/dialog.h src/hud.c src/hud.h src/tile.c src/tile.h src/files/vol.c src/files/vol.h src/files/file.c src/files/file.h src/video.c src/video.h src/music.c src/music.h src/backdrop.c src/backdrop.h src/save.c src/save.h src/status.c src/status.h src/actor_worktype.c src/actor_worktype.h src/actor_worktype.c src/actor_worktype.h src/effects.c src/effects.h src/actor_collision.c src/actor_collision.h src/actor_toss.c src/actor_toss.h)
+        src/player.h src/game.h src/game.c src/palette.c src/palette.h src/util.h src/util.c src/sfx.c src/sfx.h
+        src/map.c src/map.h src/defines.h src/input.c src/input.h src/dialog.c src/dialog.h src/tile.c src/tile.h
+        src/files/vol.c src/files/vol.h src/files/file.c src/files/file.h src/video.c src/video.h
+        src/music.c src/music.h src/backdrop.c src/backdrop.h src/save.c src/save.h src/status.c src/status.h
+        src/actor_worktype.c src/actor_worktype.h src/actor_worktype.c src/actor_worktype.h src/effects.c src/effects.h
+        src/actor_collision.c src/actor_collision.h src/actor_toss.c src/actor_toss.h src/font.c src/font.h)
 
 include_directories(src)
 

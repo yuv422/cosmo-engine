@@ -25,5 +25,6 @@ extern uint8 byte_2E17C;
 
 void wait_for_time_or_key(int delay_in_game_cycles);
 input_state_enum read_input();
+void cosmo_wait(int delay);
 
 #endif //COSMO_ENGINE_INPUT_H

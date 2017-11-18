@@ -34,3 +34,8 @@ void power_up_module_dialog()
 
 }
 
+void display_end_of_level_score_dialog(const char *header_text, const char *footer_text)
+{
+
+}
+

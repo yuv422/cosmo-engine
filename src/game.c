@@ -18,6 +18,8 @@
 #include "video.h"
 #include "actor_toss.h"
 #include "effects.h"
+#include "sfx.h"
+#include "font.h"
 
 #define COSMO_INTERVAL 100
 
@@ -34,6 +36,8 @@ uint8 finished_game_flag_maybe = 0;
 uint8 finished_level_flag_maybe;
 
 void game_wait();
+void select_next_level();
+void end_sequence();
 
 void game_init()
 {
@@ -42,6 +46,7 @@ void game_init()
     player_load_tiles();
     actor_load_tiles();
     map_load_tiles();
+    font_load_tiles();
 }
 
 void set_initial_game_state()
@@ -159,7 +164,25 @@ void game_loop()
 
         struct7_update_sprites();
 
+        if (game_play_mode != PLAY_GAME)
+        {
+            display_actor_sprite_maybe(0x10a, 0, 18, 4, 6); //DEMO sign.
+        }
         video_update();
+
+        if (finished_level_flag_maybe)
+        {
+            finished_level_flag_maybe = 0;
+            play_sfx(11);
+            select_next_level();
+            load_level(current_level);
+        }
+
+        if (finished_game_flag_maybe)
+        {
+            end_sequence();
+            return;
+        }
     }
 }
 
@@ -182,6 +205,96 @@ uint32 time_left()
 void game_wait()
 {
     SDL_Delay(time_left());
+}
+
+void select_next_level()
+{
+    if (game_play_mode == PLAY_GAME)
+    {
+        switch (current_level)
+        {
+            case 2:
+            case 6:
+            case 10:
+            case 14:
+            case 18:
+            case 22:
+            case 26:
+                current_level++;
+                //NOTE fall through here.
+
+            case 3:
+            case 7:
+            case 11:
+            case 15:
+            case 19:
+            case 23:
+            case 27:
+                display_end_of_level_score_dialog("Bonus Level Completed!!", "Press ANY key.");
+                //NOTE fall through here.
+
+            case 0:
+            case 4:
+            case 8:
+            case 12:
+            case 16:
+            case 20:
+            case 24:
+                current_level++;
+                break;
+
+            case 1:
+            case 5:
+            case 9:
+            case 13:
+            case 17:
+            case 21:
+            case 25:
+                display_end_of_level_score_dialog("Section Completed!", "Press ANY key.");
+                if(num_stars_collected <= 0x18)
+                {
+                    current_level++;
+                }
+                else
+                {
+                    fade_to_black(0);
+                    display_fullscreen_image(3);
+                    play_sfx(0x2d);
+                    if(num_stars_collected > 0x31)
+                    {
+                        current_level++;
+                    }
+                    current_level++;
+                    cosmo_wait(0x96);
+                }
+        }
+    }
+    else //DEMO Mode
+    {
+        switch (current_level)
+        {
+            case 0:
+                current_level = 13;
+                break;
+
+            case 13:
+                current_level = 5;
+                break;
+
+            case 5:
+                current_level = 9;
+                break;
+
+            case 9:
+                current_level = 0x10;
+                break;
+        }
+    }
+}
+
+void end_sequence()
+{
+    //FIXME where should this logic live?
 }
 
 //Protected

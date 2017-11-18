@@ -23,11 +23,6 @@ void fade_to_black_speed_3()
 
 }
 
-void load_status_panel_into_video_mem()
-{
-
-}
-
 void struct4_clear_sprites()
 {
 
@@ -151,4 +146,9 @@ void video_draw_tile(Tile *tile, uint16 x, uint16 y)
 void video_update_palette(int palette_index, SDL_Color new_color)
 {
     SDL_SetPaletteColors(surface->format->palette, &new_color, palette_index, 1);
+}
+
+void fade_to_black(uint16 wait_time)
+{
+
 }

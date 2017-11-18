@@ -23,4 +23,6 @@ void ingame_hint_dialogs(uint16 hint_number);
 
 void power_up_module_dialog();
 
+void display_end_of_level_score_dialog(const char *header_text, const char *footer_text);
+
 #endif //COSMO_ENGINE_DIALOG_H

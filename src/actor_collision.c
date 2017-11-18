@@ -9,7 +9,6 @@
 #include "game.h"
 #include "status.h"
 #include "input.h"
-#include "hud.h"
 #include "dialog.h"
 #include "actor_toss.h"
 

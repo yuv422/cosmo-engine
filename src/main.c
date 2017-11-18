@@ -20,8 +20,6 @@ int main(int argc, char *argv[]) {
     game_play_mode = main_menu();
     load_level(current_level);
 
-    status_display();
-
     game_loop();
 
     video_shutdown();

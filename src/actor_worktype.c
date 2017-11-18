@@ -176,7 +176,20 @@ void actor_wt_egg_head(ActorData *actor)
 
 void actor_wt_end_of_level_marker(ActorData *actor)
 {
+    if(actor->y <= player_y_pos && actor->data_1 == 0)
+    {
+        finished_level_flag_maybe = 1;
+    }
+    else
+    {
+        if(actor->y >= player_y_pos && actor->data_1 != 0)
+        {
+            finished_game_flag_maybe = 1;
+        }
+    }
 
+    actor_tile_display_func_index = 1;
+    return;
 }
 
 void actor_wt_energy_beam(ActorData *actor)

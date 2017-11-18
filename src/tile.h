@@ -8,7 +8,8 @@
 #include "defines.h"
 typedef enum {
     SOLID,
-    TRANSPARENT
+    TRANSPARENT,
+    FONT
 } TileType;
 
 enum TileAttr

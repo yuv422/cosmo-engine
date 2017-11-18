@@ -8,6 +8,9 @@
 #include "tile.h"
 #include "video.h"
 #include "map.h"
+#include "game.h"
+#include "font.h"
+#include "player.h"
 
 Tile *status_tiles;
 
@@ -30,15 +33,45 @@ void status_display()
 
 void add_to_score_update_on_display(uint32 amount_to_add_low, int x_pos, int y_pos)
 {
-
+    score += amount_to_add_low;
+    display_number(x_pos, y_pos, score);
 }
 
 void update_health_bar_display()
 {
-
+    int x = 0x11;
+    int y = 0x16;
+    for(int i=0;i< num_health_bars;i++)
+    {
+        if(health - 1 > i)
+        {
+            video_draw_tile(&font_tiles[95], (x - i) * TILE_WIDTH, y * TILE_HEIGHT);
+            video_draw_tile(&font_tiles[96], (x - i) * TILE_WIDTH, (y+1) * TILE_HEIGHT);
+        }
+        else
+        {
+            video_draw_tile(&font_tiles[9], (x - i) * TILE_WIDTH, y * TILE_HEIGHT);
+            video_draw_tile(&font_tiles[8], (x - i) * TILE_WIDTH, (y+1) * TILE_HEIGHT);
+        }
+    }
 }
 
 void display_num_stars_collected()
 {
+    display_number(0x23,0x16,num_stars_collected);
+}
 
+void status_panel_init()
+{
+    status_display();
+    add_to_score_update_on_display(0, 9, 0x16);
+    update_health_bar_display();
+    display_num_stars_collected();
+    display_num_bombs_left();
+}
+
+void display_num_bombs_left()
+{
+    video_draw_tile(&font_tiles[97], 0x18 * TILE_WIDTH, 0x17 * TILE_HEIGHT);
+    display_number(0x18, 0x17, num_bombs);
 }

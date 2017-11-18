@@ -97,7 +97,7 @@ void palette_cycle_reg_5_from_tbl(unsigned char *palette_cycle_tbl_ptr)
 
 void update_palette_anim()
 {
-    switch (palette_anim_type)
+    switch (palette_anim_type - 1)
     {
         case 0:
             if (next_pal_colour == 2)

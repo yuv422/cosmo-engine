@@ -48,6 +48,14 @@ uint8 getPixelAtColumnPosition(uint8 *rowPtr, uint8 column, TileType tileType)
         rowPtr++;
     }
 
+    if (tileType == FONT) //Font tiles have an inverted mask layer.
+    {
+        if ((*rowPtr & (1 << (7 - column))) == 0) {
+            return TRANSPARENT_COLOR;
+        }
+        rowPtr++;
+    }
+
     for (int i = 0; i < 4; i++, rowPtr++) {
 
         color |= (((*rowPtr >> (7 - column)) & 1) << (i));
