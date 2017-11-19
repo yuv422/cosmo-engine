@@ -10,6 +10,7 @@
 #include "map.h"
 
 #define MAX_EFFECT_SPRITES 10
+#define MAX_STRUCT4_SPRITES 16
 
 typedef struct effect_sprite
 {
@@ -22,8 +23,21 @@ typedef struct effect_sprite
     int counter;
 } effect_sprite;
 
+typedef struct struc_4
+{
+    int actorInfoIndex;
+    int x;
+    int y;
+    int frame_num;
+    int counter;
+    int field_A;
+    int field_C;
+} struc_4;
+
 effect_sprite static_effect_sprites[MAX_EFFECT_SPRITES];
 uint16 effect_frame_num_tbl[MAX_EFFECT_SPRITES];
+
+struc_4 struc4_sprites[MAX_STRUCT4_SPRITES];
 
 int struct6_1B4FC(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
 {
@@ -119,11 +133,6 @@ void sub_1BA0F(int x_pos, int y_pos)
 
 }
 
-void struct4_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
-{
-
-}
-
 void update_rain_effect() //FIXME this rain doesn't look quite right. It seems to come down in lines. :(
 {
 
@@ -148,4 +157,110 @@ void update_rain_effect() //FIXME this rain doesn't look quite right. It seems t
         }
     }
     return;
+}
+
+void struct4_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
+{
+    static uint8 word_28F6C = 0;
+
+    word_28F6C++;
+    if(word_28F6C == 5)
+    {
+        word_28F6C = 0;
+    }
+
+    for(int i=0;i < MAX_STRUCT4_SPRITES; i++)
+    {
+        struc_4 *sprite = &struc4_sprites[i];
+        
+        if(sprite->counter == 0)
+        {
+            sprite->actorInfoIndex = actorInfoIndex;
+            sprite->x = x_pos;
+            sprite->y = y_pos;
+            sprite->frame_num = frame_num;
+            sprite->counter = 1;
+            sprite->field_A = word_28F6C;
+            sprite->field_C = 0;
+            return;
+        }
+    }
+
+    return ;
+}
+
+void struct4_clear_sprites()
+{
+    for(int i=0;i < MAX_STRUCT4_SPRITES; i++)
+    {
+        struc4_sprites[i].counter = 0;
+    }
+}
+
+void struct4_update_sprites()
+{
+    for(int i=0;i < MAX_STRUCT4_SPRITES; i++)
+    {
+        struc_4 *sprite = &struc4_sprites[i];
+        if (sprite->counter == 0)
+        {
+            continue;
+        }
+
+        if(sprite->field_A == 0 || sprite->field_A == 3)
+        {
+            if(sprite_blocking_check(RIGHT, sprite->actorInfoIndex, sprite->frame_num, sprite->x + 1, sprite->y + 1) == NOT_BLOCKED)
+            {
+                sprite->x++;
+                if(sprite->field_A == 3)
+                {
+                    sprite->x++;
+                }
+            }
+        }
+        else
+        {
+            if(sprite->field_A == 1 || sprite->field_A == 4)
+            {
+                if(sprite_blocking_check(LEFT, sprite->actorInfoIndex, sprite->frame_num, sprite->x - 1, sprite->y + 1) == NOT_BLOCKED)
+                {
+                    sprite->x--;
+                    if(sprite->field_A == 4)
+                    {
+                        sprite->x--;
+                    }
+                }
+            }
+        }
+
+        for(;;)
+        {
+            if(sprite->counter < 5)
+            {
+                sprite->y += 2;
+            }
+
+            if(sprite->counter == 5)
+            {
+                sprite->y--;
+            }
+            else if(sprite->counter == 8)
+            {
+                if (sprite_blocking_check(DOWN, sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y + 1) ==
+                    NOT_BLOCKED)
+                {
+                    sprite->y++;
+                }
+                else
+                {
+                    sprite->counter = 3;
+                    sprite->y += 2;
+                    continue;
+                }
+            }
+
+            if(sprite->counter == 9)
+            break;
+        }
+    }
 }

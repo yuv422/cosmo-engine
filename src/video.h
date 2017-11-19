@@ -16,7 +16,6 @@ void display_fullscreen_image(uint8 image_number);
 void fade_to_black_speed_3();
 
 //FIXME where should these functions live?
-void struct4_clear_sprites();
 void struct6_clear_sprites();
 
 bool video_init();

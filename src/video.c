@@ -23,11 +23,6 @@ void fade_to_black_speed_3()
 
 }
 
-void struct4_clear_sprites()
-{
-
-}
-
 void struct6_clear_sprites()
 {
 
