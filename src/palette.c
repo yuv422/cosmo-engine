@@ -112,14 +112,14 @@ void update_palette_anim()
                 set_palette_color(5, 7);
                 return;
             }
-            if (_rand() >= 0x5dc)
+            if (rand() % 0xffff >= 0x5dc)
             {
                 set_palette_color(5, 0);
                 next_pal_colour = 0;
             }
             else
             {
-                set_palette_color(5, 0x17);
+                set_palette_color(5, 7);//0x17);
                 play_sfx(0x3c);
                 next_pal_colour = 1;
             }

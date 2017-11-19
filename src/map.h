@@ -17,6 +17,7 @@ extern int mapwindow_x_offset;
 extern int mapwindow_y_offset;
 
 extern int map_max_y_offset;
+extern uint8 rain_flag;
 
 int map_get_tile_cell(int x, int y);
 

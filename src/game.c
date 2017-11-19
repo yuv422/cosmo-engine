@@ -162,7 +162,9 @@ void game_loop()
 
         actor_toss_update();
 
-        struct7_update_sprites();
+        update_rain_effect();
+
+        effect_update_sprites();
 
         if (game_play_mode != PLAY_GAME)
         {

@@ -6,6 +6,7 @@
 #include <SDL_events.h>
 #include "input.h"
 #include "map.h"
+#include "game.h"
 
 uint8 bomb_key_pressed = 0;
 uint8 jump_key_pressed = 0;
@@ -44,6 +45,9 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             break;
         case SDLK_a :
             jump_key_pressed = 1;
+            break;
+        case SDLK_n :
+            finished_level_flag_maybe = 1; //FIXME remove. only needed for testing
             break;
         case SDLK_q :
             return QUIT;

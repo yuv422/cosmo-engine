@@ -127,7 +127,8 @@ void actor_wt_bonus_item(ActorData *actor)
     {
         if((rand() & 0x3f) == 0)
         {
-            struct7_add_sprite(0x17, 8, rand() % actor->data_1 + actor->x, rand() % actor->data_2 + actor->y, 0, 1);
+            effect_add_sprite(0x17, 8, rand() % actor->data_1 + actor->x, rand() % actor->data_2 + actor->y, 0,
+                              1);
         }
     }
 

@@ -469,9 +469,9 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                     play_sfx(0x37);
                 }
 
-                struct7_add_sprite(0x61, 6, actor->x, actor->y, 8, 1);
+                effect_add_sprite(0x61, 6, actor->x, actor->y, 8, 1);
 
-                struct7_add_sprite(0x61, 6, actor->x + 3, actor->y, 2, 1);
+                effect_add_sprite(0x61, 6, actor->x + 3, actor->y, 2, 1);
             }
             else
             {
@@ -586,7 +586,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             actor->is_deactivated_flag_maybe = 1;
             play_sfx(1);
 
-            struct7_add_sprite(15, 4, actor->x, actor->y, 0, 3);
+            effect_add_sprite(15, 4, actor->x, actor->y, 0, 3);
             if (knows_about_powerups_flag == 0)
             {
                 knows_about_powerups_flag = 1;
@@ -638,7 +638,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 player_add_to_score(0x320);
                 actor_add_new(0xb4, x_pos, y_pos);
             }
-            struct7_add_sprite(15, 4, actor->x, actor->y, 0, 3);
+            effect_add_sprite(15, 4, actor->x, actor->y, 0, 3);
             play_sfx(13);
             return 1;
 
@@ -653,7 +653,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 actor_add_new(0xb1, actor->x, actor->y);
                 display_num_bombs_left();
 
-                struct7_add_sprite(15, 4, actor->x, actor->y, 0, 3);
+                effect_add_sprite(15, 4, actor->x, actor->y, 0, 3);
                 play_sfx(13);
                 return 1;
             }
@@ -885,7 +885,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             return 0;
 
         case 0: // 32: bonus star
-            struct7_add_sprite(0x17, 8, x_pos, y_pos, 0, 1);
+            effect_add_sprite(0x17, 8, x_pos, y_pos, 0, 1);
             num_stars_collected++;
             //FIXME is this required? // Low-level instruction of type adc     )(0002E1D6word_2E1D6)  ,   *0*
             actor->is_deactivated_flag_maybe = 1;
@@ -900,7 +900,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             player_add_to_score(0x3200);
             actor_add_new(0xb8, x_pos, y_pos);
 
-            struct7_add_sprite(15, 4, actor->x, actor->y, 0, 3);
+            effect_add_sprite(15, 4, actor->x, actor->y, 0, 3);
             play_sfx(13);
             if (num_health_bars < 5)
             {
@@ -922,14 +922,14 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             player_add_to_score(0xc8);
             actor_add_new(0xb2, x_pos, y_pos);
 
-            struct7_add_sprite(15, 4, actor->x, actor->y, 0, 3);
+            effect_add_sprite(15, 4, actor->x, actor->y, 0, 3);
             play_sfx(13);
             return 1;
 
         case 188: // 220 BONUS:  Invincibility Cube
             actor->is_deactivated_flag_maybe = 1;
             actor_add_new(0xc9, player_x_pos - 1, player_y_pos + 1);
-            struct7_add_sprite(0x17, 8, x_pos, y_pos, 0, 1);
+            effect_add_sprite(0x17, 8, x_pos, y_pos, 0, 1);
             actor_add_new(0xb8, x_pos, y_pos);
             play_sfx(1);
             return 1;
@@ -938,7 +938,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
         case 173: // 205 BONUS:  Green Gem
         case 175: // 207 BONUS:  Diamond
             actor->is_deactivated_flag_maybe = 1;
-            struct7_add_sprite(15, 4, actor->x, actor->y, 0, 3);
+            effect_add_sprite(15, 4, actor->x, actor->y, 0, 3);
             player_add_to_score(0xc80);
             actor_add_new(0xb6, x_pos, y_pos);
             play_sfx(13);
@@ -947,7 +947,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
         case 153: // 185 BONUS:  Blue Crystal (on ground)
         case 154: // 186 BONUS:  Red Crystal (on ground)
             actor->is_deactivated_flag_maybe = 1;
-            struct7_add_sprite(15, 4, actor->x, actor->y, 0, 3);
+            effect_add_sprite(15, 4, actor->x, actor->y, 0, 3);
             player_add_to_score(0x640);
             actor_add_new(0xb5, x_pos, y_pos);
             play_sfx(13);
@@ -959,7 +959,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
         case 199: // 231 BONUS:  Blue Gem (falling)
         case 219: // 251 BONUS:  Headphones (falling)
             actor->is_deactivated_flag_maybe = 1;
-            struct7_add_sprite(15, 4, actor->x, actor->y, 0, 3);
+            effect_add_sprite(15, 4, actor->x, actor->y, 0, 3);
             player_add_to_score(0x320);
             actor_add_new(0xb4, x_pos, y_pos);
             play_sfx(13);

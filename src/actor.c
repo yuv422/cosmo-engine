@@ -1246,7 +1246,12 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
             uint16 screen_x = (x_pos - mapwindow_x_offset + x + 1) * 8;
             uint16 screen_y = (y_pos - info->height + 1 - mapwindow_y_offset + y + 1) * 8;
 
-            if(tile_display_func_index != 0)
+            if(tile_display_func_index == 6) //FIXME
+            {
+                screen_x = (x_pos + x + 1) * 8;
+                screen_y = (y_pos - info->height + y + 1) * 8;
+            }
+            else if(tile_display_func_index != 0)
             {
                 screen_y = (y_pos - info->height - mapwindow_y_offset + y + 1) * 8;
             }
