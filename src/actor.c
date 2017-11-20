@@ -376,15 +376,15 @@ int actor_init(int actor_num, int image_index, int x_pos, int y_pos)
             break;
 
         case 66:
-            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 1, actor_wt_projectile_unknown, 0, 0, 0, 0, 1);
+            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 1, actor_wt_projectile_flashing_ball, 0, 0, 0, 0, 1);
             break;
 
         case 67:
-            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 1, actor_wt_projectile_unknown, 0, 0, 0, 0, 3);
+            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 1, actor_wt_projectile_flashing_ball, 0, 0, 0, 0, 3);
             break;
 
         case 68:
-            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 1, actor_wt_projectile_unknown, 0, 0, 0, 0, 2);
+            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 1, actor_wt_projectile_flashing_ball, 0, 0, 0, 0, 2);
             break;
 
         case 69:
@@ -523,11 +523,11 @@ int actor_init(int actor_num, int image_index, int x_pos, int y_pos)
             break;
 
         case 109:
-            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 0, actor_wt_projectile_unknown, 0, 0, 0, 0, 0);
+            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 0, actor_wt_projectile_flashing_ball, 0, 0, 0, 0, 0);
             break;
 
         case 110:
-            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 0, actor_wt_projectile_unknown, 0, 0, 0, 0, 4);
+            actor_init_struct(actor_num, 0x44, x_pos, y_pos, 1, 0, 0, 0, actor_wt_projectile_flashing_ball, 0, 0, 0, 0, 4);
             break;
 
         case 112:
@@ -1251,7 +1251,7 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
                 screen_x = (x_pos + x + 1) * 8;
                 screen_y = (y_pos - info->height + y + 1) * 8;
             }
-            else if(tile_display_func_index != 0)
+            else if(tile_display_func_index != 0 && tile_display_func_index != 2)
             {
                 screen_y = (y_pos - info->height - mapwindow_y_offset + y + 1) * 8;
             }
@@ -1259,7 +1259,14 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
             if(screen_x >= 8 && screen_x <= 304 && //FIXME need a better way of making sure we draw in the borders.
                     screen_y >= 8 && screen_y < 152)
             {
-                video_draw_tile(tile, screen_x, screen_y);
+                if (tile_display_func_index == 2)
+                {
+                    video_draw_tile_solid_white(tile, screen_x, screen_y);
+                }
+                else
+                {
+                    video_draw_tile(tile, screen_x, screen_y);
+                }
             }
             tile++;
         }
@@ -1349,7 +1356,8 @@ void actor_update(ActorData *actor)
 
     actor->update_function(actor);
 
-    if (struct6_1B4FC(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0 && sub_1BAAD(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0)
+    if (struct6_1B4FC(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0 &&
+            blow_up_actor_with_bomb(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0)
     {
         actor->is_deactivated_flag_maybe = 1;
         return;

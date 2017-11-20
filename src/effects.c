@@ -9,9 +9,12 @@
 #include "player.h"
 #include "map.h"
 #include "sfx.h"
+#include "tile.h"
+#include "actor_toss.h"
 
 #define MAX_EFFECT_SPRITES 10
-#define MAX_STRUCT4_SPRITES 16
+#define MAX_EXPLODE_EFFECT_SPRITES 16
+#define MAX_STRUCT6_SPRITES 7
 
 typedef struct effect_sprite
 {
@@ -24,29 +27,105 @@ typedef struct effect_sprite
     int counter;
 } effect_sprite;
 
-typedef struct struc_4
+typedef struct explode_effect_sprite
 {
     int actorInfoIndex;
     int x;
     int y;
     int frame_num;
     int counter;
-    int field_A;
-    int field_C;
-} struc_4;
+    int direction;
+    int fall_through_floor;
+} explode_effect_sprite;
+
+typedef struct struc_6
+{
+    int counter;
+    int x;
+    int y;
+} struc_6;
+
 
 effect_sprite static_effect_sprites[MAX_EFFECT_SPRITES];
 uint16 effect_frame_num_tbl[MAX_EFFECT_SPRITES];
 
-struc_4 struc4_sprites[MAX_STRUCT4_SPRITES];
+explode_effect_sprite explode_effect_sprites[MAX_EXPLODE_EFFECT_SPRITES];
 
-int struct6_1B4FC(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
-{
-    return 0;
-}
+struc_6 struc6_sprites[MAX_STRUCT6_SPRITES];
 
-int sub_1BAAD(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
+int blow_up_actor_with_bomb(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
 {
+    switch (actorInfoIndex)
+    {
+        case 3:
+        case 4:
+        case 17:
+        case 18:
+        case 20:
+        case 25:
+        case 41:
+        case 46:
+        case 47:
+        case 51:
+        case 54:
+        case 55:
+        case 65:
+        case 69:
+        case 74:
+        case 75:
+        case 78:
+        case 80:
+        case 83:
+        case 84:
+        case 86:
+        case 87:
+        case 88:
+        case 89:
+        case 92:
+        case 95:
+        case 96:
+        case 101:
+        case 106:
+        case 111:
+        case 112:
+        case 113:
+        case 118:
+        case 124:
+        case 125:
+        case 126:
+        case 127:
+        case 128:
+        case 129:
+        case 187:
+        case 188:
+            if(actorInfoIndex == 0x7d)
+            {
+                actor_add_new(0xb8, x_pos, y_pos);
+            }
+            if((actorInfoIndex == 0x12 || actorInfoIndex == 0x58) && frame_num == 2)
+            {
+                return 0;
+            }
+            else
+            {
+                explode_effect_add_sprite(actorInfoIndex, frame_num, x_pos, y_pos);
+                player_add_score_for_actor(actorInfoIndex);
+                if(actorInfoIndex == 0x5f)
+                {
+                    if(word_2E1E2 == 1)
+                    {
+                        actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
+                    }
+                    effect_add_sprite(0x17, 8, x_pos, y_pos, 0, 1);
+                    actor_toss_add_new(0x39, x_pos, y_pos);
+                    word_2E1E2--;
+                }
+            }
+            return 1;
+
+        default : break;
+    }
+
     return 0;
 }
 
@@ -65,6 +144,7 @@ void effect_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos, 
             sprite->field_A = arg_8;
             sprite->counter = counter;
             effect_frame_num_tbl[i] = 0;
+            return;
         }
     }
 }
@@ -129,12 +209,17 @@ void effect_clear_sprites()
     }
 }
 
-void sub_1BA0F(int x_pos, int y_pos)
+void exploding_balls_effect(int x_pos, int y_pos)
 {
-
+    effect_add_sprite(0x15, 6, x_pos + 1, y_pos, 6, 2);
+    effect_add_sprite(0x15, 6, x_pos + 3, y_pos, 4, 2);
+    effect_add_sprite(0x15, 6, x_pos + 4, y_pos - 2, 3, 2);
+    effect_add_sprite(0x15, 6, x_pos + 3, y_pos - 4, 2, 2);
+    effect_add_sprite(0x15, 6, x_pos + 1, y_pos - 4, 8, 2);
+    effect_add_sprite(0x15, 6, x_pos, y_pos - 2, 7, 2);
 }
 
-void update_rain_effect() //FIXME this rain doesn't look quite right. It seems to come down in lines. :(
+void update_rain_effect() //FIXME this rain doesn't look quite right. The lightning palette anim might need tweaking.
 {
 
     int x = (rand() % 38) + mapwindow_x_offset;
@@ -160,19 +245,19 @@ void update_rain_effect() //FIXME this rain doesn't look quite right. It seems t
     return;
 }
 
-void struct4_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
+void explode_effect_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
 {
-    static uint8 word_28F6C = 0;
+    static uint8 explode_direction = 0;
 
-    word_28F6C++;
-    if(word_28F6C == 5)
+    explode_direction++;
+    if(explode_direction == 5)
     {
-        word_28F6C = 0;
+        explode_direction = 0;
     }
 
-    for(int i=0;i < MAX_STRUCT4_SPRITES; i++)
+    for(int i=0;i < MAX_EXPLODE_EFFECT_SPRITES; i++)
     {
-        struc_4 *sprite = &struc4_sprites[i];
+        explode_effect_sprite *sprite = &explode_effect_sprites[i];
         
         if(sprite->counter == 0)
         {
@@ -181,8 +266,8 @@ void struct4_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
             sprite->y = y_pos;
             sprite->frame_num = frame_num;
             sprite->counter = 1;
-            sprite->field_A = word_28F6C;
-            sprite->field_C = 0;
+            sprite->direction = explode_direction;
+            sprite->fall_through_floor = 0;
             return;
         }
     }
@@ -190,30 +275,30 @@ void struct4_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
     return ;
 }
 
-void struct4_clear_sprites()
+void explode_effect_clear_sprites()
 {
-    for(int i=0;i < MAX_STRUCT4_SPRITES; i++)
+    for(int i=0;i < MAX_EXPLODE_EFFECT_SPRITES; i++)
     {
-        struc4_sprites[i].counter = 0;
+        explode_effect_sprites[i].counter = 0;
     }
 }
 
-void struct4_update_sprites()
+void explode_effect_update_sprites()
 {
-    for(int i=0;i < MAX_STRUCT4_SPRITES; i++)
+    for(int i=0;i < MAX_EXPLODE_EFFECT_SPRITES; i++)
     {
-        struc_4 *sprite = &struc4_sprites[i];
+        explode_effect_sprite *sprite = &explode_effect_sprites[i];
         if (sprite->counter == 0)
         {
             continue;
         }
 
-        if(sprite->field_A == 0 || sprite->field_A == 3)
+        if(sprite->direction == 0 || sprite->direction == 3)
         {
             if(sprite_blocking_check(RIGHT, sprite->actorInfoIndex, sprite->frame_num, sprite->x + 1, sprite->y + 1) == NOT_BLOCKED)
             {
                 sprite->x++;
-                if(sprite->field_A == 3)
+                if(sprite->direction == 3)
                 {
                     sprite->x++;
                 }
@@ -221,12 +306,12 @@ void struct4_update_sprites()
         }
         else
         {
-            if(sprite->field_A == 1 || sprite->field_A == 4)
+            if(sprite->direction == 1 || sprite->direction == 4)
             {
                 if(sprite_blocking_check(LEFT, sprite->actorInfoIndex, sprite->frame_num, sprite->x - 1, sprite->y + 1) == NOT_BLOCKED)
                 {
                     sprite->x--;
-                    if(sprite->field_A == 4)
+                    if(sprite->direction == 4)
                     {
                         sprite->x--;
                     }
@@ -238,7 +323,7 @@ void struct4_update_sprites()
         {
             if(sprite->counter < 5)
             {
-                sprite->y += 2;
+                sprite->y -= 2;
             }
 
             if(sprite->counter == 5)
@@ -284,10 +369,10 @@ void struct4_update_sprites()
                 break;
             }
 
-            if(sprite->field_C != 0 || sprite_blocking_check(DOWN, sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y + 1) == NOT_BLOCKED)
+            if(sprite->fall_through_floor != 0 || sprite_blocking_check(DOWN, sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y + 1) == NOT_BLOCKED)
             {
                 sprite->y++;
-                if(sprite->field_C != 0 || sprite_blocking_check(DOWN, sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y + 1) == NOT_BLOCKED)
+                if(sprite->fall_through_floor != 0 || sprite_blocking_check(DOWN, sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y + 1) == NOT_BLOCKED)
                 {
                     if(sprite->counter == 1)
                     {
@@ -306,8 +391,104 @@ void struct4_update_sprites()
                 }
             }
             sprite->counter = 3;
-            sprite->field_C = 1;
+            sprite->fall_through_floor = 1;
             play_sfx(0x2e);
         }
     }
 }
+
+uint8 struct6_collision_check_maybe(int actorInfoIndex1, int actor_frame_num1, int actor1_x, int actor1_y, int actorInfoIndex2, int actor_frame_num2, int actor2_x, int actor2_y)
+{
+    TileInfo *actor1_info = actor_get_tile_info(actorInfoIndex1, actor_frame_num1);
+    uint16 sprite1_width = actor1_info->width;
+    uint16 si = actor1_info->height;
+
+    TileInfo *actor2_info = actor_get_tile_info(actorInfoIndex2, actor_frame_num2);
+    uint16 sprite2_width = actor2_info->width;
+    uint16 di = actor2_info->height;
+
+    if(actor1_x > map_width_in_tiles && actor1_x <= -1)
+    {
+        sprite1_width = actor1_x + sprite1_width;
+        actor1_x = 0;
+    }
+
+    if((actor2_x > actor1_x || actor2_x + sprite2_width <= actor1_x) && (actor2_x < actor1_x || actor1_x + sprite1_width <= actor2_x) || (actor1_y - si >= actor2_y || actor2_y > actor1_y) && (actor2_y - di >= actor1_y || actor1_y > actor2_y))
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+int struct6_1B4FC(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
+{
+    for(int i=0; i < MAX_STRUCT6_SPRITES; i++)
+    {
+        struc_6 *sprite = &struc6_sprites[i];
+
+        if(sprite->counter != 0)
+        {
+            if(struct6_collision_check_maybe(0x1a, 0, sprite->x, sprite->y, actorInfoIndex, frame_num, x_pos, y_pos) != 0)
+            {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+void struct6_update_sprites()
+{
+    for(int i=0; i < MAX_STRUCT6_SPRITES; i++)
+    {
+        struc_6 *sprite = &struc6_sprites[i];
+        if(sprite->counter != 0)
+        {
+            if(sprite->counter == 1)
+            {
+                effect_add_sprite(0x17, 8, sprite->x + 1 + 1, sprite->y - 2, 0, 1);
+            }
+
+            display_actor_sprite_maybe(0x1a, sprite->counter - 1 & 3, sprite->x, sprite->y, 0);
+
+            if(player_check_collision_with_actor(0x1a, sprite->counter - 1 & 3, sprite->x, sprite->y) != 0)
+            {
+                player_decrease_health();
+            }
+
+            sprite->counter++;
+            if(sprite->counter == 9)
+            {
+                sprite->counter = 0;
+                effect_add_sprite(0x62, 6, sprite->x + 1, sprite->y - 1, 1, 1);
+            }
+        }
+    }
+}
+
+void struct6_add_sprite(int x_pos, int y_pos)
+{
+    for(int i=0; i < MAX_STRUCT6_SPRITES; i++)
+    {
+        struc_6 *sprite = &struc6_sprites[i];
+        if (sprite->counter == 0)
+        {
+            sprite->counter = 1;
+            sprite->x = x_pos;
+            sprite->y = y_pos + 2;
+            play_sfx(0xa);
+            return;
+        }
+    }
+}
+
+void struct6_clear_sprites()
+{
+    for(int i=0; i < MAX_STRUCT6_SPRITES; i++)
+    {
+        struc6_sprites[i].counter = 0;
+    }
+}
+

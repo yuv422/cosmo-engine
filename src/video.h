@@ -15,15 +15,13 @@
 void display_fullscreen_image(uint8 image_number);
 void fade_to_black_speed_3();
 
-//FIXME where should these functions live?
-void struct6_clear_sprites();
-
 bool video_init();
 void video_shutdown();
 
 void video_update();
 
 void video_draw_tile(Tile *tile, uint16 x, uint16 y);
+void video_draw_tile_solid_white(Tile *tile, uint16 x, uint16 y);
 
 void video_update_palette(int palette_index, SDL_Color new_color);
 

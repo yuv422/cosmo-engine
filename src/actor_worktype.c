@@ -85,11 +85,148 @@ void actor_wt_blue_platform(ActorData *actor)
 
 void actor_wt_blue_turret_alien(ActorData *actor)
 {
+    actor->data_2--;
+    if(actor->data_2 == 0)
+    {
+        actor->data_1++;
+        actor->data_2 = 3;
+        if(actor->data_1 != 3)
+        {
+            actor->frame_num++;
+            switch (actor->frame_num - 2)
+            {
+                case 0:
+                    actor_add_new(0x6d, actor->x - 1, actor->y - 1);
+                    break;
 
+                case 3:
+                    actor_add_new(0x42, actor->x - 1, actor->y + 1);
+                    break;
+
+                case 6:
+                    actor_add_new(0x44, actor->x + 1, actor->y + 1);
+                    break;
+
+                case 9:
+                    actor_add_new(0x43, actor->x + 5, actor->y + 1);
+                    break;
+
+                case 12:
+                    actor_add_new(0x6e, actor->x + 5, actor->y - 1);
+                    break;
+
+                default : break;
+            }
+        }
+    }
+
+    if(actor->data_1 == 0)
+    {
+        if(actor->y < player_y_pos - 2)
+        {
+            if(actor->y < player_y_pos - 2)
+            {
+                if(actor->x - 2 <= player_x_pos)
+                {
+                    if(actor->x + 3 >= player_x_pos)
+                    {
+                        if(actor->x - 2 < player_x_pos && actor->x + 3 >= player_x_pos)
+                        {
+                            actor->frame_num = 6;
+                            actor->x = actor->data_3 + 1;
+                        }
+                    }
+                    else
+                    {
+                        actor->frame_num = 9;
+                        actor->x = actor->data_3 + 1;
+                    }
+                }
+                else
+                {
+                    actor->frame_num = 3;
+                    actor->x = actor->data_3;
+                }
+
+                if(actor->x - 2 == player_x_pos)
+                {
+                    actor->frame_num = 6;
+                    actor->x = actor->data_3 + 1;
+                }
+            }
+        }
+        else
+        {
+            if(actor->x + 1 <= player_x_pos)
+            {
+                if(actor->x + 2 <= player_x_pos)
+                {
+                    actor->frame_num = 12;
+                    actor->x = actor->data_3 + 1;
+                }
+            }
+            else
+            {
+                actor->frame_num = 0;
+                actor->x = actor->data_3;
+            }
+        }
+    }
+    
+    if(actor->data_1 == 3)
+    {
+        actor->data_2 = 0x1b;
+        actor->data_1 = 0;
+    }
+    
+    if(actor->frame_num > 14)
+    {
+        actor->frame_num = 14;
+    }
+
+    return;
 }
 
 void actor_wt_bomb(ActorData *actor)
 {
+    if(actor->frame_num == 3)
+    {
+        actor->data_2 = actor->data_2 + 1;
+        actor->data_1 = actor->data_1 + 1;
+        if((actor->data_1 & 1) != 0 && actor->frame_num == 3)
+        {
+            actor_tile_display_func_index = 2;
+        }
+        
+        if(actor->data_2 == 10)
+        {
+            actor->is_deactivated_flag_maybe = 1;
+            exploding_balls_effect(actor->x - 2, actor->y + 1 + 1);
+            actor_tile_display_func_index = 1;
+            
+            struct6_add_sprite(actor->x - 2, actor->y);
+            
+            if((actor->data_1 & 1) != 0 && actor->frame_num == 3)
+            {
+                display_actor_sprite_maybe(0x18, actor->frame_num, actor->x, actor->y, 2);
+            }
+        }
+    }
+    else
+    {
+        actor->data_1 = actor->data_1 + 1;
+        if(actor->data_1 == 5)
+        {
+            actor->data_1 = 0;
+            actor->frame_num++;
+        }
+    }
+
+    if(sprite_blocking_check(1, 0x18, 0, actor->x, actor->y) != NOT_BLOCKED)
+    {
+        actor->y--;
+    }
+    return;
 
 }
 
@@ -352,9 +489,48 @@ void actor_wt_pneumatic_pipe(ActorData *actor)
 
 }
 
-void actor_wt_projectile_unknown(ActorData *actor)
+void actor_wt_projectile_flashing_ball(ActorData *actor)
 {
+    if(is_sprite_on_screen(0x44, 0, actor->x, actor->y) == 0)
+    {
+        actor->is_deactivated_flag_maybe = 1;
+        return;
+    }
+    
+    if(actor->data_1 == 0)
+    {
+        actor->data_1 = 1;
+        play_sfx(0x1a);
+    }
+    
+    actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
 
+    switch (actor->data_5)
+    {
+        case 0:
+            actor->x = actor->x - 1;
+            break;
+
+        case 1:
+            actor->x = actor->x - 1;
+            actor->y = actor->y + 1;
+            break;
+
+        case 2:
+            actor->y = actor->y + 1;
+            break;
+
+        case 3:
+            actor->x = actor->x + 1;
+            actor->y = actor->y + 1;
+            break;
+
+        case 4:
+            actor->x = actor->x + 1;
+            break;
+
+        default : break;
+    }
 }
 
 void actor_wt_question_mark_block(ActorData *actor)

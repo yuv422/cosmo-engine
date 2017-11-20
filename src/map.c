@@ -138,7 +138,7 @@ void load_level(int level_number)
                 break;
         }
     }
-    struct4_clear_sprites();
+    explode_effect_clear_sprites();
     struct6_clear_sprites();
     effect_clear_sprites();
     player_reset_push_variables();

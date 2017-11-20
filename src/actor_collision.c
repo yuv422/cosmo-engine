@@ -85,7 +85,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                     actor->is_deactivated_flag_maybe = 1;
                     player_add_score_for_actor(0x19);
 
-                    sub_1BA0F(actor->x, actor->y);
+                    exploding_balls_effect(actor->x, actor->y);
                     return 1;
                 }
             }
@@ -130,7 +130,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                     actor_add_new(0x41, actor->x, actor->y);
                 }
 
-                sub_1BA0F(actor->x - 1, actor->y + 1);
+                exploding_balls_effect(actor->x - 1, actor->y + 1);
                 player_add_score_for_actor(0x33);
                 return 1;
             }
@@ -152,7 +152,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 play_sfx(6);
 
                 actor->is_deactivated_flag_maybe = 1;
-                sub_1BA0F(actor->x, actor->y);
+                exploding_balls_effect(actor->x, actor->y);
                 player_add_score_for_actor(actor);
                 return 1;
             }
@@ -203,7 +203,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
 
                 if (actor->data_5 == 0)
                 {
-                    sub_1BA0F(actor->x, actor->y);
+                    exploding_balls_effect(actor->x, actor->y);
 
                     actor->is_deactivated_flag_maybe = 1;
                     if (actor->data_1 > 0)
@@ -260,7 +260,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 {
                     actor_add_new(1, actor->x, actor->y);
 
-                    sub_1BA0F(actor->x, actor->y);
+                    exploding_balls_effect(actor->x, actor->y);
                     actor->is_deactivated_flag_maybe = 1;
                     return 1;
                 }
@@ -293,7 +293,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                     actor->is_deactivated_flag_maybe = 1;
                     player_add_score_for_actor(actor);
 
-                    sub_1BA0F(actor->x, actor->y);
+                    exploding_balls_effect(actor->x, actor->y);
                     return 1;
                 }
             }
@@ -313,7 +313,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 player_add_score_for_actor(0x7c);
                 play_sfx(6);
 
-                sub_1BA0F(actor->x, actor->y);
+                exploding_balls_effect(actor->x, actor->y);
 
                 actor->is_deactivated_flag_maybe = 1;
                 actor_add_new(0x80, actor->x, actor->y);
@@ -465,7 +465,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
 
                 if (actor->data_5 == 4)
                 {
-                    struct4_add_sprite(0x66, 1, actor->x, actor->y - 4);
+                    explode_effect_add_sprite(0x66, 1, actor->x, actor->y - 4);
                     play_sfx(0x37);
                 }
 
@@ -683,7 +683,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             if (actor->data_2 == 0)
             {
                 actor->is_deactivated_flag_maybe = 1;
-                sub_1BA0F(actor->x - 1, actor->y + 1);
+                exploding_balls_effect(actor->x - 1, actor->y + 1);
             }
             return 0;
 
@@ -1049,13 +1049,13 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
 void actor_explode_container(ActorData *actor)
 {
     actor->is_deactivated_flag_maybe = 1;
-    struct4_add_sprite(actor->data_2, 0, actor->x - 1, actor->y);
+    explode_effect_add_sprite(actor->data_2, 0, actor->x - 1, actor->y);
 
-    struct4_add_sprite(actor->data_2, 1, actor->x + 1, actor->y - 1);
+    explode_effect_add_sprite(actor->data_2, 1, actor->x + 1, actor->y - 1);
 
-    struct4_add_sprite(actor->data_2, 2, actor->x + 3, actor->y);
+    explode_effect_add_sprite(actor->data_2, 2, actor->x + 3, actor->y);
 
-    struct4_add_sprite(actor->data_2, 3, actor->x + 1 + 1, actor->y + 2);
+    explode_effect_add_sprite(actor->data_2, 3, actor->x + 1 + 1, actor->y + 2);
     if((sub_1106F() & 1) == 0)
     {
         play_sfx(0x3d);

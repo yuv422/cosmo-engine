@@ -55,7 +55,7 @@ void actor_wt_pipe_transit_direction(ActorData *actor);
 void actor_wt_plasma_energy_blue_sprite(ActorData *actor);
 void actor_wt_plasma_fireball(ActorData *actor);
 void actor_wt_pneumatic_pipe(ActorData *actor);
-void actor_wt_projectile_unknown(ActorData *actor);
+void actor_wt_projectile_flashing_ball(ActorData *actor);
 void actor_wt_question_mark_block(ActorData *actor);
 void actor_wt_red_blue_plant(ActorData *actor);
 void actor_wt_red_chomper_alien(ActorData *actor);
