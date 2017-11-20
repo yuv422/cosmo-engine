@@ -8,6 +8,7 @@
 #include "actor.h"
 #include "player.h"
 #include "map.h"
+#include "sfx.h"
 
 #define MAX_EFFECT_SPRITES 10
 #define MAX_STRUCT4_SPRITES 16
@@ -259,8 +260,54 @@ void struct4_update_sprites()
                 }
             }
 
-            if(sprite->counter == 9)
-            break;
+            if(sprite->counter < 9)
+            {
+                if(sprite->counter == 1)
+                {
+                    display_actor_sprite_maybe(sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y, 2);
+                }
+                else
+                {
+                    display_actor_sprite_maybe(sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y, 4);
+                }
+                sprite->counter++;
+                if(sprite->counter > 40)
+                {
+                    sprite->counter = 0;
+                }
+                break;
+            }
+
+            if(sprite->counter > 16 && is_sprite_on_screen(sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y) == 0)
+            {
+                sprite->counter = 0;
+                break;
+            }
+
+            if(sprite->field_C != 0 || sprite_blocking_check(DOWN, sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y + 1) == NOT_BLOCKED)
+            {
+                sprite->y++;
+                if(sprite->field_C != 0 || sprite_blocking_check(DOWN, sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y + 1) == NOT_BLOCKED)
+                {
+                    if(sprite->counter == 1)
+                    {
+                        display_actor_sprite_maybe(sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y, 2);
+                    }
+                    else
+                    {
+                        display_actor_sprite_maybe(sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y, 4);
+                    }
+                    sprite->counter++;
+                    if(sprite->counter > 40)
+                    {
+                        sprite->counter = 0;
+                    }
+                    break;
+                }
+            }
+            sprite->counter = 3;
+            sprite->field_C = 1;
+            play_sfx(0x2e);
         }
     }
 }

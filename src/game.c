@@ -160,6 +160,8 @@ void game_loop()
 
         actor_update_all();
 
+        struct4_update_sprites();
+
         actor_toss_update();
 
         update_rain_effect();
