@@ -26,6 +26,7 @@ void actor_toss_add_new(int actorInfoIndex, int x_pos, int y_pos) {
             actorToss[i].x = x_pos;
             actorToss[i].y = y_pos;
             actorToss[i].counter = 0;
+            return;
         }
     }
 }

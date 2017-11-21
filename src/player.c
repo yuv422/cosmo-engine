@@ -1085,7 +1085,15 @@ void display_player_sprite(char frame_num, int x_pos, int y_pos, int tile_displa
     {
         for(int x=0;x < info->width; x++)
         {
-            video_draw_tile(tile, (x_pos - mapwindow_x_offset + x + 1) * 8, (y_pos - info->height + 1 - mapwindow_y_offset + y + 1) * 8);
+            uint16 screen_x = (x_pos - mapwindow_x_offset + x + 1) * 8;
+            uint16 screen_y = (y_pos - info->height + 1 - mapwindow_y_offset + y + 1) * 8;
+
+            if(screen_x >= 8 && screen_x <= 304 && //FIXME need a better way of making sure we draw in the borders.
+                                 screen_y >= 8 && screen_y < 152 &&
+                    !(tileattr_mni_data[map_get_tile_cell(x_pos+x,y_pos - info->height + y + 1)/8] & TILE_ATTR_IN_FRONT))
+            {
+                video_draw_tile(tile, screen_x, screen_y);
+            }
             tile++;
         }
     }
