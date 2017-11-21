@@ -63,9 +63,105 @@ void actor_wt_blue_ball(ActorData *actor)
 
 }
 
+const static sint8 bird_swoop_y_offset_tbl[] = {
+        2, 2, 2, 1, 1, 1, 0, 0, 0, -1, -1, -1, -2, -2, -2
+};
+
 void actor_wt_blue_bird(ActorData *actor)
 {
-
+    if(actor->data_1 == 0)
+    {
+        if(actor->x + 1 <= player_x_pos)
+        {
+            if(rand() % 10 != 0)
+            {
+                actor->data_2 = 4;
+            }
+            else
+            {
+                actor->data_2 = 5;
+            }
+        }
+        else
+        {
+            if(rand() % 10 != 0)
+            {
+                actor->data_2 = 0;
+            }
+            else
+            {
+                actor->data_2 = 1;
+            }
+        }
+        actor->frame_num = actor->data_2;
+        actor->data_3 = actor->data_3 + 1;
+        if(actor->data_3 == 0x1e)
+        {
+            actor->data_1 = 1;
+            actor->data_3 = 0;
+        }
+    }
+    else
+    {
+        if(actor->data_1 == 1)
+        {
+            actor->data_3 = actor->data_3 + 1;
+            if(actor->data_3 != 0x14)
+            {
+                if((actor->data_3 & 1) != 0 && actor->data_3 < 10)
+                {
+                    actor->y = actor->y - 1;
+                }
+            }
+            else
+            {
+                actor->data_3 = 0;
+                actor->data_1 = 2;
+                if(actor->x + 1 <= player_x_pos)
+                {
+                    actor->data_4 = 1;
+                }
+                else
+                {
+                    actor->data_4 = 0;
+                }
+            }
+            
+            if(actor->x + 1 <= player_x_pos)
+            {
+                actor->frame_num = (actor->data_3 & 1) + 6;
+            }
+            else
+            {
+                actor->frame_num = (actor->data_3 & 1) + 2;
+            }
+        }
+        else
+        {
+            
+            if(actor->data_1 == 2)
+            {
+                actor->data_3 = actor->data_3 + 1;
+                if(actor->data_4 != 0)
+                {
+                    actor->frame_num = (actor->data_3 & 1) + 6;
+                    actor->x = actor->x + 1;
+                }
+                else
+                {
+                    actor->frame_num = (actor->data_3 & 1) + 1 + 1;
+                    actor->x = actor->x - 1;
+                }
+                actor->y = actor->y + bird_swoop_y_offset_tbl[actor->data_3 - 1];
+                if(actor->data_3 == 15)
+                {
+                    actor->data_1 = 1;
+                    actor->data_3 = 10;
+                }
+            }
+        }
+    }
+    return;
 }
 
 void actor_wt_blue_cube_platform(ActorData *actor)
@@ -352,7 +448,49 @@ void actor_wt_ghost(ActorData *actor)
 
 void actor_wt_green_plant(ActorData *actor)
 {
-
+    if(actor->data_2 != 0)
+    {
+        actor->y = actor->y + 1;
+        actor->data_4 = actor->data_4 + 1;
+        if(actor->data_4 == 7)
+        {
+            actor->data_2 = 0;
+            actor->data_3 = 0;
+            actor->data_1 = 12;
+        }
+        return;
+    }
+    
+    if(actor->data_3 < actor->data_1)
+    {
+        actor->data_3 = actor->data_3 + 1;
+        return;
+    }
+    
+    actor->data_5 = (actor->data_5 ? -1 : 0) + 1;
+    actor->frame_num = actor->frame_num + 1;
+    if(actor->frame_num == 4)
+    {
+        actor->frame_num = 0;
+    }
+    
+    if(actor->data_4 != 0)
+    {
+        if(actor->data_4 == 7)
+        {
+            play_sfx(0x35);
+        }
+        
+        actor->data_4 = actor->data_4 - 1;
+        actor->y = actor->y - 1;
+    }
+    
+    if(struct6_1B4FC(0x91, 0, actor->x, actor->y) != 0)
+    {
+        actor->data_2 = 1;
+    }
+    
+    return;
 }
 
 void actor_wt_green_pruny_cabbage_ball(ActorData *actor)
@@ -466,7 +604,84 @@ void actor_wt_pink_eye_plant(ActorData *actor)
 
 void actor_wt_pink_slug(ActorData *actor)
 {
-
+    if(actor->data_5 == 0)
+    {
+        actor->data_4 = (actor->data_4 ? -1 : 0) + 1;
+        if(actor->data_4 != 0)
+        {
+            return;
+        }
+    }
+    if(rand() % 0x28 > 0x25)
+    {
+        
+        if(actor->data_3 == 0 && actor->data_2 == 0)
+        {
+            actor->data_3 = 4;
+        }
+    }
+    
+    if(actor->data_3 != 0)
+    {
+        actor->data_3 = actor->data_3 - 1;
+        if(actor->data_3 == 2)
+        {
+            if(actor->data_1 == 0)
+            {
+                actor->frame_num = 2;
+                return;
+            }
+            
+            if(actor->data_2 == 0)
+            {
+                actor->frame_num = 5;
+            }
+            return;
+        }
+        
+        if(actor->data_1 != 0)
+        {
+            actor->frame_num = 3;
+        }
+        else
+        {
+            actor->frame_num = 0;
+        }
+        return;
+    }
+    
+    if(actor->data_1 == 0)
+    {
+        actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+        if(actor->frame_num != 0)
+        {
+            actor->x--;
+            check_actor_move_left_or_right(actor, 2);
+            
+            if(actor->has_moved_left_flag == 0)
+            {
+                actor->data_1 = 1;
+            }
+        }
+        return;
+    }
+    
+    actor->data_2 = (actor->data_2 ? -1 : 0) + 1;
+    if(actor->data_2 == 0)
+    {
+        actor->x = actor->x + 1;
+        actor->frame_num = 1;
+        check_actor_move_left_or_right(actor, 3);
+        
+        if(actor->has_moved_right_flag == 0)
+        {
+            actor->data_1 = 0;
+        }
+        return;
+    }
+    
+    actor->frame_num = actor->data_2 + 3;
+    return;
 }
 
 void actor_wt_pipe_transit_direction(ActorData *actor)
