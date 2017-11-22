@@ -3,6 +3,7 @@
 //
 
 #include <SDL.h>
+#include <sound/audio.h>
 #include "game.h"
 #include "map.h"
 #include "dialog.h"
@@ -15,6 +16,7 @@ int main(int argc, char *argv[]) {
     }
 
     video_init();
+    audio_init();
     game_init();
     //do while here
     game_play_mode = main_menu();
@@ -23,6 +25,7 @@ int main(int argc, char *argv[]) {
     game_loop();
 
     video_shutdown();
+    audio_shutdown();
     SDL_Quit();
     return 0;
 }

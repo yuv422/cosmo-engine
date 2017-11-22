@@ -5,6 +5,7 @@
 #include <MacTypes.h>
 #include <SDL_timer.h>
 #include <SDL_events.h>
+#include <sound/sfx.h>
 #include "actor.h"
 #include "palette.h"
 #include "player.h"
@@ -47,6 +48,7 @@ void game_init()
     actor_load_tiles();
     map_load_tiles();
     font_load_tiles();
+    load_sfx();
 }
 
 void set_initial_game_state()

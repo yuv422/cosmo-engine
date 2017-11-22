@@ -153,7 +153,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
 
                 actor->is_deactivated_flag_maybe = 1;
                 exploding_balls_effect(actor->x, actor->y);
-                player_add_score_for_actor(actor);
+                player_add_score_for_actor(actor->actorInfoIndex);
                 return 1;
             }
             else
@@ -291,7 +291,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 {
 
                     actor->is_deactivated_flag_maybe = 1;
-                    player_add_score_for_actor(actor);
+                    player_add_score_for_actor(actor->actorInfoIndex);
 
                     exploding_balls_effect(actor->x, actor->y);
                     return 1;
