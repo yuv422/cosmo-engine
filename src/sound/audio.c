@@ -6,6 +6,7 @@
 #include <SDL_mixer.h>
 #include "audio.h"
 
+
 void audio_init()
 {
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
@@ -14,7 +15,7 @@ void audio_init()
         return;
     }
 
-    if( Mix_OpenAudio( 22050, AUDIO_S16LSB, 1, 4096 ) == -1 )
+    if( Mix_OpenAudio( FREQUENCY, AUDIO_S16LSB, 1, 4096 ) == -1 )
     {
         printf("ERROR: Opening audio mixer!\n");
         return;

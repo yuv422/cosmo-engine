@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include "sfx.h"
 
+#define SFX_SAMPLE_RATE 140
+
 typedef struct Sfx {
     uint8 priority;
     char *sample;
@@ -32,10 +34,20 @@ int get_num_samples(File *file, int offset, int index, int total)
     {
         file_seek(file, (index+2)*16);
         int next_offset = file_read2(file);
-        return (next_offset - offset) / 2;
+        return ((next_offset - offset) / 2) - 1;
     }
 
-    return (file_get_filesize(file) - offset) / 2;
+    return ((file_get_filesize(file) - offset) / 2) - 1;
+}
+
+char *convert_sfx_to_wave(File *file, int offset, int num_samples)
+{
+    file_seek(file, offset);
+
+    for(int i=0; i < num_samples; i++)
+    {
+        uint16 sample = file_read2(file);
+    }
 }
 
 int load_sfx_file(const char *filename, int sfx_offset)
