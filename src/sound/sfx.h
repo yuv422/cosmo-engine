@@ -6,5 +6,6 @@
 #define COSMO_ENGINE_SFX_H
 
 void load_sfx();
+void play_sfx(int sfx_number);
 
 #endif //COSMO_ENGINE_SFX_H

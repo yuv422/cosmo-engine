@@ -1,6 +1,5 @@
 #include "actor.h"
 #include "dialog.h"
-#include "sfx.h"
 #include "map.h"
 #include "input.h"
 #include "tile.h"

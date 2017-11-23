@@ -9,7 +9,7 @@
 #include "game.h"
 #include "dialog.h"
 #include "input.h"
-#include "sfx.h"
+#include "sound/sfx.h"
 #include "tile.h"
 #include "map.h"
 

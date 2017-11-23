@@ -3,7 +3,7 @@
 //
 
 #include "actor_collision.h"
-#include "sfx.h"
+#include "sound/sfx.h"
 #include "player.h"
 #include "effects.h"
 #include "game.h"

@@ -19,7 +19,6 @@
 #include "video.h"
 #include "actor_toss.h"
 #include "effects.h"
-#include "sfx.h"
 #include "font.h"
 
 #define COSMO_INTERVAL 100

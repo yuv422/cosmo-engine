@@ -8,7 +8,7 @@
 #include "actor.h"
 #include "player.h"
 #include "map.h"
-#include "sfx.h"
+#include "sound/sfx.h"
 #include "tile.h"
 #include "actor_toss.h"
 

@@ -6,13 +6,16 @@
 #include <files/file.h>
 #include <game.h>
 #include <stdlib.h>
+#include <SDL_mixer.h>
 #include "sfx.h"
+#include "audio.h"
 
 #define SFX_SAMPLE_RATE 140
+#define PC_PIT_RATE 1193182 // It is actually 1193181.8181...Hz
 
 typedef struct Sfx {
     uint8 priority;
-    char *sample;
+    Mix_Chunk *sample;
 } Sfx;
 
 Sfx *sfxs;
@@ -40,14 +43,43 @@ int get_num_samples(File *file, int offset, int index, int total)
     return ((file_get_filesize(file) - offset) / 2) - 1;
 }
 
-char *convert_sfx_to_wave(File *file, int offset, int num_samples)
+Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
 {
+    int sample_length = (FREQUENCY/140);
+    sample_length = 0x2000 * FREQUENCY / PC_PIT_RATE;
+    Mix_Chunk *chunk = (Mix_Chunk *)malloc(sizeof(Mix_Chunk));
+    chunk->alen = num_samples*sample_length*2;
+    chunk->abuf = (Uint8 *)malloc(num_samples*sample_length*2);
+    chunk->allocated = 0;
+    chunk->volume = 128;
+
     file_seek(file, offset);
+
+    sint16 *wave_data = (sint16 *)chunk->abuf;
 
     for(int i=0; i < num_samples; i++)
     {
-        uint16 sample = file_read2(file);
+        uint16 freq = file_read2(file);
+        if (freq)
+        {
+            sint16 beepWaveVal = 4095; // 32767 - Too loud
+            uint16 beepHalfCycleCounter = 0;
+            for (int sampleCounter = 0; sampleCounter < sample_length; sampleCounter++) {
+                wave_data[i*sample_length+sampleCounter] = beepWaveVal;
+                beepHalfCycleCounter += 2 * PC_PIT_RATE;
+                if (beepHalfCycleCounter >= FREQUENCY * freq) {
+                    beepHalfCycleCounter %= FREQUENCY * freq;
+                    beepWaveVal = -beepWaveVal;
+                }
+            }
+        }
+        else
+        {
+            memset(&wave_data[i*sample_length], 0, sample_length*2); //silence
+        }
     }
+
+    return chunk;
 }
 
 int load_sfx_file(const char *filename, int sfx_offset)
@@ -62,8 +94,9 @@ int load_sfx_file(const char *filename, int sfx_offset)
         int offset = file_read2(&file);
         Sfx *sfx = &sfxs[sfx_offset + i];
         sfx->priority = file_read1(&file);
-        int sample_length = get_num_samples(&file, offset, i, count);
-        printf("sfx[%d] samples = %d\n", i+sfx_offset, sample_length);
+        int num_samples = get_num_samples(&file, offset, i, count);
+        printf("sfx[%d] samples = %d\n", i+sfx_offset, num_samples);
+        sfx->sample = convert_sfx_to_wave(&file, offset, num_samples);
     }
     return count;
 }
@@ -82,4 +115,9 @@ void load_sfx()
     int sfx_offset = load_sfx_file("SOUNDS.MNI", 0);
     sfx_offset += load_sfx_file("SOUNDS2.MNI", sfx_offset);
     load_sfx_file("SOUNDS3.MNI", sfx_offset);
+}
+
+void play_sfx(int sfx_number)
+{
+    Mix_PlayChannel(-1, sfxs[sfx_number].sample, 0);
 }
