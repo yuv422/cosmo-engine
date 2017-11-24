@@ -4,6 +4,7 @@
 
 
 #include <SDL_events.h>
+#include <sound/sfx.h>
 #include "input.h"
 #include "map.h"
 #include "game.h"
@@ -67,6 +68,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
 
 input_state_enum handle_key_up(SDL_KeyboardEvent event)
 {
+    static int sfx_idx = 0;
     switch(event.keysym.sym)
     {
         case SDLK_LEFT :
@@ -86,6 +88,9 @@ input_state_enum handle_key_up(SDL_KeyboardEvent event)
             break;
         case SDLK_s :
             bomb_key_pressed = 0;
+            break;
+        case SDLK_p :
+            play_sfx(sfx_idx++);
             break;
         default : break;
     }

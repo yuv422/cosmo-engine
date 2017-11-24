@@ -20,6 +20,7 @@ typedef struct Sfx {
 
 Sfx *sfxs;
 int num_sfx = 0;
+int currently_playing_priority=0;
 
 int get_num_sfx(const char *filename)
 {
@@ -45,8 +46,7 @@ int get_num_samples(File *file, int offset, int index, int total)
 
 Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
 {
-    int sample_length = (FREQUENCY/140);
-    sample_length = 0x2000 * FREQUENCY / PC_PIT_RATE;
+    int sample_length = AUDIO_SAMPLE_RATE / SFX_SAMPLE_RATE;
     Mix_Chunk *chunk = (Mix_Chunk *)malloc(sizeof(Mix_Chunk));
     chunk->alen = num_samples*sample_length*2;
     chunk->abuf = (Uint8 *)malloc(num_samples*sample_length*2);
@@ -62,13 +62,15 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
         uint16 freq = file_read2(file);
         if (freq)
         {
+            freq = PC_PIT_RATE / freq;
+            int half_cycle_length = (AUDIO_SAMPLE_RATE / (freq * 2));
             sint16 beepWaveVal = 4095; // 32767 - Too loud
             uint16 beepHalfCycleCounter = 0;
             for (int sampleCounter = 0; sampleCounter < sample_length; sampleCounter++) {
                 wave_data[i*sample_length+sampleCounter] = beepWaveVal;
-                beepHalfCycleCounter += 2 * PC_PIT_RATE;
-                if (beepHalfCycleCounter >= FREQUENCY * freq) {
-                    beepHalfCycleCounter %= FREQUENCY * freq;
+                beepHalfCycleCounter++;
+                if (beepHalfCycleCounter >= half_cycle_length) {
+                    beepHalfCycleCounter %= half_cycle_length;
                     beepWaveVal = -beepWaveVal;
                 }
             }
@@ -95,7 +97,7 @@ int load_sfx_file(const char *filename, int sfx_offset)
         Sfx *sfx = &sfxs[sfx_offset + i];
         sfx->priority = file_read1(&file);
         int num_samples = get_num_samples(&file, offset, i, count);
-        printf("sfx[%d] samples = %d\n", i+sfx_offset, num_samples);
+//        printf("sfx[%d] samples = %d\n", i+sfx_offset, num_samples);
         sfx->sample = convert_sfx_to_wave(&file, offset, num_samples);
     }
     return count;
@@ -119,5 +121,13 @@ void load_sfx()
 
 void play_sfx(int sfx_number)
 {
-    Mix_PlayChannel(-1, sfxs[sfx_number].sample, 0);
+    sfx_number--;
+    if(Mix_Playing(0))
+    {
+        if(sfxs[sfx_number].priority < currently_playing_priority)
+            return;
+    }
+
+    currently_playing_priority = sfxs[sfx_number].priority;
+    Mix_PlayChannel(0, sfxs[sfx_number].sample, 0);
 }

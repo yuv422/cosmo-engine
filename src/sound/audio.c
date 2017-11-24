@@ -15,7 +15,7 @@ void audio_init()
         return;
     }
 
-    if( Mix_OpenAudio( FREQUENCY, AUDIO_S16LSB, 1, 4096 ) == -1 )
+    if( Mix_OpenAudio( AUDIO_SAMPLE_RATE, AUDIO_S16LSB, 1, 4096 ) == -1 )
     {
         printf("ERROR: Opening audio mixer!\n");
         return;
