@@ -1,3 +1,4 @@
+#include <sound/sfx.h>
 #include "actor.h"
 #include "dialog.h"
 #include "map.h"
@@ -1398,6 +1399,11 @@ void player_decrease_health()
 
 void push_player_around(int push_direction, int push_anim_duration, int push_duration, int player_frame_num,
                         char dont_push_while_jumping_flag, int check_for_blocking_flag)
+{
+
+}
+
+void player_update_from_inputs()
 {
 
 }

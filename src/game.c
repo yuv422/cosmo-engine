@@ -148,7 +148,7 @@ void game_loop()
             handle_player_input_maybe();
             if (word_32B88 != 0)
             {
-                //FIXME player_update_from_inputs
+                player_update_from_inputs();
             }
 
             if (word_32EB2 != 0 || player_walk_anim_index != 0)

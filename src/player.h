@@ -62,6 +62,7 @@ extern unsigned char byte_2E2E4;
 
 
 void handle_player_input_maybe();
+void player_update_from_inputs();
 
 void sub_11062(); //resets variables
 

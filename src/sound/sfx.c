@@ -11,7 +11,7 @@
 #include "audio.h"
 
 #define SFX_SAMPLE_RATE 140
-#define PC_PIT_RATE 1193182 // It is actually 1193181.8181...Hz
+#define PC_PIT_RATE 1193181
 
 typedef struct Sfx {
     uint8 priority;
@@ -48,7 +48,7 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
 {
     int sample_length = AUDIO_SAMPLE_RATE / SFX_SAMPLE_RATE;
     Mix_Chunk *chunk = (Mix_Chunk *)malloc(sizeof(Mix_Chunk));
-    chunk->alen = num_samples*sample_length*2;
+    chunk->alen = (Uint32)(num_samples * sample_length * 2);
     chunk->abuf = (Uint8 *)malloc(num_samples*sample_length*2);
     chunk->allocated = 0;
     chunk->volume = 128;
@@ -59,17 +59,18 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
 
     for(int i=0; i < num_samples; i++)
     {
-        uint16 freq = file_read2(file);
-        if (freq)
+        uint16 sample = file_read2(file);
+        if (sample)
         {
-            freq = PC_PIT_RATE / freq;
-            int half_cycle_length = (AUDIO_SAMPLE_RATE / (freq * 2));
-            sint16 beepWaveVal = 4095; // 32767 - Too loud
+            float freq = PC_PIT_RATE / (float)sample;
+            int half_cycle_length = (int)(AUDIO_SAMPLE_RATE / (freq * 2));
+            //printf("sample %d, freq=%f, half_cycle_len = %d\n", i, freq, half_cycle_length);
+            sint16 beepWaveVal = 5000;
             uint16 beepHalfCycleCounter = 0;
             for (int sampleCounter = 0; sampleCounter < sample_length; sampleCounter++) {
                 wave_data[i*sample_length+sampleCounter] = beepWaveVal;
                 beepHalfCycleCounter++;
-                if (beepHalfCycleCounter >= half_cycle_length) {
+                if (beepHalfCycleCounter >= half_cycle_length) { //FIXME need to smooth this square wave a bit.
                     beepHalfCycleCounter %= half_cycle_length;
                     beepWaveVal = -beepWaveVal;
                 }
@@ -90,7 +91,8 @@ int load_sfx_file(const char *filename, int sfx_offset)
     open_file(filename, &file);
     file_seek(&file, 6);
     int count = file_read2(&file);
-    for(int i=0;i<count;i++)
+    printf("%s, %d, %d\n", filename, count, sfx_offset);
+    for(int i=0; i < MAX_SAMPLES_PER_FILE; i++)
     {
         file_seek(&file, (i+1) * 16); //+1 to skip header.
         int offset = file_read2(&file);
@@ -100,7 +102,7 @@ int load_sfx_file(const char *filename, int sfx_offset)
 //        printf("sfx[%d] samples = %d\n", i+sfx_offset, num_samples);
         sfx->sample = convert_sfx_to_wave(&file, offset, num_samples);
     }
-    return count;
+    return MAX_SAMPLES_PER_FILE;
 }
 
 void load_sfx()

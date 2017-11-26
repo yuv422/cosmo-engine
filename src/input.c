@@ -68,7 +68,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
 
 input_state_enum handle_key_up(SDL_KeyboardEvent event)
 {
-    static int sfx_idx = 0;
+    static int sfx_idx = 1;
     switch(event.keysym.sym)
     {
         case SDLK_LEFT :
@@ -90,7 +90,13 @@ input_state_enum handle_key_up(SDL_KeyboardEvent event)
             bomb_key_pressed = 0;
             break;
         case SDLK_p :
-            play_sfx(sfx_idx++);
+            play_sfx(sfx_idx);
+            break;
+        case SDLK_i :
+            play_sfx(--sfx_idx);
+            break;
+        case SDLK_o :
+            play_sfx(++sfx_idx);
             break;
         default : break;
     }
