@@ -322,7 +322,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             return 0;
 
         case 127: // 158 ENEMY:  Security Robot (shoots flashing bullet, can act as moving floor spring)
-            if ((word_2E4CE == 0 && obj_switch_151_flag != 0 || word_2E4CE != 0 && obj_switch_151_flag == 0) &&
+            if (((word_2E4CE == 0 && obj_switch_151_flag != 0) || (word_2E4CE != 0 && obj_switch_151_flag == 0)) &&
                 actor->count_down_timer == 0 && player_bounce_in_the_air(15) != 0)
             {
                 actor->count_down_timer = 3;

@@ -46,7 +46,7 @@ Tile *bg_tiles;
 
 void load_backdrop_image(const char *filename)
 {
-    uint32 num_tiles;
+    uint16 num_tiles;
     bg_tiles = load_tiles(filename, SOLID, &num_tiles);
     printf("Loading %d background tiles.\n", num_tiles);
 }

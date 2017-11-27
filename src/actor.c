@@ -1479,8 +1479,8 @@ int is_sprite_on_screen(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
     uint16 sprite_height = actor_sprites[actorInfoIndex].frames[frame_num].height;
     uint16 sprite_width = actor_sprites[actorInfoIndex].frames[frame_num].width;
 
-    if((mapwindow_x_offset > x_pos || mapwindow_x_offset + 0x26 <= x_pos) && (mapwindow_x_offset < x_pos || x_pos + sprite_width <= mapwindow_x_offset) ||
-            (mapwindow_y_offset + 0x12 <= y_pos - sprite_height + 1 || mapwindow_y_offset + 0x12 > y_pos) && (y_pos < mapwindow_y_offset || mapwindow_y_offset + 0x12 <= y_pos))
+    if(((mapwindow_x_offset > x_pos || mapwindow_x_offset + 0x26 <= x_pos) && (mapwindow_x_offset < x_pos || x_pos + sprite_width <= mapwindow_x_offset)) ||
+            ((mapwindow_y_offset + 0x12 <= y_pos - sprite_height + 1 || mapwindow_y_offset + 0x12 > y_pos) && (y_pos < mapwindow_y_offset || mapwindow_y_offset + 0x12 <= y_pos)))
     {
         return false;
     }
