@@ -368,7 +368,7 @@ void handle_player_input_maybe()
             bomb_key_pressed = 0;
         }
     }
-    if(byte_2E182 != 0 || bomb_key_pressed == 0 || byte_2E2E4 != 0 || player_hanging_on_wall_direction != 0 || jump_key_pressed != 0 && player_input_jump_related_flag == 0)
+    if(byte_2E182 != 0 || bomb_key_pressed == 0 || byte_2E2E4 != 0 || player_hanging_on_wall_direction != 0 || (jump_key_pressed != 0 && player_input_jump_related_flag == 0))
     {
         word_2E214 = 0;
         //ax = player_check_movement(1, player_x_pos, player_y_pos + 1);
@@ -541,7 +541,9 @@ void handle_player_input_maybe()
         {
             player_input_jump_related_flag = 0;
         }
-        if(player_bounce_height_counter != 0 || jump_key_pressed != 0 && byte_2E2E4 == 0 && player_input_jump_related_flag == 0 || player_hanging_on_wall_direction != 0 && jump_key_pressed != 0 && player_input_jump_related_flag == 0)
+        if(player_bounce_height_counter != 0 ||
+                (jump_key_pressed != 0 && byte_2E2E4 == 0 && player_input_jump_related_flag == 0) ||
+                (player_hanging_on_wall_direction != 0 && jump_key_pressed != 0 && player_input_jump_related_flag == 0))
         {
             if(player_bounce_flag_maybe != 0 && player_bounce_height_counter > 0)
             {
@@ -1272,7 +1274,8 @@ int player_check_collision_with_actor(int actorInfoIndex, int frame_num, int x_p
             si += x_pos;
             x_pos = 0;
         }
-        if((player_x_pos <= x_pos && player_x_pos + 3 > x_pos || player_x_pos >= x_pos && x_pos + si > player_x_pos) && (y_pos - di < player_y_pos && player_y_pos <= y_pos || player_y_pos - 4 <= y_pos && y_pos <= player_y_pos))
+        if(((player_x_pos <= x_pos && player_x_pos + 3 > x_pos) || (player_x_pos >= x_pos && x_pos + si > player_x_pos)) &&
+                ((y_pos - di < player_y_pos && player_y_pos <= y_pos) || (player_y_pos - 4 <= y_pos && y_pos <= player_y_pos)))
         {
             return 1;
         }
@@ -1290,7 +1293,9 @@ int player_bounce_in_the_air(int bounce_height)
         return 0;
     }
 
-    if((player_bounce_flag_maybe == 0 || player_bounce_flag_maybe != 0 && player_bounce_height_counter < 2) && (byte_2E2E4 != 0 && word_2E180 >= 0 || byte_2E182 > 6) && word_2E1E8 != 0)
+    if((player_bounce_flag_maybe == 0 || (player_bounce_flag_maybe != 0 && player_bounce_height_counter < 2)) &&
+            ((byte_2E2E4 != 0 && word_2E180 >= 0) || byte_2E182 > 6) &&
+            word_2E1E8 != 0)
     {
         player_bounce_height_counter = bounce_height + 1;
         word_2CAF6 = bounce_height + 1;

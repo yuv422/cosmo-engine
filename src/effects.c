@@ -413,7 +413,8 @@ uint8 struct6_collision_check_maybe(int actorInfoIndex1, int actor_frame_num1, i
         actor1_x = 0;
     }
 
-    if((actor2_x > actor1_x || actor2_x + sprite2_width <= actor1_x) && (actor2_x < actor1_x || actor1_x + sprite1_width <= actor2_x) || (actor1_y - si >= actor2_y || actor2_y > actor1_y) && (actor2_y - di >= actor1_y || actor1_y > actor2_y))
+    if(((actor2_x > actor1_x || actor2_x + sprite2_width <= actor1_x) && (actor2_x < actor1_x || actor1_x + sprite1_width <= actor2_x)) ||
+            ((actor1_y - si >= actor2_y || actor2_y > actor1_y) && (actor2_y - di >= actor1_y || actor1_y > actor2_y)))
     {
         return 0;
     }
