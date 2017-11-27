@@ -20,6 +20,7 @@
 #include "actor_toss.h"
 #include "effects.h"
 #include "font.h"
+#include "platforms.h"
 
 #define COSMO_INTERVAL 100
 
@@ -155,6 +156,8 @@ void game_loop()
             {
                 player_update_walk_anim(); //TODO check name I think this might be fall anim
             }
+
+            update_mud_fountains();
 
             map_display();
         } while(player_update_sprite() != 0);

@@ -8,6 +8,7 @@
 #include "effects.h"
 #include "video.h"
 #include "actor_collision.h"
+#include "platforms.h"
 
 //Data
 ActorData actors[MAX_ACTORS];
@@ -37,13 +38,10 @@ uint16 word_2E1E4 = 0; //seems to be related to number of actors in play.
 uint16 word_2E1E2 = 0;
 
 uint16 num_moving_platforms = 0;
-uint16 num_mud_fountains = 0;
+
 uint16 num_brightness_objs = 0;
 uint16 word_2E4CE = 0;
 uint16 obj_switch_151_flag = 0;
-
-MovingPlatform moving_platform_tbl[10];
-MudFountain mud_fountain_tbl[10];
 Brightness brightness_tbl[0xc8];
 
 uint8 move_platform_flag = 0;

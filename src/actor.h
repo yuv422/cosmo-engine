@@ -31,24 +31,6 @@ typedef struct ActorData
 
 typedef struct
 {
-    uint16 x;
-    uint16 y;
-    uint16 map_tiles[5];
-} MovingPlatform;
-
-typedef struct
-{
-    uint16 x;
-    uint16 y;
-    uint16 direction;
-    uint16 length_counter;
-    uint16 current_height;
-    uint16 max_height;
-    uint16 pause_counter;
-} MudFountain;
-
-typedef struct
-{
     int type;
     int x;
     int y;
@@ -79,13 +61,11 @@ extern uint16 word_2E1E4;
 
 extern uint16 word_2E1E2;
 
-extern uint16 num_moving_platforms;
-extern uint16 num_mud_fountains;
 extern uint16 num_brightness_objs;
 extern uint16 word_2E4CE;
 extern uint16 obj_switch_151_flag;
 
-extern MovingPlatform moving_platform_tbl[10];
+
 extern uint8 move_platform_flag;
 extern uint16 actor_tile_display_func_index;
 

@@ -20,6 +20,7 @@ extern int map_max_y_offset;
 extern uint8 rain_flag;
 
 int map_get_tile_cell(int x, int y);
+void map_write_tile_cell(uint16 map_tile_cell, int x, int y);
 
 void load_level(int level_number);
 

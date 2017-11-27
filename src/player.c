@@ -1617,3 +1617,74 @@ void player_update_from_inputs()
     }
     return;
 }
+
+void player_move_on_platform(int platform_x_left, int platform_x_right, int x_offset_tbl_index, int y_offset_tbl_index)
+{
+    if(word_32B88 != 0)
+    {
+        return;
+    }
+
+    int player_right_x_pos = player_sprites[0].frames[0].width + player_x_pos - 1;
+
+    if(player_hanging_on_wall_direction != 0 && player_check_movement(DOWN, player_x_pos, player_y_pos + 1) != 0)
+    {
+        player_hanging_on_wall_direction = 0;
+    }
+
+    if((player_x_pos < platform_x_left || player_x_pos > platform_x_right) && (player_right_x_pos < platform_x_left || player_right_x_pos > platform_x_right))
+    {
+        return;
+    }
+
+    player_x_pos = player_x_pos + player_x_offset_tbl[x_offset_tbl_index];
+    player_y_pos = player_y_pos + player_y_offset_tbl[y_offset_tbl_index];
+
+    if((up_key_pressed != 0 || down_key_pressed != 0) && left_key_pressed == 0 && right_key_pressed == 0)
+    {
+        if(up_key_pressed != 0 && mapwindow_y_offset > 0 && player_y_pos - mapwindow_y_offset < 0x11)
+        {
+            mapwindow_y_offset = mapwindow_y_offset - 1;
+        }
+        if(down_key_pressed != 0 && (mapwindow_y_offset + 4 < player_y_pos || player_y_offset_tbl[y_offset_tbl_index] == 1 && mapwindow_y_offset + 3 < player_y_pos))
+        {
+            mapwindow_y_offset = mapwindow_y_offset + 1;
+        }
+    }
+
+    if(player_y_pos - mapwindow_y_offset <= 0x11)
+    {
+        if(player_y_pos - mapwindow_y_offset < 3)
+        {
+            mapwindow_y_offset = mapwindow_y_offset - 1;
+        }
+    }
+    else
+    {
+        mapwindow_y_offset = mapwindow_y_offset + 1;
+    }
+
+    if(player_x_pos - mapwindow_x_offset <= 0x17 || map_width_in_tiles - 38 <= mapwindow_x_offset)
+    {
+        if(player_x_pos - mapwindow_x_offset < 12 && mapwindow_x_offset > 0)
+        {
+            mapwindow_x_offset = mapwindow_x_offset - 1;
+        }
+    }
+    else
+    {
+        mapwindow_x_offset = mapwindow_x_offset + 1;
+    }
+
+    if(player_y_offset_tbl[y_offset_tbl_index] == 1 && player_y_pos - mapwindow_y_offset > 14)
+    {
+        mapwindow_y_offset = mapwindow_y_offset + 1;
+    }
+
+    if(player_y_offset_tbl[y_offset_tbl_index] == -1 && player_y_pos - mapwindow_y_offset < 3)
+    {
+        mapwindow_y_offset = mapwindow_y_offset - 1;
+    }
+
+    return;
+}

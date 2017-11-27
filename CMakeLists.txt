@@ -22,7 +22,7 @@ set(SOURCE_FILES
         src/music.c src/music.h src/backdrop.c src/backdrop.h src/save.c src/save.h src/status.c src/status.h
         src/actor_worktype.c src/actor_worktype.h src/actor_worktype.c src/actor_worktype.h src/effects.c src/effects.h
         src/actor_collision.c src/actor_collision.h src/actor_toss.c src/actor_toss.h src/font.c src/font.h
-        src/sound/sfx.c src/sound/sfx.h src/sound/audio.c src/sound/audio.h)
+        src/sound/sfx.c src/sound/sfx.h src/sound/audio.c src/sound/audio.h src/platforms.c src/platforms.h)
 
 include_directories(src)
 

@@ -19,6 +19,7 @@
 #include "actor_toss.h"
 #include "effects.h"
 #include "status.h"
+#include "platforms.h"
 
 //Data
 uint16 current_level;
@@ -267,4 +268,9 @@ void map_display() {
             }
         }
     }
+}
+
+void map_write_tile_cell(uint16 map_tile_cell, int x, int y)
+{
+    map_data[x + y * map_width_in_tiles] = map_tile_cell;
 }

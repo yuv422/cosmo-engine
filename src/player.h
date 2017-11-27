@@ -87,4 +87,6 @@ void player_decrease_health();
 
 void push_player_around(int push_direction, int push_anim_duration, int push_duration, int player_frame_num, char dont_push_while_jumping_flag, int check_for_blocking_flag);
 
+void player_move_on_platform(int platform_x_left, int platform_x_right, int x_offset_tbl_index, int y_offset_tbl_index);
+
 #endif //COSMO_ENGINE_PLAYER_H
