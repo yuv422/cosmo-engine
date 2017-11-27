@@ -8,6 +8,7 @@
 #include "video.h"
 #include "save.h"
 #include "status.h"
+#include "effects.h"
 
 const sint16 player_x_offset_tbl[] = { 0, 0, 1, 1, 1, 0, -1, -1, -1 };
 const sint16 player_y_offset_tbl[] = { 0, -1, -1, 0, 1, 1, 1, 0, -1 };
@@ -1405,6 +1406,209 @@ void push_player_around(int push_direction, int push_anim_duration, int push_dur
 
 void player_update_from_inputs()
 {
+    static uint16 word_28F98 = 0;
 
+    sub_11062();
+    word_2E1E8 = 0;
+    player_bounce_height_counter = 0;
+    byte_2E2E4 = 0;
+    if (player_death_counter != 0)
+    {
+        return;
+    }
+
+    if (word_32B88 <= 1)
+    {
+        if (jump_key_pressed != 0)
+        {
+            player_input_jump_related_flag = 1;
+            word_32B88 = 0;
+            byte_2E2E4 = 1;
+            word_2E180 = 1;
+            player_bounce_flag_maybe = 0;
+            word_2E1E8 = 1;
+            player_bounce_in_the_air(9);
+            player_bounce_height_counter -= 2;
+            play_sfx(2);
+            return;
+        }
+    }
+    else
+    {
+        up_key_pressed = 1;
+        word_32B88--;
+    }
+
+    if (left_key_pressed != 0 && right_key_pressed == 0)
+    {
+        if (player_direction == 0)
+        {
+            player_x_pos--;
+        }
+
+        player_direction = 0;
+        player_sprite_dir_frame_offset = 4;
+        if (player_x_pos < 1)
+        {
+            player_x_pos++;
+        }
+
+        if (player_check_movement(2, player_x_pos, player_y_pos) != 0 ||
+            player_check_movement(2, player_x_pos, player_y_pos + 1) != 0)
+        {
+            player_x_pos++;
+        }
+
+        if ((player_x_pos & 1) != 0)
+        {
+            effect_add_sprite(0x13, 4, player_x_pos + 3, player_y_pos + 1, 3, 1);
+            play_sfx(0x18);
+        }
+    }
+
+    if (right_key_pressed != 0 && left_key_pressed == 0)
+    {
+        if (player_direction != 0)
+        {
+            player_x_pos++;
+        }
+
+        player_direction = 0x17;
+        player_sprite_dir_frame_offset = 4;
+        if (map_width_in_tiles - 4 < player_x_pos)
+        {
+            player_x_pos--;
+        }
+
+        if (player_check_movement(3, player_x_pos, player_y_pos) != 0 ||
+            player_check_movement(3, player_x_pos, player_y_pos + 1) != 0)
+        {
+            player_x_pos--;
+        }
+        if ((player_x_pos & 1) != 0)
+        {
+            effect_add_sprite(0x13, 4, player_x_pos - 1, player_y_pos + 1, 7, 1);
+            play_sfx(0x18);
+        }
+    }
+
+    if (up_key_pressed == 0 || down_key_pressed != 0)
+    {
+        if (down_key_pressed == 0 || up_key_pressed != 0)
+        {
+            player_sprite_dir_frame_offset = 4;
+        }
+        else
+        {
+            player_sprite_dir_frame_offset = 6;
+            if (map_max_y_offset + 0x11 > player_y_pos)
+            {
+                player_y_pos++;
+            }
+            if (player_check_movement(1, player_x_pos, player_y_pos + 1) != 0)
+            {
+                player_y_pos--;
+            }
+        }
+    }
+    else
+    {
+        player_sprite_dir_frame_offset = 5;
+        if (player_y_pos > 4)
+        {
+            player_y_pos--;
+        }
+        if (player_check_movement(0, player_x_pos, player_y_pos) != 0)
+        {
+            player_y_pos++;
+        }
+        if ((player_y_pos & 1) != 0)
+        {
+            effect_add_sprite(0x13, 4, player_x_pos + 1, player_y_pos + 1, 5, 1);
+            play_sfx(0x18);
+        }
+    }
+
+    if (bomb_key_pressed == 0)
+    {
+        word_28F98 = 0;
+    }
+    if (bomb_key_pressed != 0 && word_28F98 == 0)
+    {
+        word_28F98 = 1;
+        player_sprite_dir_frame_offset = 14;
+    }
+    if (word_28F98 == 0 || word_28F98 == 2)
+    {
+        bomb_key_pressed = 0;
+    }
+    else
+    {
+        player_sprite_dir_frame_offset = 14;
+        if (word_28F98 == 0)
+        {
+            word_28F98 = 2;
+            if (player_direction == 0)
+            {
+                uint8 tr1 = tileattr_mni_data[map_get_tile_cell(player_x_pos - 1, player_y_pos - 2) / 8];
+                uint8 tr2 = tileattr_mni_data[map_get_tile_cell(player_x_pos - 2, player_y_pos - 2) / 8];
+                if ((tr1 & TILE_ATTR_BLOCK_LEFT) == 0 && (tr2 & TILE_ATTR_BLOCK_LEFT) == 0 && num_bombs > 0)
+                {
+                    actor_add_new(0x18, player_x_pos - 2, player_y_pos - 2);
+                    num_bombs = num_bombs - 1;
+                    display_num_bombs_left();
+                    play_sfx(0x1d);
+                }
+                else
+                {
+                    play_sfx(0x1c);
+                }
+            }
+            else
+            {
+                uint8 tr1 = tileattr_mni_data[map_get_tile_cell(player_x_pos + 3, player_y_pos - 2) / 8];
+                uint8 tr2 = tileattr_mni_data[map_get_tile_cell(player_x_pos + 4, player_y_pos - 2) / 8];
+                if ((tr1 & TILE_ATTR_BLOCK_RIGHT) == 0 && (tr2 & TILE_ATTR_BLOCK_RIGHT) == 0 && num_bombs > 0)
+                {
+                    actor_add_new(0x18, player_x_pos + 3, player_y_pos - 2);
+                    num_bombs = num_bombs - 1;
+                    display_num_bombs_left();
+                    play_sfx(0x1d);
+                }
+                else
+                {
+                    play_sfx(0x1c);
+                }
+            }
+        }
+    }
+
+    if (player_y_pos - mapwindow_y_offset <= 14)
+    {
+        if (player_bounce_height_counter > 10 && player_y_pos - mapwindow_y_offset < 7 && mapwindow_y_offset > 0)
+        {
+            mapwindow_y_offset = mapwindow_y_offset - 1;
+        }
+        if (player_y_pos - mapwindow_y_offset < 7 && mapwindow_y_offset > 0)
+        {
+            mapwindow_y_offset = mapwindow_y_offset - 1;
+        }
+    }
+    else
+    {
+        mapwindow_y_offset = mapwindow_y_offset + 1;
+    }
+
+    if (player_x_pos - mapwindow_x_offset > 0x17 && map_width_in_tiles - 38 > mapwindow_x_offset)
+    {
+        mapwindow_x_offset = mapwindow_x_offset + 1;
+    }
+    else
+    {
+        if (player_x_pos - mapwindow_x_offset < 12 && mapwindow_x_offset > 0)
+        {
+            mapwindow_x_offset = mapwindow_x_offset - 1;
+        }
+    }
+    return;
 }
-
