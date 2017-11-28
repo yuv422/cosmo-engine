@@ -162,6 +162,8 @@ void game_loop()
             map_display();
         } while(player_update_sprite() != 0);
 
+        display_mud_fountains();
+
         actor_update_all();
 
         explode_effect_update_sprites();

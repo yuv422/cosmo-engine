@@ -7,6 +7,7 @@
 #include "player.h"
 #include "map.h"
 #include "input.h"
+#include "actor.h"
 
 uint16 num_mud_fountains = 0;
 MovingPlatform moving_platform_tbl[10];
@@ -70,5 +71,30 @@ void update_mud_fountains()
     return;
 }
 
+void display_mud_fountains()
+{
+    static uint16 frame_counter = 0;
+    static uint16 frame_num = 0;
+    frame_counter++;
+    if ((frame_counter & 1) != 0)
+    {
+        frame_num++;
+    }
+    for (int i = 0; i < num_mud_fountains; i++)
+    {
+        MudFountain *mud_fountain = &mud_fountain_tbl[i];
+        display_actor_sprite_maybe(0x4f, frame_num & 1, mud_fountain->x, mud_fountain->y + 1, 0);
 
+        for (int j = 0; j < mud_fountain->current_height + 1; j++)
+        {
+            display_actor_sprite_maybe(0x4f, (frame_num & 1) + 1 + 1, mud_fountain->x + 1, mud_fountain->y + j + 1, 0);
 
+            if (player_check_collision_with_actor(0x4f, 2, mud_fountain->x + 1, mud_fountain->y + j + 1) != 0)
+            {
+                player_decrease_health();
+            }
+        }
+    }
+
+    return;
+}

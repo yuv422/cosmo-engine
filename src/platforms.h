@@ -30,5 +30,6 @@ extern MovingPlatform moving_platform_tbl[10];
 extern MudFountain mud_fountain_tbl[10];
 
 void update_mud_fountains();
+void display_mud_fountains();
 
 #endif //COSMO_ENGINE_PLATFORMS_H

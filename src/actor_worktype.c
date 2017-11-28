@@ -58,9 +58,138 @@ void actor_wt_big_yellow_spike(ActorData *actor)
 
 }
 
+const static uint8 blue_ball_frame_num_tbl[] = {
+        2, 2, 2, 0, 3, 3, 3, 0, 0, 2, 2, 0, 0, 1, 1, 0, 1, 3, 3, 3, 0, 1, 1, 0, 1, 1, 1
+};
+
 void actor_wt_blue_ball(ActorData *actor)
 {
+    if(actor->falling_counter != 0)
+    {
+        actor->data_1 = 0;
+        actor->data_2 = 0x14;
+        if(actor->falling_counter < 2)
+        {
+            actor->frame_num = 1;
+            actor->frame_num = 10;
+            return;
+        }
 
+        if(actor->falling_counter < 2 || actor->falling_counter > 4)
+        {
+            actor->y = actor->y - 1;
+            display_actor_sprite_maybe(0x56, 9, actor->x, actor->y - 2, 0);
+            actor->frame_num = 10;
+        }
+        else
+        {
+            display_actor_sprite_maybe(0x56, 8, actor->x, actor->y - 2, 0);
+            actor->frame_num = 10;
+        }
+        return;
+    }
+
+    if (actor->data_1 == 0)
+    {
+        // node 00014ca4-00014cc1 #insn=5 use={ax, bx, al} def={ax, bx} in={ax, bx, si, al} out={ax, si, al} pred={ 14C02} CONDJUMP target=00014d31 follow=00014cc3
+        //loc_14CA4:
+        actor->data_2 = actor->data_2 + 1;
+        actor->frame_num = blue_ball_frame_num_tbl[actor->data_2];
+        if (actor->data_2 == 0x1a)
+        {
+            // node 00014cc3-00014cd7 #insn=2 use={} def={ax, bx} in={si, al} out={si, al} pred={ 14CA4} CONDJUMP target=00014ce2 follow=00014cda
+            actor->data_2 = 0;
+            if (actor->y == player_y_pos || (sub_1106F() & 1) == 0)
+            {
+// node 00014ce2-00014cf1 #insn=4 use={} def={} in={} out={} pred={ 14CC3 14CDA} FALLTHROUGH follow=00014d31
+                loc_14CE2:
+                if(actor->x < player_x_pos + 1 + 1)
+                {
+                    if(actor->x + 2 <= player_x_pos)
+                    {
+                        actor->data_1 = 2;
+                        actor->data_2 = 0;
+                        actor->frame_num = 3;
+                        actor->data_3 = 6;
+                    }
+                }
+                else
+                {
+                    actor->data_1 = 1;
+                    actor->data_2 = 0;
+                    actor->frame_num = 2;
+                    actor->data_3 = 6;
+                }
+            }
+        }
+    }
+
+    /*
+// node 00014d31-00014d4a #insn=5 use={} def={bx} in={ax, si, al} out={ax, bx, si, al} pred={ 14C02 14CA4 14CDA 14D07 14D28} CONDJUMP target=00014d8b follow=00014d4c
+    loc_14D31:
+    
+    if(actor->data_3 != 0)
+    {
+        actor->data_3 = actor->data_3 - 1;
+        return;
+    }
+    
+    if (actor->data_1 != 1) goto loc_14D8B;
+
+// node 00014d4c-00014d61 #insn=4 use={} def={} in={} out={} pred={ 14D31} FALLTHROUGH follow=00014dac
+    * (bx + 4) = * (bx + 4) - 1;
+    check_actor_move_left_or_right(si, 2);
+    
+    if(actor->has_moved_left_flag != 0)
+    {
+        ax = al;
+        actor->frame_num = ax;
+        actor->data_2 = actor->data_2 + 1;
+        if(actor->data_2 == 0x10)
+        {
+            
+            actor->data_1 = 0;
+            actor->data_2 = 0;
+            return ax;
+        }
+        return ax;
+    }
+
+// node 00014d8b-00014d93 #insn=3 use={} def={bx} in={ax, si, al} out={ax, bx, si, al} pred={ 14D31} CONDJUMP target=00014dfb follow=00014d95
+    loc_14D8B:
+    
+    if (actor->data_1 != 2) goto loc_14DFB;
+
+// node 00014d95-00014daa #insn=3 use={bx, si} def={bx} in={ax, bx, si, al} out={ax, al} pred={ 14D8B} CONDJUMP target=00014dc3 follow=00014dac
+    actor->x = actor->x + 1;
+    check_actor_move_left_or_right(si, 3);
+    if (actor->has_moved_right_flag != 0) goto loc_14DC3;
+
+// node 00014dac-00014dc1 #insn=6 use={} def={bx} in={ax} out={ax} pred={ 14D4C 14D95} JUMP target=00014dfb
+    loc_14DAC:
+    
+    actor->data_1 = 0;
+    actor->data_2 = 0;
+    actor->frame_num = 0;
+    goto loc_14DFB;
+
+// node 00014dc3-00014dea #insn=5 use={} def={} in={} out={} pred={ 14D95} FALLTHROUGH follow=00014dfb
+    loc_14DC3:
+    ax = al;
+    actor->frame_num = ax;
+    actor->data_2 = actor->data_2 + 1;
+    if(actor->data_2 == 12)
+    {
+        
+        actor->data_1 = 0;
+        actor->data_2 = 0;
+        return ax;
+    }
+
+// node 00014dfb-00014dfd #insn=3 use={ax} def={si} in={ax} out={} pred={ 14D8B 14DAC 14DC3} RETURN
+    loc_14DFB:
+*/
+    return;
 }
 
 const static sint8 bird_swoop_y_offset_tbl[] = {
@@ -126,7 +255,7 @@ void actor_wt_blue_bird(ActorData *actor)
                     actor->data_4 = 0;
                 }
             }
-            
+
             if(actor->x + 1 <= player_x_pos)
             {
                 actor->frame_num = (actor->data_3 & 1) + 6;
@@ -138,7 +267,7 @@ void actor_wt_blue_bird(ActorData *actor)
         }
         else
         {
-            
+
             if(actor->data_1 == 2)
             {
                 actor->data_3 = actor->data_3 + 1;
@@ -268,13 +397,13 @@ void actor_wt_blue_turret_alien(ActorData *actor)
             }
         }
     }
-    
+
     if(actor->data_1 == 3)
     {
         actor->data_2 = 0x1b;
         actor->data_1 = 0;
     }
-    
+
     if(actor->frame_num > 14)
     {
         actor->frame_num = 14;
@@ -293,15 +422,15 @@ void actor_wt_bomb(ActorData *actor)
         {
             actor_tile_display_func_index = 2;
         }
-        
+
         if(actor->data_2 == 10)
         {
             actor->is_deactivated_flag_maybe = 1;
             exploding_balls_effect(actor->x - 2, actor->y + 1 + 1);
             actor_tile_display_func_index = 1;
-            
+
             struct6_add_sprite(actor->x - 2, actor->y);
-            
+
             if((actor->data_1 & 1) != 0 && actor->frame_num == 3)
             {
                 display_actor_sprite_maybe(0x18, actor->frame_num, actor->x, actor->y, 2);
@@ -337,7 +466,7 @@ void actor_wt_bonus_item(ActorData *actor)
     {
         actor_tile_display_func_index = 4;
     }
-    
+
     if (actor->data_4 == 0)
     {
         actor->frame_num = actor->frame_num + 1;
@@ -355,7 +484,7 @@ void actor_wt_bonus_item(ActorData *actor)
     {
         actor->frame_num = 0;
     }
-    
+
     if(actor->data_5 == 1 && actor->actorInfoIndex != 0xca && actor->data_4 == 0)
     {
         if((rand() & 0x3f) == 0)
@@ -391,18 +520,18 @@ void actor_wt_cyan_spitting_plant(ActorData *actor)
         actor->data_4 = 0;
         actor->frame_num = 0;
     }
-    
+
     if(actor->data_4 == 0x2a)
     {
         actor->frame_num = 1;
     }
-    
+
     if(actor->data_4 == 0x2d)
     {
         actor->frame_num = 2;
         if(actor->data_5 != 2)
         {
-            
+
             actor_add_new(0x6e, actor->x + 4, actor->y - 1);
         }
         else
@@ -485,36 +614,36 @@ void actor_wt_green_plant(ActorData *actor)
         }
         return;
     }
-    
+
     if(actor->data_3 < actor->data_1)
     {
         actor->data_3 = actor->data_3 + 1;
         return;
     }
-    
+
     actor->data_5 = (actor->data_5 ? -1 : 0) + 1;
     actor->frame_num = actor->frame_num + 1;
     if(actor->frame_num == 4)
     {
         actor->frame_num = 0;
     }
-    
+
     if(actor->data_4 != 0)
     {
         if(actor->data_4 == 7)
         {
             play_sfx(0x35);
         }
-        
+
         actor->data_4 = actor->data_4 - 1;
         actor->y = actor->y - 1;
     }
-    
+
     if(struct6_1B4FC(0x91, 0, actor->x, actor->y) != 0)
     {
         actor->data_2 = 1;
     }
-    
+
     return;
 }
 
@@ -537,18 +666,18 @@ void actor_wt_hint_dialog(ActorData *actor)
     {
         actor->data_3 = actor->data_3 + 1;
     }
-    
+
     display_actor_sprite_maybe(0x7d, byte_28EFE[actor->data_3 % 6], actor->x, actor->y - 2, 0);
-    
+
     actor->data_2 = actor->data_2 + 1;
     if(actor->data_2 == 4)
     {
         actor->data_2 = 1;
     }
-    
+
     display_actor_sprite_maybe(0x7d, actor->data_2, actor->x, actor->y, 0);
     actor_tile_display_func_index = 1;
-    
+
     if(player_check_collision_with_actor(0x7d, 0, actor->x, actor->y - 2) != 0)
     {
         word_32EAC = 1;
@@ -608,13 +737,13 @@ void actor_wt_pink_eye_plant(ActorData *actor)
     {
         actor->data_2 = 3;
     }
-    
+
     if(actor->x - 2 > player_x_pos)
     {
         actor->frame_num = actor->data_2;
         return;
     }
-    
+
     if(actor->x + 1 >= player_x_pos)
     {
         actor->frame_num = actor->data_2 + 1;
@@ -639,13 +768,13 @@ void actor_wt_pink_slug(ActorData *actor)
     }
     if(rand() % 0x28 > 0x25)
     {
-        
+
         if(actor->data_3 == 0 && actor->data_2 == 0)
         {
             actor->data_3 = 4;
         }
     }
-    
+
     if(actor->data_3 != 0)
     {
         actor->data_3 = actor->data_3 - 1;
@@ -656,14 +785,14 @@ void actor_wt_pink_slug(ActorData *actor)
                 actor->frame_num = 2;
                 return;
             }
-            
+
             if(actor->data_2 == 0)
             {
                 actor->frame_num = 5;
             }
             return;
         }
-        
+
         if(actor->data_1 != 0)
         {
             actor->frame_num = 3;
@@ -674,7 +803,7 @@ void actor_wt_pink_slug(ActorData *actor)
         }
         return;
     }
-    
+
     if(actor->data_1 == 0)
     {
         actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
@@ -682,7 +811,7 @@ void actor_wt_pink_slug(ActorData *actor)
         {
             actor->x--;
             check_actor_move_left_or_right(actor, 2);
-            
+
             if(actor->has_moved_left_flag == 0)
             {
                 actor->data_1 = 1;
@@ -690,21 +819,21 @@ void actor_wt_pink_slug(ActorData *actor)
         }
         return;
     }
-    
+
     actor->data_2 = (actor->data_2 ? -1 : 0) + 1;
     if(actor->data_2 == 0)
     {
         actor->x = actor->x + 1;
         actor->frame_num = 1;
         check_actor_move_left_or_right(actor, 3);
-        
+
         if(actor->has_moved_right_flag == 0)
         {
             actor->data_1 = 0;
         }
         return;
     }
-    
+
     actor->frame_num = actor->data_2 + 3;
     return;
 }
@@ -736,13 +865,13 @@ void actor_wt_projectile_flashing_ball(ActorData *actor)
         actor->is_deactivated_flag_maybe = 1;
         return;
     }
-    
+
     if(actor->data_1 == 0)
     {
         actor->data_1 = 1;
         play_sfx(0x1a);
     }
-    
+
     actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
 
     switch (actor->data_5)
@@ -801,16 +930,16 @@ void actor_wt_red_chomper_alien(ActorData *actor)
     {
         actor->data_5 = 10;
     }
-    
+
     if(actor->data_5 < 11 && actor->data_5 != 0)
     {
         actor->data_5 = actor->data_5 - 1;
         if(actor->data_5 <= 8)
         {
-            
+
             if(actor->data_5 != 8)
             {
-                
+
                 actor->data_2 = (actor->data_2 ? -1 : 0) + 1;
 
                 actor->frame_num = actor->data_2 + 6;
@@ -845,7 +974,7 @@ void actor_wt_red_chomper_alien(ActorData *actor)
     }
     else
     {
-        
+
         if(actor->data_5 > 10)
         {
             if(actor->data_1 != 0)
@@ -856,7 +985,7 @@ void actor_wt_red_chomper_alien(ActorData *actor)
             {
                 actor->frame_num = word_28EE6[actor->data_5 - 11];
             }
-            
+
             actor->data_5 = actor->data_5 + 1;
             if(actor->data_5 == 0x11)
             {
@@ -864,7 +993,7 @@ void actor_wt_red_chomper_alien(ActorData *actor)
             }
             return;
         }
-        
+
         if(actor->data_1 == 0)
         {
             if(actor->data_4 != 0)
@@ -872,7 +1001,7 @@ void actor_wt_red_chomper_alien(ActorData *actor)
                 actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
                 actor->x = actor->x - 1;
                 check_actor_move_left_or_right(actor, LEFT);
-                
+
                 if(actor->has_moved_left_flag == 0)
                 {
                     actor->data_1 = 1;
@@ -881,14 +1010,14 @@ void actor_wt_red_chomper_alien(ActorData *actor)
             }
             return;
         }
-        
+
         if(actor->data_4 != 0)
         {
             actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
             actor->frame_num = actor->data_3 + 2;
             actor->x++;
             check_actor_move_left_or_right(actor, RIGHT);
-            
+
             if(actor->has_moved_right_flag == 0)
             {
                 actor->data_1 = 0;
@@ -930,7 +1059,7 @@ void actor_wt_rocket(ActorData *actor)
         }
         if((actor->data_1 & 1) == 0)
         {
-            
+
             effect_add_sprite(0x61, 6, actor->x + 1, actor->y + 1, 2, 1);
         }
         else
@@ -939,22 +1068,22 @@ void actor_wt_rocket(ActorData *actor)
         }
         return;
     }
-    
+
     if(actor->data_2 != 0)
     {
         if(actor->data_2 > 7)
         {
             effect_add_sprite(0x61, 6, actor->x - 1, actor->y + 1, 7, 1);
-            
+
             effect_add_sprite(0x61, 6, actor->x + 1, actor->y + 1, 3, 1);
             play_sfx(0x31);
         }
-        
+
         if(actor->data_2 > 1)
         {
             actor->data_2 = actor->data_2 - 1;
         }
-        
+
         if(actor->data_2 < 10)
         {
             if(sprite_blocking_check(0, 0xbc, 0, actor->x, actor->y - 1) != 0)
@@ -965,13 +1094,13 @@ void actor_wt_rocket(ActorData *actor)
             {
                 actor->y = actor->y - 1;
             }
-            
+
             if(is_sprite_on_screen(actor->actorInfoIndex, 0, actor->x, actor->y) != 0)
             {
                 play_sfx(0x31);
             }
         }
-        
+
         if(actor->data_2 < 5)
         {
             if(sprite_blocking_check(0, 0xbc, 0, actor->x, actor->y - 1) != 0)
@@ -982,21 +1111,21 @@ void actor_wt_rocket(ActorData *actor)
             {
                 actor->y = actor->y - 1;
             }
-            
+
             actor->data_4 = (actor->data_4 ? -1 : 0) + 1;
             display_actor_sprite_maybe(0xbc, actor->data_4 + 4, actor->x, actor->y + 6, 0);
-            
+
             if(player_check_collision_with_actor(0xbc, 4, actor->x, actor->y + 6) != 0)
             {
                 player_decrease_health();
             }
-            
+
             if(actor->data_4 != 0)
             {
                 effect_add_sprite(0x61, 6, actor->x, actor->y + 6, 5, 1);
             }
         }
-        
+
         if(actor->x == player_x_pos)
         {
             if(actor->y - 7 <= player_y_pos)
@@ -1022,24 +1151,24 @@ void actor_wt_rocket(ActorData *actor)
                 }
             }
         }
-        
+
         if(actor->data_2 > 4 && (actor->data_2 & 1) != 0)
         {
             effect_add_sprite(0x61, 6, actor->x, actor->y + 1 + 1, 5, 1);
         }
     }
-    
+
     if(actor->data_5 != 0)
     {
         actor->is_deactivated_flag_maybe = 1;
         explode_effect_add_sprite(0xbc, 1, actor->x, actor->y);
-        
+
         explode_effect_add_sprite(0xbc, 2, actor->x + 1, actor->y);
-        
+
         explode_effect_add_sprite(0xbc, 3, actor->x + 1 + 1, actor->y);
-        
+
         struct6_add_sprite(actor->x - 4, actor->y);
-        
+
         struct6_add_sprite(actor->x + 1, actor->y);
         actor_tile_display_func_index = 2;
     }
@@ -1107,7 +1236,7 @@ void actor_wt_spring(ActorData *actor)
         actor->frame_num = 1;
         actor->data_1 = actor->data_1 - 1;
     }
-    
+
     if(actor->data_5 != 0)
     {
         actor_tile_display_func_index = 4;
@@ -1193,7 +1322,7 @@ void actor_wt_speech_bubble(ActorData *actor)
             player_add_to_score(0xc350);
         }
     }
-    
+
     actor->data_1 = actor->data_1 + 1;
     if(actor->data_1 != 0x14)
     {
@@ -1219,7 +1348,7 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
     if(direction_of_movement == LEFT)
     {
         BlockingType block_status = sprite_blocking_check(2, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y);
-        
+
         actor->has_moved_left_flag = (block_status != NOT_BLOCKED ? -1 : 0) + 1;
         if(actor->has_moved_left_flag == 0 && block_status != SLOPE)
         {
@@ -1285,7 +1414,7 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
     else
     {
         BlockingType block_status = sprite_blocking_check(3, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y);
-        
+
         actor->has_moved_right_flag = (block_status != NOT_BLOCKED ? -1 : 0) + 1;
         if(actor->has_moved_right_flag == 0 && block_status != SLOPE)
         {
