@@ -477,17 +477,59 @@ void actor_wt_bonus_item(ActorData *actor)
     {
         if((rand() & 0x3f) == 0)
         {
-            effect_add_sprite(0x17, 8, rand() % actor->data_1 + actor->x, rand() % actor->data_2 + actor->y, 0,
-                              1);
+            effect_add_sprite(0x17, 8, rand() % actor->data_1 + actor->x, rand() % actor->data_2 + actor->y, 0, 1);
         }
     }
 
     return;
 }
 
+const static uint8  clam_trap_frame_num_tbl[] = {
+        0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 0
+};
+
 void actor_wt_clam_trap(ActorData *actor)
 {
-
+    if(actor->data_2 != 0)
+    {
+        if(actor->data_3 == 1)
+        {
+            play_sfx(0x28);
+        }
+        actor->frame_num = clam_trap_frame_num_tbl[actor->data_3];
+        actor->data_3++;
+        if(actor->data_3 >= 0x18)
+        {
+            byte_2E17C = 0;
+        }
+        
+        if(actor->data_3 == 0x1b)
+        {
+            actor->data_3 = 0;
+            actor->data_2 = 0;
+            byte_2E17C = 0;
+        }
+        
+        if(struct6_1B4FC(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0)
+        {
+            player_add_to_score(0xfa);
+            
+            explode_effect_add_sprite(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y);
+            actor->is_deactivated_flag_maybe = 1;
+            byte_2E17C = 0;
+        }
+    }
+    else
+    {
+        if(struct6_1B4FC(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0)
+        {
+            player_add_to_score(0xfa);
+            
+            explode_effect_add_sprite(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y);
+            actor->is_deactivated_flag_maybe = 1;
+        }
+    }
+    return;
 }
 
 void actor_wt_container(ActorData *actor)
@@ -502,7 +544,7 @@ void actor_wt_crate_bomb_box(ActorData *actor)
 
 void actor_wt_cyan_spitting_plant(ActorData *actor)
 {
-    actor->data_4 = actor->data_4 + 1;
+    actor->data_4++;
     if(actor->data_4 == 0x32)
     {
         actor->data_4 = 0;
@@ -519,7 +561,6 @@ void actor_wt_cyan_spitting_plant(ActorData *actor)
         actor->frame_num = 2;
         if(actor->data_5 != 2)
         {
-
             actor_add_new(0x6e, actor->x + 4, actor->y - 1);
         }
         else
@@ -575,7 +616,50 @@ void actor_wt_energy_beam(ActorData *actor)
 
 void actor_wt_extending_arrow(ActorData *actor)
 {
-
+    if(actor->data_1 >= 0x1f)
+    {
+        actor->data_1 = 0;
+    }
+    else
+    {
+        actor->data_1 = actor->data_1 + 1;
+    }
+    
+    if(actor->data_1 == 0x1d || actor->data_1 == 0x1a)
+    {
+        if(is_sprite_on_screen(actor->actorInfoIndex, 0, actor->x, actor->y) != 0)
+        {
+            play_sfx(9);
+        }
+    }
+    
+    if(actor->data_5 == 0)
+    {
+        if(actor->data_1 > 0x1c)
+        {
+            actor->x = actor->x + 1;
+        }
+        else
+        {
+            if(actor->data_1 > 0x19)
+            {
+                actor->x = actor->x - 1;
+                return;
+            }
+        }
+        return;
+    }
+    if(actor->data_1 > 0x1c)
+    {
+        actor->x = actor->x - 1;
+        return;
+    }
+    if(actor->data_1 > 0x19)
+    {
+        actor->x = actor->x + 1;
+        return;
+    }
+    return;
 }
 
 void actor_wt_frozen_duke_nukum(ActorData *actor)
@@ -690,17 +774,91 @@ void actor_wt_horizontal_flame(ActorData *actor)
 
 void actor_wt_hoverboard(ActorData *actor)
 {
-
+    actor->frame_num = actor->frame_num + 1;
+    actor->frame_num = actor->frame_num & 3;
+    if(word_32B88 != 0)
+    {
+        actor->x = player_x_pos;
+        actor->y = player_y_pos + 1;
+        return;
+    }
+    
+    actor->data_2++;
+    if(actor->data_2 % 10 == 0)
+    {
+        if(sprite_blocking_check(1, 0x72, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+        {
+            actor->y = actor->y - 1;
+        }
+        else
+        {
+            actor->y = actor->y + 1;
+            if(sprite_blocking_check(1, 0x72, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+            {
+                actor->y = actor->y - 1;
+                return;
+            }
+        }
+        return;
+    }
+    return;
 }
 
 void actor_wt_invisible_exit_marker_right(ActorData *actor)
 {
-
+    if(actor->x <= player_x_pos + 3)
+    {
+        finished_level_flag_maybe = 1;
+        return;
+    }
+    actor_tile_display_func_index = 1;
+    return;
 }
+
+const static uint8 jaws_and_tongue_frame_num_tbl[] = {2, 3, 4, 3};
 
 void actor_wt_jaws_and_tongue(ActorData *actor)
 {
+    if(actor->data_1 == 0)
+    {
+        actor->data_2++;
+    }
 
+    if(actor->data_2 == 10)
+    {
+        actor->data_1 = 1;
+        actor->data_2 = 11;
+        actor->frame_num = 1;
+        actor->data_5 = 1;
+        play_sfx(0x26);
+    }
+
+    if(actor->frame_num != 0)
+    {
+        display_actor_sprite_maybe(0x95, jaws_and_tongue_frame_num_tbl[actor->data_3 & 3], actor->x + 6 - actor->data_5, actor->y - 3, 0);
+        actor->data_3++;
+    }
+
+    if(is_sprite_on_screen(0x95, 1, actor->x, actor->y) == 0)
+    {
+        
+        actor->frame_num = 0;
+        actor->data_2 = 0;
+        actor->data_1 = 0;
+        actor->data_5 = 0;
+    }
+    actor_tile_display_func_index = 1;
+    
+    display_actor_sprite_maybe(actor->actorInfoIndex, 1, actor->x, actor->y, 0);
+    
+    if(actor->data_5 != 0 && actor->data_5 < 4)
+    {
+        actor->data_5++;
+        return;
+    }
+
+    display_actor_sprite_maybe(actor->actorInfoIndex, 0, actor->x, actor->y - 1 - actor->data_5, 0);
+    return;
 }
 
 void actor_wt_jumping_bullet_head(ActorData *actor)
@@ -710,7 +868,68 @@ void actor_wt_jumping_bullet_head(ActorData *actor)
 
 void actor_wt_mini_ghost(ActorData *actor)
 {
-
+    if(actor->data_4 != 0)
+    {
+        actor->data_4--;
+        return;
+    }
+    
+    if(actor->data_1 == 0)
+    {
+        if(sprite_blocking_check(1, 0x41, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+        {
+            actor->can_fall_down_flag = 0;
+            actor->data_1 = 1;
+            actor->data_4 = 3;
+            actor->data_2 = 4;
+            actor->frame_num = 1;
+            actor->data_3 = 1;
+            if(is_sprite_on_screen(0x41, 0, actor->x, actor->y) != 0)
+            {
+                play_sfx(0x3b);
+            }
+            return;
+        }
+        
+        if(actor->data_5 != 0)
+        {
+            actor->data_5--;
+        }
+        else
+        {
+            actor->frame_num = 1;
+            if(actor->data_3 == 0)
+            {
+                actor->data_4++;
+                return;
+            }
+        }
+    }
+    else
+    {
+        
+        if(actor->data_1 == 1)
+        {
+            actor->y = actor->y - 1;
+            actor->frame_num = 0;
+            if(actor->data_2 == 4)
+            {
+                if(is_sprite_on_screen(0x41, 0, actor->x, actor->y) != 0)
+                {
+                    play_sfx(0x3a);
+                }
+            }
+            
+            actor->data_2--;
+            if(actor->data_2 == 0)
+            {
+                actor->data_1 = 0;
+                actor->data_5 = 3;
+                actor->can_fall_down_flag = 1;
+            }
+        }
+    }
+    return;
 }
 
 void actor_wt_pink_eye_plant(ActorData *actor)
@@ -765,7 +984,7 @@ void actor_wt_pink_slug(ActorData *actor)
 
     if(actor->data_3 != 0)
     {
-        actor->data_3 = actor->data_3 - 1;
+        actor->data_3--;
         if(actor->data_3 == 2)
         {
             if(actor->data_1 == 0)
@@ -828,7 +1047,7 @@ void actor_wt_pink_slug(ActorData *actor)
 
 void actor_wt_pipe_transit_direction(ActorData *actor)
 {
-
+    actor_tile_display_func_index = 1;
 }
 
 void actor_wt_plasma_energy_blue_sprite(ActorData *actor)
@@ -838,12 +1057,88 @@ void actor_wt_plasma_energy_blue_sprite(ActorData *actor)
 
 void actor_wt_plasma_fireball(ActorData *actor)
 {
+    if(actor->data_1 == 0x1d)
+    {
+        play_sfx(0x24);
+    }
+    
+    if(actor->data_1 >= 0x1e)
+    {
+        
+        if(actor->data_5 != 0)
+        {
+            
+            actor->x = actor->x + 1;
+            
+            actor->has_moved_right_flag = (sprite_blocking_check(3, actor->actorInfoIndex, 0, actor->x, actor->y) != NOT_BLOCKED ? -1 : 0) + 1;
+            if(actor->has_moved_right_flag == 0)
+            {
+                actor->data_1 = 0;
+                effect_add_sprite(0x61, 6, actor->x - 2, actor->y, 1, 1);
+                
+                actor->x = actor->data_2;
+                actor->y = actor->data_3;
+                play_sfx(0x1b);
+            }
+        }
+        else
+        {
+            actor->x = actor->x - 1;
+            
+            actor->has_moved_left_flag = (sprite_blocking_check(2, actor->actorInfoIndex, 0, actor->x, actor->y) != NOT_BLOCKED ? -1 : 0) + 1;
+            if(actor->has_moved_left_flag == 0)
+            {
+                actor->data_1 = 0;
+                effect_add_sprite(0x61, 6, actor->x + 1, actor->y, 1, 1);
+                
+                actor->x = actor->data_2;
+                actor->y = actor->data_3;
+                play_sfx(0x1b);
+            }
+        }
+    }
+    else
+    {
+        actor->data_1++;
+    }
 
+    if(is_sprite_on_screen(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) == 0)
+    {
+        
+        actor->data_1 = 0;
+        actor->x = actor->data_2;
+        actor->y = actor->data_3;
+        return;
+    }
+
+    actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+    return;
 }
 
 void actor_wt_pneumatic_pipe(ActorData *actor)
 {
-
+    if(actor->data_2 != 0)
+    {
+        actor->data_1++;
+        actor->data_3++;
+        if((actor->data_3 & 1) == 0)
+        {
+            actor->frame_num = 0;
+        }
+        else
+        {
+            actor->frame_num = 4;
+        }
+        
+        if(actor->data_1 == 4)
+        {
+            actor->data_1 = 1;
+        }
+        
+        display_actor_sprite_maybe(0x69, actor->data_1, actor->x, actor->y + 3, 0);
+        return;
+    }
+    return;
 }
 
 void actor_wt_projectile_flashing_ball(ActorData *actor)
@@ -892,12 +1187,98 @@ void actor_wt_projectile_flashing_ball(ActorData *actor)
 
 void actor_wt_question_mark_block(ActorData *actor)
 {
+    if(word_2E17E != 0)
+    {
+        actor->data_1 = 1;
+        actor->update_while_off_screen_flag = 1;
+    }
+    
+    if(actor->data_1 == 0)
+    {
+        return;
+    }
+    if((actor->data_1 & 1) != 0)
+    {
+        map_write_tile_cell(0x3df8, actor->x, actor->y - 1);
+        
+        map_write_tile_cell(0x3e00, actor->x + 1, actor->y - 1);
+        
+        map_write_tile_cell(0x3e08, actor->x, actor->y);
+        
+        map_write_tile_cell(0x3e10, actor->x + 1, actor->y);
+    }
+    
+    if(sprite_blocking_check(0, actor->actorInfoIndex, 0, actor->x, actor->y - 1) != NOT_BLOCKED)
+    {
+        
+        if((actor->data_1 & 1) == 0)
+        {
+            map_write_tile_cell(0x3e08, actor->x, actor->y - 1);
+            map_write_tile_cell(0x3e10, actor->x + 1, actor->y - 1);
+        }
+        actor->is_deactivated_flag_maybe = 1;
+        return;
+    }
+    
+    if((actor->data_1 & 1) == 0)
+    {
+        effect_add_sprite(15, 4, actor->x - 1, actor->y - 1, 0, 1);
+        return;
+    }
+    
+    actor->data_1++;
+    actor->y--;
 
+    return;
 }
 
 void actor_wt_red_blue_plant(ActorData *actor)
 {
-
+    actor_tile_display_func_index = actor->data_5;
+    if(actor->data_2 == 1)
+    {
+        actor->frame_num = actor->frame_num + 1;
+        if(actor->frame_num == 1)
+        {
+            play_sfx(0x3f);
+        }
+        
+        if(actor->frame_num == 4)
+        {
+            actor->data_2 = 2;
+        }
+        return;
+    }
+    
+    if(actor->data_2 == 2)
+    {
+        actor->frame_num = actor->frame_num - 1;
+        if(actor->frame_num == 1)
+        {
+            actor->data_2 = 0;
+            actor->data_1 = 1;
+        }
+        return;
+    }
+    
+    if(actor->data_1 >= 0x10)
+    {
+        actor->data_1 = 0;
+    }
+    else
+    {
+        actor->data_1++;
+    }
+    
+    if(actor->data_1 != 0)
+    {
+        actor->frame_num = 0;
+    }
+    else
+    {
+        actor->data_2 = 1;
+    }
+    return;
 }
 
 const uint8 word_28EE6[] = { 8, 9, 10, 10, 9, 8};
@@ -921,7 +1302,7 @@ void actor_wt_red_chomper_alien(ActorData *actor)
 
     if(actor->data_5 < 11 && actor->data_5 != 0)
     {
-        actor->data_5 = actor->data_5 - 1;
+        actor->data_5--;
         if(actor->data_5 <= 8)
         {
 
@@ -974,7 +1355,7 @@ void actor_wt_red_chomper_alien(ActorData *actor)
                 actor->frame_num = word_28EE6[actor->data_5 - 11];
             }
 
-            actor->data_5 = actor->data_5 + 1;
+            actor->data_5++;
             if(actor->data_5 == 0x11)
             {
                 actor->data_5 = 0;
@@ -1018,7 +1399,52 @@ void actor_wt_red_chomper_alien(ActorData *actor)
 
 void actor_wt_retracting_spikes(ActorData *actor)
 {
-
+    actor->data_2++;
+    if(actor->data_2 == 0x14)
+    {
+        actor->data_2 = 0;
+    }
+    
+    if(actor->frame_num != 0 || actor->data_2 != 0)
+    {
+        
+        if(actor->frame_num != 2 || actor->data_2 != 0)
+        {
+            
+            if(actor->data_1 == 0)
+            {
+                
+                if(actor->frame_num < 2)
+                {
+                    actor->frame_num = actor->frame_num + 1;
+                }
+            }
+            else
+            {
+                if(actor->frame_num > 0)
+                {
+                    actor->frame_num = actor->frame_num - 1;
+                }
+            }
+        }
+        else
+        {
+            actor->data_1 = 1;
+            play_sfx(9);
+            actor_tile_display_func_index = 1;
+        }
+    }
+    else
+    {
+        actor->data_1 = 0;
+        play_sfx(9);
+    }
+    if(actor->frame_num == 2)
+    {
+        actor_tile_display_func_index = 1;
+        return;
+    }
+    return;
 }
 
 void actor_wt_robot_with_blue_arc(ActorData *actor)
@@ -1028,7 +1454,59 @@ void actor_wt_robot_with_blue_arc(ActorData *actor)
 
 void actor_wt_robotic_spike_ceiling(ActorData *actor)
 {
-
+    actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
+    if(actor->data_3 == 0)
+    {
+        return;
+    }
+    if(actor->data_4 != 0)
+    {
+        actor->data_4--;
+        return;
+    }
+    
+    if(actor->data_2 == 1)
+    {
+        if(sprite_blocking_check(3, 0x50, 0, actor->x + 1, actor->y) != 0)
+        {
+            actor->data_4 = 4;
+            actor->data_2 = 0;
+        }
+        else
+        {
+            if(sprite_blocking_check(3, 0x50, 0, actor->x + 1, actor->y - 1) != 0)
+            {
+                actor->x = actor->x + 1;
+            }
+            else
+            {
+                actor->data_4 = 4;
+                actor->data_2 = 0;
+            }
+        }
+        return;
+    }
+    
+    if(sprite_blocking_check(2, 0x50, 0, actor->x - 1, actor->y) != 0)
+    {
+        actor->data_4 = 4;
+        actor->data_2 = 1;
+    }
+    else
+    {
+        if(sprite_blocking_check(2, 0x50, 0, actor->x - 1, actor->y - 1) != 0)
+        {
+            actor->x = actor->x - 1;
+        }
+        else
+        {
+            actor->data_4 = 4;
+            actor->data_2 = 1;
+        }
+    }
+    
+    actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+    return;
 }
 
 void actor_wt_robotic_spike_ground(ActorData *actor)
@@ -1040,7 +1518,7 @@ void actor_wt_rocket(ActorData *actor)
 {
     if(actor->data_1 != 0)
     {
-        actor->data_1 = actor->data_1 - 1;
+        actor->data_1--;
         if(actor->data_1 >= 0x1e)
         {
             return;
@@ -1069,7 +1547,7 @@ void actor_wt_rocket(ActorData *actor)
 
         if(actor->data_2 > 1)
         {
-            actor->data_2 = actor->data_2 - 1;
+            actor->data_2--;
         }
 
         if(actor->data_2 < 10)
@@ -1190,7 +1668,12 @@ void actor_wt_silver_robot(ActorData *actor)
 
 void actor_wt_small_flame(ActorData *actor)
 {
-
+    actor->frame_num = actor->frame_num + 1;
+    if(actor->frame_num == 6)
+    {
+        actor->frame_num = 0;
+    }
+    return;
 }
 
 void actor_wt_small_red_plant(ActorData *actor)
@@ -1210,7 +1693,27 @@ void actor_wt_spark(ActorData *actor)
 
 void actor_wt_spear_vertical(ActorData *actor)
 {
-
+    if(actor->data_1 >= 0x1e)
+    {
+        actor->data_1 = 0;
+    }
+    else
+    {
+        actor->data_1++;
+    }
+    
+    if(actor->data_1 > 0x16)
+    {
+        actor->y = actor->y - 1;
+        return;
+    }
+    
+    if(actor->data_1 > 14)
+    {
+        actor->y = actor->y + 1;
+        return;
+    }
+    return;
 }
 
 void actor_wt_spring(ActorData *actor)
@@ -1222,7 +1725,7 @@ void actor_wt_spring(ActorData *actor)
     else
     {
         actor->frame_num = 1;
-        actor->data_1 = actor->data_1 - 1;
+        actor->data_1--;
     }
 
     if(actor->data_5 != 0)
@@ -1242,7 +1745,78 @@ void actor_wt_spring(ActorData *actor)
 
 void actor_wt_stone_head(ActorData *actor)
 {
-
+    actor->data_4 = (actor->data_4 ? -1 : 0) + 1;
+    if(actor->data_1 == 0)
+    {
+        if(actor->y < player_y_pos)
+        {
+            if(actor->x <= player_x_pos + 6)
+            {
+                if(actor->x + 7 > player_x_pos)
+                {
+                    actor->data_1 = 1;
+                    actor->data_2 = actor->y;
+                    actor->frame_num = 1;
+                    return;
+                }
+            }
+        }
+        actor->frame_num = 0;
+        return;
+    }
+    
+    if(actor->data_1 == 1)
+    {
+        actor->frame_num = 1;
+        actor->y = actor->y + 1;
+        if(sprite_blocking_check(1, 0x2f, 0, actor->x, actor->y) != 0)
+        {
+            actor->data_1 = 2;
+            if(is_sprite_on_screen(0x2f, 0, actor->x, actor->y) != 0)
+            {
+                play_sfx(0x25);
+                
+                effect_add_sprite(0x61, 6, actor->x + 1, actor->y, 2, 1);
+                effect_add_sprite(0x61, 6, actor->x, actor->y, 8, 1);
+                actor->y = actor->y - 1;
+            }
+            else
+            {
+                actor->y = actor->y - 1;
+            }
+            return;
+        }
+        
+        actor->y = actor->y + 1;
+        if(sprite_blocking_check(1, 0x2f, 0, actor->x, actor->y) != NOT_BLOCKED)
+        {
+            actor->data_1 = 2;
+            play_sfx(0x25);
+            
+            effect_add_sprite(0x61, 6, actor->x + 1, actor->y, 2, 1);
+            
+            effect_add_sprite(0x61, 6, actor->x, actor->y, 8, 1);
+            actor->y = actor->y - 1;
+            return;
+        }
+    }
+    else
+    {
+        
+        if(actor->data_1 == 2)
+        {
+            actor->frame_num = 0;
+            if(actor->y == actor->data_2)
+            {
+                actor->data_1 = 0;
+            }
+            else if(actor->data_4 != 0)
+            {
+                actor->y = actor->y - 1;
+            }
+        }
+    }
+    return;
 }
 
 void actor_wt_suction_cup_alien_enemy(ActorData *actor)
@@ -1262,12 +1836,184 @@ void actor_wt_switch_multi_use(ActorData *actor)
 
 void actor_wt_teleporter(ActorData *actor)
 {
-
+    actor_tile_display_func_index = 1;
+    if(teleporter_counter == 0 || (rand() & 1) == 0)
+    {
+        
+        display_actor_sprite_maybe(0x6b, 0, actor->x, actor->y, 0);
+    }
+    else
+    {
+        
+        display_actor_sprite_maybe(0x6b, 0, actor->x, actor->y, 2);
+    }
+    if((sub_1106F() & 1) != 0)
+    {
+        display_actor_sprite_maybe(0x6b, (rand() & 1) + 1, actor->x, actor->y, 0);
+    }
+    if(teleporter_counter == 15)
+    {
+        effect_add_sprite(15, 4, player_x_pos - 1, player_y_pos, 0, 1);
+        effect_add_sprite(15, 4, player_x_pos + 1, player_y_pos, 0, 1);
+        effect_add_sprite(15, 4, player_x_pos - 1, player_y_pos - 3, 0, 2);
+        effect_add_sprite(15, 4, player_x_pos, player_y_pos - 2, 0, 3);
+        effect_add_sprite(15, 4, player_x_pos + 1, player_y_pos - 3, 0, 3);
+        play_sfx(0x17);
+    }
+    if(teleporter_counter > 1)
+    {
+        teleporter_counter = teleporter_counter - 1;
+        return;
+    }
+    if(teleporter_state_maybe == 3)
+    {
+        finished_level_flag_maybe = 1;
+        return;
+    }
+    if(teleporter_state_maybe == 0)
+    {
+        return;
+    }
+    
+    if(actor->data_5 == teleporter_state_maybe || actor->data_5 == 3)
+    {
+        return;
+    }
+    player_x_pos = actor->x + 1;
+    player_y_pos = actor->y;
+    if(player_x_pos - 14 >= 0)
+    {
+        if(player_x_pos - 14 <= map_width_in_tiles - 38)
+        {
+            mapwindow_x_offset = player_x_pos - 14;
+        }
+        else
+        {
+            mapwindow_x_offset = map_width_in_tiles - 38;
+        }
+    }
+    else
+    {
+        mapwindow_x_offset = 0;
+    }
+    if(player_y_pos - 12 >= 0)
+    {
+        if(player_y_pos - 12 <= map_max_y_offset)
+        {
+            mapwindow_y_offset = player_y_pos - 12;
+        }
+        else
+        {
+            mapwindow_y_offset = map_max_y_offset;
+        }
+    }
+    else
+    {
+        mapwindow_y_offset = 0;
+    }
+    teleporter_state_maybe = 0;
+    teleporter_counter = 0;
+    player_bounce_flag_maybe = 0;
+    if(word_2E23C == 0)
+    {
+        word_2E23C = 1;
+        actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+    }
+    return;
 }
 
 void actor_wt_two_tons(ActorData *actor)
 {
-
+    if(actor->data_1 < 0x14)
+    {
+        actor->data_1++;
+    }
+    
+    if(actor->data_1 == 0x13)
+    {
+        actor->data_2 = 1;
+    }
+    
+    if(actor->data_2 == 1)
+    {
+        if(actor->frame_num >= 3)
+        {
+            
+            actor->data_2 = 2;
+            if(is_sprite_on_screen(0x2d, 4, actor->x - 1, actor->y + 3) != 0)
+            {
+                play_sfx(0x25);
+            }
+        }
+        else
+        {
+            actor->frame_num = actor->frame_num + 1;
+            if(actor->frame_num == 1)
+            {
+                actor->data_3 = 1;
+            }
+            else
+            {
+                if(actor->frame_num == 2)
+                {
+                    actor->data_3 = 2;
+                }
+                else
+                {
+                    if(actor->frame_num == 3)
+                    {
+                        actor->data_3 = 4;
+                    }
+                }
+            }
+            
+            actor->y = actor->y + actor->data_3;
+        }
+    }
+    
+    if(actor->data_2 == 2)
+    {
+        if(actor->frame_num <= 0)
+        {
+            
+            actor->data_2 = 0;
+            actor->data_1 = 0;
+            actor->data_3 = 0;
+        }
+        else
+        {
+            actor->frame_num--;
+            if(actor->frame_num == 0)
+            {
+                actor->data_3 = 1;
+            }
+            else
+            {
+                if(actor->frame_num == 1)
+                {
+                    actor->data_3 = 2;
+                }
+                else
+                {
+                    if(actor->frame_num == 2)
+                    {
+                        actor->data_3 = 4;
+                    }
+                }
+            }
+            
+            actor->y = actor->y - actor->data_3;
+        }
+    }
+    
+    if(player_check_collision_with_actor(0x2d, 4, actor->x - 1, actor->y + 3) != 0)
+    {
+        player_decrease_health();
+        return;
+    }
+    
+    display_actor_sprite_maybe(0x2d, 4, actor->x - 1, actor->y + 3, 0);
+    return;
 }
 
 const sint8 score_effect_x_tbl[] = {
@@ -1276,7 +2022,7 @@ const sint8 score_effect_x_tbl[] = {
 void actor_wt_floating_score_effect(ActorData *actor)
 {
     actor_tile_display_func_index = 1;
-    actor->data_1 = actor->data_1 + 1;
+    actor->data_1++;
     actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
     if(actor->data_1 > 0x1f)
     {
@@ -1311,7 +2057,7 @@ void actor_wt_speech_bubble(ActorData *actor)
         }
     }
 
-    actor->data_1 = actor->data_1 + 1;
+    actor->data_1++;
     if(actor->data_1 != 0x14)
     {
         display_actor_sprite_maybe(actor->actorInfoIndex, 0, player_x_pos - 1, player_y_pos - 5, 5);

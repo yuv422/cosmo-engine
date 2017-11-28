@@ -18,11 +18,11 @@ typedef struct ActorData
     int can_fall_down_flag;
     int has_moved_left_flag;
     int has_moved_right_flag;
-    int data_1;
-    int data_2;
-    int data_3;
-    int data_4;
-    int data_5;
+    uint16 data_1;
+    uint16 data_2;
+    uint16 data_3;
+    uint16 data_4;
+    uint16 data_5;
     int is_deactivated_flag_maybe;
     int falling_counter;
     int count_down_timer;
