@@ -62,6 +62,9 @@ const static uint8 blue_ball_frame_num_tbl[] = {
         2, 2, 2, 0, 3, 3, 3, 0, 0, 2, 2, 0, 0, 1, 1, 0, 1, 3, 3, 3, 0, 1, 1, 0, 1, 1, 1
 };
 
+const static uint8 blue_ball_moving_left_frame_num_tbl[] =  {7, 6, 5, 4};
+const static uint8 blue_ball_moving_right_frame_num_tbl[] = {4, 5, 6, 7};
+
 void actor_wt_blue_ball(ActorData *actor)
 {
     if(actor->falling_counter != 0)
@@ -91,18 +94,13 @@ void actor_wt_blue_ball(ActorData *actor)
 
     if (actor->data_1 == 0)
     {
-        // node 00014ca4-00014cc1 #insn=5 use={ax, bx, al} def={ax, bx} in={ax, bx, si, al} out={ax, si, al} pred={ 14C02} CONDJUMP target=00014d31 follow=00014cc3
-        //loc_14CA4:
         actor->data_2 = actor->data_2 + 1;
         actor->frame_num = blue_ball_frame_num_tbl[actor->data_2];
         if (actor->data_2 == 0x1a)
         {
-            // node 00014cc3-00014cd7 #insn=2 use={} def={ax, bx} in={si, al} out={si, al} pred={ 14CA4} CONDJUMP target=00014ce2 follow=00014cda
             actor->data_2 = 0;
             if (actor->y == player_y_pos || (sub_1106F() & 1) == 0)
             {
-// node 00014ce2-00014cf1 #insn=4 use={} def={} in={} out={} pred={ 14CC3 14CDA} FALLTHROUGH follow=00014d31
-                loc_14CE2:
                 if(actor->x < player_x_pos + 1 + 1)
                 {
                     if(actor->x + 2 <= player_x_pos)
@@ -124,71 +122,61 @@ void actor_wt_blue_ball(ActorData *actor)
         }
     }
 
-    /*
-// node 00014d31-00014d4a #insn=5 use={} def={bx} in={ax, si, al} out={ax, bx, si, al} pred={ 14C02 14CA4 14CDA 14D07 14D28} CONDJUMP target=00014d8b follow=00014d4c
-    loc_14D31:
-    
     if(actor->data_3 != 0)
     {
         actor->data_3 = actor->data_3 - 1;
         return;
     }
     
-    if (actor->data_1 != 1) goto loc_14D8B;
-
-// node 00014d4c-00014d61 #insn=4 use={} def={} in={} out={} pred={ 14D31} FALLTHROUGH follow=00014dac
-    * (bx + 4) = * (bx + 4) - 1;
-    check_actor_move_left_or_right(si, 2);
-    
-    if(actor->has_moved_left_flag != 0)
+    if (actor->data_1 == 1)
     {
-        ax = al;
-        actor->frame_num = ax;
-        actor->data_2 = actor->data_2 + 1;
-        if(actor->data_2 == 0x10)
+        actor->x--;
+        check_actor_move_left_or_right(actor, LEFT);
+
+        if(actor->has_moved_left_flag != 0)
         {
-            
-            actor->data_1 = 0;
-            actor->data_2 = 0;
-            return ax;
+            actor->frame_num = blue_ball_moving_left_frame_num_tbl[actor->data_2 & 3];
+            actor->data_2 = actor->data_2 + 1;
+            if(actor->data_2 == 0x10)
+            {
+                actor->data_1 = 0;
+                actor->data_2 = 0;
+            }
+            return;
         }
-        return ax;
-    }
 
-// node 00014d8b-00014d93 #insn=3 use={} def={bx} in={ax, si, al} out={ax, bx, si, al} pred={ 14D31} CONDJUMP target=00014dfb follow=00014d95
-    loc_14D8B:
-    
-    if (actor->data_1 != 2) goto loc_14DFB;
-
-// node 00014d95-00014daa #insn=3 use={bx, si} def={bx} in={ax, bx, si, al} out={ax, al} pred={ 14D8B} CONDJUMP target=00014dc3 follow=00014dac
-    actor->x = actor->x + 1;
-    check_actor_move_left_or_right(si, 3);
-    if (actor->has_moved_right_flag != 0) goto loc_14DC3;
-
-// node 00014dac-00014dc1 #insn=6 use={} def={bx} in={ax} out={ax} pred={ 14D4C 14D95} JUMP target=00014dfb
-    loc_14DAC:
-    
-    actor->data_1 = 0;
-    actor->data_2 = 0;
-    actor->frame_num = 0;
-    goto loc_14DFB;
-
-// node 00014dc3-00014dea #insn=5 use={} def={} in={} out={} pred={ 14D95} FALLTHROUGH follow=00014dfb
-    loc_14DC3:
-    ax = al;
-    actor->frame_num = ax;
-    actor->data_2 = actor->data_2 + 1;
-    if(actor->data_2 == 12)
-    {
-        
         actor->data_1 = 0;
         actor->data_2 = 0;
-        return ax;
+        actor->frame_num = 0;
+        return;
+    }
+    else
+    {
+        if (actor->data_1 != 2)
+        {
+            return;
+        }
+
+        actor->x++;
+        check_actor_move_left_or_right(actor, RIGHT);
+        if (actor->has_moved_right_flag != 0)
+        {
+            actor->frame_num = blue_ball_moving_right_frame_num_tbl[actor->data_2 & 3];
+            actor->data_2 = actor->data_2 + 1;
+            if(actor->data_2 == 12)
+            {
+                actor->data_1 = 0;
+                actor->data_2 = 0;
+            }
+        }
+        else
+        {
+            actor->data_1 = 0;
+            actor->data_2 = 0;
+            actor->frame_num = 0;
+        }
     }
 
-// node 00014dfb-00014dfd #insn=3 use={ax} def={si} in={ax} out={} pred={ 14D8B 14DAC 14DC3} RETURN
-    loc_14DFB:
-*/
     return;
 }
 
