@@ -1369,7 +1369,92 @@ void player_add_to_score(uint32 amount_to_add_low)
 
 void player_add_score_for_actor(int actorInfoIndex)
 {
+    switch (actorInfoIndex)
+    {
+        case 46:
+            player_add_to_score(0x320);
+            break;
 
+        case 51:
+        case 54:
+        case 78:
+        case 80:
+            player_add_to_score(0x190);
+            break;
+
+        case 20:
+            player_add_to_score(0xc80);
+            break;
+
+        case 41:
+        case 47:
+        case 86:
+            player_add_to_score(0x640);
+            break;
+
+        case 92:
+        case 101:
+            player_add_to_score(0x1900);
+            break;
+
+        case 17:
+        case 18:
+        case 87:
+        case 89:
+            player_add_to_score(0xfa);
+            break;
+
+        case 106:
+        case 113:
+            player_add_to_score(0x3e8);
+            break;
+
+        case 69:
+        case 125:
+            player_add_to_score(0x3200);
+            break;
+
+        case 126:
+            player_add_to_score(0x7d0);
+            break;
+
+        case 3:
+        case 4:
+        case 88:
+        case 111:
+        case 112:
+        case 118:
+        case 127:
+            player_add_to_score(0x1f4);
+            break;
+
+        case 129:
+            player_add_to_score(0xc350);
+            break;
+
+        case 74:
+        case 75:
+        case 95:
+        case 96:
+        case 128:
+        case 187:
+            player_add_to_score(0x64);
+            break;
+
+        case 1:
+        case 25:
+        case 55:
+        case 65:
+        case 83:
+        case 84:
+        case 124:
+        case 188:
+            player_add_to_score(0xc8);
+            break;
+
+        default: break;
+    }
+    return ;
 }
 
 void player_decrease_health()

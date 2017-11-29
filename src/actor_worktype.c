@@ -1643,7 +1643,73 @@ void actor_wt_rocket(ActorData *actor)
 
 void actor_wt_rubber_wall(ActorData *actor)
 {
+    if (actor->data_2 != 0)
+    {
+        actor->is_deactivated_flag_maybe = 1;
+        actor_tile_display_func_index = 1;
+        explode_effect_add_sprite(0x40, 3, actor->x, actor->y - 8);
 
+        explode_effect_add_sprite(0x40, 3, actor->x, actor->y - 7);
+
+        explode_effect_add_sprite(0x40, 3, actor->x, actor->y - 6);
+
+        explode_effect_add_sprite(0x40, 3, actor->x, actor->y);
+
+        explode_effect_add_sprite(0x40, 3, actor->x + 1, actor->y);
+
+        explode_effect_add_sprite(0x40, 3, actor->x + 1 + 1, actor->y);
+
+        effect_add_sprite(0x61, 6, actor->x, actor->y, 1, 2);
+
+        effect_add_sprite(0x61, 6, actor->x, actor->y, 2, 2);
+
+        effect_add_sprite(0x61, 6, actor->x, actor->y, 8, 2);
+
+        effect_add_sprite(0x61, 6, actor->x, actor->y - 4, 1, 3);
+        player_add_to_score(0x6400);
+
+        actor_add_new(0xb8, actor->x - 2, actor->y - 9);
+
+        actor_add_new(0xb8, actor->x + 1 + 1, actor->y - 9);
+        play_sfx(0x19);
+        return;
+    }
+
+    if (actor->has_moved_left_flag == 0)
+    {
+        actor->has_moved_left_flag = 1;
+        for(int i=0; i < 9; i++)
+        {
+            map_write_tile_cell(0x3d88, actor->x + 1, actor->y - i);
+        }
+    }
+
+    if(actor->data_1 != 0)
+    {
+        actor->data_1--;
+        if((actor->data_1 & 1) != 0)
+        {
+            actor_tile_display_func_index = 2;
+        }
+    }
+    
+    if (struct6_1B4FC(0x40, 0, actor->x, actor->y) != 0 && actor->data_1 == 0)
+    {
+        actor->data_1 = 10;
+        actor->frame_num++;
+
+        if (actor->frame_num == 3)
+        {
+            actor->frame_num = 2;
+            actor->data_2 = 1;
+            for(int i=0; i < 9; i ++)
+            {
+                map_write_tile_cell(0, actor->x + 1, actor->y - i);
+            }
+        }
+    }
+
+    return;
 }
 
 void actor_wt_satellite(ActorData *actor)
@@ -1663,7 +1729,104 @@ void actor_wt_short_dialog(ActorData *actor)
 
 void actor_wt_silver_robot(ActorData *actor)
 {
-
+    actor_tile_display_func_index = 3;
+    if(actor->data_5 == 1)
+    {
+        actor_tile_display_func_index = 0;
+    }
+    
+    if(actor->data_2 != 0)
+    {
+        actor->data_2--;
+        actor_tile_display_func_index = 0;
+        return;
+    }
+    
+    if(actor->data_4 != 0)
+    {
+        actor->data_4--;
+    }
+    
+    actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
+    if(actor->data_1 == 0)
+    {
+        if(actor->y == player_y_pos)
+        {
+            if(actor->x - 3 == player_x_pos && actor->data_4 == 0)
+            {
+                actor->frame_num = 2;
+                actor->data_2 = 8;
+                push_player_around(7, 5, 2, 0x28, 0, 1);
+                play_sfx(0x14);
+                player_direction = 0x17;
+                actor->data_4 = 3;
+                actor_tile_display_func_index = 0;
+                if(word_2E238 == 0)
+                {
+                    word_2E238 = 1;
+                    actor_add_new(0xf5, player_x_pos - 1, player_y_pos - 5);
+                }
+                return;
+            }
+        }
+        
+        if(actor->data_3 == 0)
+        {
+            return;
+        }
+        actor->x = actor->x - 1;
+        check_actor_move_left_or_right(actor, LEFT);
+        
+        if(actor->has_moved_left_flag != 0)
+        {
+            actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+        }
+        else
+        {
+            actor->data_1 = 1;
+            actor->frame_num = (actor->x & 1) + 3;
+        }
+    }
+    else
+    {
+        
+        if(actor->y == player_y_pos)
+        {
+            if(actor->x + 4 == player_x_pos && actor->data_4 == 0)
+            {
+                actor->frame_num = 5;
+                actor->data_2 = 8;
+                push_player_around(3, 5, 2, 0x11, 0, 1);
+                play_sfx(0x14);
+                player_direction = 0;
+                actor->data_4 = 3;
+                actor_tile_display_func_index = 0;
+                if(word_2E238 == 0)
+                {
+                    word_2E238 = 1;
+                    actor_add_new(0xf5, player_x_pos - 1, player_y_pos - 5);
+                }
+                return;
+            }
+        }
+        
+        if(actor->data_3 != 0)
+        {
+            actor->x++;
+            check_actor_move_left_or_right(actor, RIGHT);
+            
+            if(actor->has_moved_right_flag != 0)
+            {
+                actor->frame_num = (actor->x & 1) + 3;
+            }
+            else
+            {
+                actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+                actor->data_1 = 0;
+            }
+        }
+    }
+    return;
 }
 
 void actor_wt_small_flame(ActorData *actor)
@@ -1678,12 +1841,63 @@ void actor_wt_small_flame(ActorData *actor)
 
 void actor_wt_small_red_plant(ActorData *actor)
 {
-
+    if(actor->data_1 == 0)
+    {
+        if(actor->y > player_y_pos)
+        {
+            if(actor->x == player_x_pos)
+            {
+                actor->data_1 = 1;
+            }
+        }
+    }
+    
+    if(actor->data_1 == 1)
+    {
+        actor->data_2++;
+        if(actor->data_2 == 2)
+        {
+            actor->data_2 = 0;
+            actor->frame_num = actor->frame_num + 1;
+            if(actor->frame_num == 3)
+            {
+                actor->data_1 = 0;
+                actor->frame_num = 0;
+            }
+            
+            if(actor->frame_num == 1)
+            {
+                actor->x = actor->x - 1;
+                play_sfx(0x3f);
+            }
+            
+            if(actor->frame_num == 2)
+            {
+                actor->x = actor->x + 1;
+            }
+        }
+    }
+    return;
 }
 
 void actor_wt_smoke_rising(ActorData *actor)
 {
-
+    actor_tile_display_func_index = 1;
+    
+    actor->data_1 = (uint16)(sub_1106F() & 0x1f);
+    if(actor->data_1 == 0)
+    {
+        if(actor->data_5 == 0)
+        {
+            
+            effect_add_sprite(0x62, 6, actor->x - 2, actor->y, 1, 1);
+        }
+        else
+        {
+            effect_add_sprite(0x61, 6, actor->x - 1, actor->y, 1, 1);
+        }
+    }
+    return;
 }
 
 void actor_wt_spark(ActorData *actor)
