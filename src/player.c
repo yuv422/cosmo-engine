@@ -1646,7 +1646,7 @@ void player_move_on_platform(int platform_x_left, int platform_x_right, int x_of
         {
             mapwindow_y_offset = mapwindow_y_offset - 1;
         }
-        if(down_key_pressed != 0 && (mapwindow_y_offset + 4 < player_y_pos || player_y_offset_tbl[y_offset_tbl_index] == 1 && mapwindow_y_offset + 3 < player_y_pos))
+        if(down_key_pressed != 0 && (mapwindow_y_offset + 4 < player_y_pos || (player_y_offset_tbl[y_offset_tbl_index] == 1 && mapwindow_y_offset + 3 < player_y_pos)))
         {
             mapwindow_y_offset = mapwindow_y_offset + 1;
         }
