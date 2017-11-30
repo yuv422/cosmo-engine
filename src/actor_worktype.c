@@ -153,7 +153,7 @@ void actor_wt_angry_moon(ActorData *actor)
 
 void actor_wt_big_red_jumper_frozen(ActorData *actor)
 {
-
+    //FIXME get logic out of other exes for this one.
 }
 
 const static uint8 big_red_plant_frame_num_tbl[] ={0, 2, 1, 0, 1};

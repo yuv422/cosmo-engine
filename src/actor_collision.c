@@ -716,7 +716,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
 
         case 104: // 136: pneumatic pipe entrance
 
-            if (actor->data_2 == 0 && (actor->y + 3 == player_y_pos || actor->y + 1 + 1 == player_y_pos))
+            if (actor->data_2 == 0 && (actor->y + 3 == player_y_pos || actor->y + 2 == player_y_pos))
             {
                 if (player_is_being_pushed_flag == 0)
                 {

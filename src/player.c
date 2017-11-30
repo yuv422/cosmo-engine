@@ -211,10 +211,10 @@ void push_player()
         if(player_x_offset_tbl[player_push_direction] + player_x_pos > 0 &&
                 player_x_offset_tbl[player_push_direction] + player_x_pos + 2 < map_width_in_tiles)
         {
-            player_x_pos = player_x_pos + * ((player_push_direction << 1) + player_x_offset_tbl);
+            player_x_pos += player_x_offset_tbl[player_push_direction];
         }
 
-        player_y_pos = player_y_pos + * ((player_push_direction << 1) + player_y_offset_tbl);
+        player_y_pos += player_y_offset_tbl[player_push_direction];
 
         if(player_x_offset_tbl[player_push_direction] + mapwindow_x_offset > 0 &&
                 player_x_offset_tbl[player_push_direction] + mapwindow_x_offset < map_width_in_tiles - 37)
