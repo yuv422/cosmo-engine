@@ -55,7 +55,8 @@ uint16 player_push_anim_duration_maybe = 0;
 uint16 player_push_anim_counter = 0;
 uint16 player_push_duration = 0;
 uint16 player_push_frame_num = 0;
-uint16 player_dont_push_while_jumping_flag = 0;
+uint8 player_dont_push_while_jumping_flag = 0;
+uint16 player_push_check_blocking_flag = 0;
 
 uint8 word_28BEA;
 int word_28F7E;
@@ -79,7 +80,7 @@ Tile *player_tiles;
 Sprite *player_sprites;
 uint16 num_tile_info_records;
 
-
+void player_reset_push_variables();
 
 BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 {
@@ -194,7 +195,58 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
 void push_player()
 {
-    //FIXME
+    int di = 0;
+    if(player_is_being_pushed_flag == di)
+    {
+        return;
+    }
+    if(jump_key_pressed != 0 && player_dont_push_while_jumping_flag != 0)
+    {
+        player_is_being_pushed_flag = di;
+        return;
+    }
+
+    for(int i=0; i < player_push_duration; i++)
+    {
+        if(player_x_offset_tbl[player_push_direction] + player_x_pos > 0 &&
+                player_x_offset_tbl[player_push_direction] + player_x_pos + 2 < map_width_in_tiles)
+        {
+            player_x_pos = player_x_pos + * ((player_push_direction << 1) + player_x_offset_tbl);
+        }
+
+        player_y_pos = player_y_pos + * ((player_push_direction << 1) + player_y_offset_tbl);
+
+        if(player_x_offset_tbl[player_push_direction] + mapwindow_x_offset > 0 &&
+                player_x_offset_tbl[player_push_direction] + mapwindow_x_offset < map_width_in_tiles - 37)
+        {
+            mapwindow_x_offset = mapwindow_x_offset + player_x_offset_tbl[player_push_direction];
+        }
+        if(player_y_offset_tbl[player_push_direction] + mapwindow_y_offset > 2)
+        {
+            mapwindow_y_offset = mapwindow_y_offset + player_y_offset_tbl[player_push_direction];
+        }
+        if(player_push_check_blocking_flag != 0 && (player_check_movement(2, player_x_pos, player_y_pos) != NOT_BLOCKED || player_check_movement(3, player_x_pos, player_y_pos) != NOT_BLOCKED || player_check_movement(0, player_x_pos, player_y_pos) != NOT_BLOCKED || player_check_movement(1, player_x_pos, player_y_pos) != NOT_BLOCKED))
+        {
+            di = 1;
+            break;
+        }
+    }
+
+    if(di != 0)
+    {
+        player_x_pos = player_x_pos - player_x_offset_tbl[player_push_direction];
+        player_y_pos = player_y_pos - player_y_offset_tbl[player_push_direction];
+        mapwindow_x_offset = mapwindow_x_offset - player_x_offset_tbl[player_push_direction];
+        mapwindow_y_offset = mapwindow_y_offset - player_y_offset_tbl[player_push_direction];
+        player_reset_push_variables();
+        return;
+    }
+    player_push_anim_counter++;
+    if(player_push_anim_counter >= player_push_anim_duration_maybe)
+    {
+        player_reset_push_variables();
+    }
+    return;
 }
 
 sint16 word_28F80[10] = {-2, -1, -1, -1, -1, -1, -1, 0, 0, 0};
@@ -1489,9 +1541,21 @@ void player_decrease_health()
 }
 
 void push_player_around(int push_direction, int push_anim_duration, int push_duration, int player_frame_num,
-                        char dont_push_while_jumping_flag, int check_for_blocking_flag)
+                        uint8 dont_push_while_jumping_flag, int check_for_blocking_flag)
 {
-
+    player_push_direction = push_direction;
+    player_push_anim_duration_maybe = push_anim_duration;
+    player_push_anim_counter = 0;
+    player_push_duration = push_duration;
+    player_push_frame_num = player_frame_num;
+    player_dont_push_while_jumping_flag = dont_push_while_jumping_flag;
+    player_is_being_pushed_flag = 1;
+    word_32B88 = 0;
+    player_push_check_blocking_flag = check_for_blocking_flag;
+    player_bounce_flag_maybe = 0;
+    player_bounce_height_counter = 0;
+    sub_11062();
+    return ;
 }
 
 void player_update_from_inputs()
