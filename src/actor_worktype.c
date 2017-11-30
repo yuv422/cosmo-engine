@@ -12,6 +12,7 @@
 #include "sound/sfx.h"
 #include "tile.h"
 #include "map.h"
+#include "actor_toss.h"
 
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
@@ -20,22 +21,134 @@ void actor_wt_133_boss_purple_15411(ActorData *actor)
 
 void actor_wt_159_unknown(ActorData *actor)
 {
+    if(actor->data_5 != 0)
+    {
+        actor->data_5--;
+        return;
+    }
 
+    if(actor->frame_num == 8)
+    {
+        actor->frame_num = 1;
+        return;
+    }
+
+    actor->frame_num++;
+    return;
 }
 
+const static uint8  acid_frame_num_tbl[] = {0, 1, 2, 3, 2, 1, 0};
 void actor_wt_acid(ActorData *actor)
 {
-
+    if(actor->data_5 != 0)
+    {
+        if(actor->data_4 == 0)
+        {
+            actor->frame_num = acid_frame_num_tbl[actor->data_3 % 6];
+            actor->data_3++;
+            if(actor->data_3 != 15)
+            {
+                return;
+            }
+            actor->data_4 = 1;
+            actor->data_3 = 0;
+            actor->frame_num = 4;
+            if(is_sprite_on_screen(0x2b, 6, actor->x, actor->data_2) != 0)
+            {
+                play_sfx(0x15);
+            }
+            return;
+        }
+        
+        if(actor->frame_num < 6)
+        {
+            actor->frame_num = actor->frame_num + 1;
+            return;
+        }
+        
+        actor->y = actor->y + 1;
+        if(is_sprite_on_screen(0x2b, 6, actor->x, actor->y) == 0)
+        {
+            actor->y = actor->data_2;
+            actor->data_4 = 0;
+            actor->frame_num = 0;
+            return;
+        }
+    }
+    else
+    {
+        actor->frame_num = acid_frame_num_tbl[actor->data_3];
+        actor->data_3++;
+        if(actor->data_3 == 6)
+        {
+            actor->data_3 = 0;
+        }
+    }
+    return;
 }
 
+const static uint8 alien_eating_space_plant_f_num_tbl[] = {5, 6, 7, 8};
+const static uint8 alien_eating_space_plant_f_num_2_tbl[] = {
+        1, 1, 1, 1, 1, 1, 1, 2,
+        3, 4, 1, 1, 1, 1, 1, 1
+};
 void actor_wt_alien_eating_space_plant(ActorData *actor)
 {
-
+    if(actor->data_3 != 0)
+    {
+        actor->data_3--;
+        actor->frame_num = 1;
+        if(actor->data_3 != 0)
+        {
+            return;
+        }
+        actor->frame_num = 0;
+    }
+    
+    if(actor->frame_num == 0 && actor->data_5 == 0)
+    {
+        display_actor_sprite_maybe(0xba, alien_eating_space_plant_f_num_tbl[actor->data_1 & 3], actor->x + 1 + 1, actor->y - 3, 0);
+        actor->data_1++;
+    }
+    
+    if(actor->data_5 != 0)
+    {
+        actor->frame_num = alien_eating_space_plant_f_num_2_tbl[actor->data_5 - 1];
+        if(actor->data_5 != 0x10)
+        {
+            actor->data_5++;
+        }
+        else
+        {
+            finished_level_flag_maybe = 1;
+        }
+    }
+    
+    if(is_sprite_on_screen(0xba, 1, actor->x, actor->y) == 0)
+    {
+        actor->data_3 = 0x1e;
+        actor->data_5 = 0;
+        actor->frame_num = 1;
+    }
+    return;
 }
 
 void actor_wt_angry_moon(ActorData *actor)
 {
-
+    actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
+    if(actor->data_3 == 0)
+    {
+        actor->data_2++;
+        if(actor->x >= player_x_pos)
+        {
+            actor->frame_num = actor->data_2 & 1;
+        }
+        else
+        {
+            actor->frame_num = (actor->data_2 & 1) + 2;
+        }
+    }
+    return;
 }
 
 void actor_wt_big_red_jumper_frozen(ActorData *actor)
@@ -43,19 +156,180 @@ void actor_wt_big_red_jumper_frozen(ActorData *actor)
 
 }
 
+const static uint8 big_red_plant_frame_num_tbl[] ={0, 2, 1, 0, 1};
 void actor_wt_big_red_plant(ActorData *actor)
 {
+    if(actor->has_moved_right_flag > 0 && actor->has_moved_right_flag < 7)
+    {
+        return;
+    }
+    
+    if(actor->data_3 != 0)
+    {
+        actor->data_3--;
+        if((actor->data_3 & 1) != 0)
+        {
+            actor_tile_display_func_index = 2;
+        }
+        return;
+    }
+    
+    if (struct6_1B4FC(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) == 0)
+    {
+        if(actor->data_2 != 0)
+        {
+            actor->frame_num = 1;
+            actor->data_2--;
+        }
+        else
+        {
+            actor->frame_num = big_red_plant_frame_num_tbl[actor->data_1];
+            actor->data_1++;
+            if(actor->data_1 == 2 && actor->has_moved_left_flag == 0)
+            {
+                actor_toss_add_new(0x56, actor->x + 2, actor->y - 5);
+                play_sfx(0x2f);
+            }
 
+            if(actor->data_1 == 5)
+            {
+                actor->data_2 = 0x64;
+                actor->data_1 = 0;
+                actor->has_moved_left_flag = 0;
+            }
+        }
+    }
+    else
+    {
+        actor->data_3 = 15;
+        actor->data_5++;
+        if (actor->data_5 == 2)
+        {
+            actor->is_deactivated_flag_maybe = 1;
+            explode_effect_add_sprite(0x56, 0, actor->x + 2, actor->y - 5);
+            explode_effect_add_sprite(0x56, 2, actor->x + 2, actor->y - 5);
+            explode_effect_add_sprite(0x56, 4, actor->x + 2, actor->y - 5);
+            explode_effect_add_sprite(0x56, 9, actor->x + 2, actor->y - 5);
+            explode_effect_add_sprite(0x56, 3, actor->x + 2, actor->y - 5);
+            explode_effect_add_sprite(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y);
+        }
+        else
+        {
+            if(actor->data_2 != 0)
+            {
+                actor->frame_num = 1;
+                actor->data_2--;
+            }
+            else
+            {
+                actor->frame_num = big_red_plant_frame_num_tbl[actor->data_1];
+                actor->data_1++;
+                if(actor->data_1 == 2 && actor->has_moved_left_flag == 0)
+                {
+                    actor_toss_add_new(0x56, actor->x + 2, actor->y - 5);
+                    play_sfx(0x2f);
+                }
+
+                if(actor->data_1 == 5)
+                {
+                    actor->data_2 = 0x64;
+                    actor->data_1 = 0;
+                    actor->has_moved_left_flag = 0;
+                }
+            }
+        }
+    }
+    return;
 }
 
 void actor_wt_big_saw_blade(ActorData *actor)
 {
-
+    actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+    if(is_sprite_on_screen(actor->actorInfoIndex, 0, actor->x, actor->y) != 0)
+    {
+        play_sfx(0x23);
+    }
+    
+    if(actor->data_1 != 0)
+    {
+        if(sprite_blocking_check(0, actor->actorInfoIndex, 0, actor->x, actor->y - 1) == NOT_BLOCKED)
+        {
+            actor->y = actor->y - 1;
+        }
+        else
+        {
+            actor->data_1 = 0;
+        }
+        return;
+    }
+    
+    if(sprite_blocking_check(1, actor->actorInfoIndex, 0, actor->x, actor->y + 1) == NOT_BLOCKED)
+    {
+        actor->y = actor->y + 1;
+    }
+    else
+    {
+        actor->data_1 = 1;
+    }
+    return;
 }
 
 void actor_wt_big_yellow_spike(ActorData *actor)
 {
-
+    if(actor->data_5 == 0)
+    {
+        if(actor->data_1 != 0)
+        {
+            if(sprite_blocking_check(1, actor->actorInfoIndex, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+            {
+                actor->is_deactivated_flag_maybe = 1;
+                effect_add_sprite(0x61, 6, actor->x, actor->y, 1, 3);
+                play_sfx(0x1b);
+                actor_tile_display_func_index = 1;
+            }
+        }
+        else
+        {
+            if(actor->y < player_y_pos)
+            {
+                if(actor->x <= player_x_pos + 6)
+                {
+                    if(actor->x + 5 > player_x_pos)
+                    {
+                        actor->data_1 = 1;
+                        actor->can_fall_down_flag = 1;
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        actor_tile_display_func_index = 4;
+    }
+    
+    if(actor->is_deactivated_flag_maybe != 0)
+    {
+        return;
+    }
+    if(struct6_1B4FC(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0)
+    {
+        actor->data_2 = 3;
+    }
+    
+    if(actor->data_2 != 0)
+    {
+        actor->data_2--;
+        if(actor->data_2 == 0)
+        {
+            struct6_add_sprite(actor->x - 1, actor->y + 1);
+            actor->is_deactivated_flag_maybe = 1;
+            player_add_to_score(0xc8);
+            
+            explode_effect_add_sprite(actor->actorInfoIndex, 0, actor->x, actor->y);
+        }
+    }
+    return;
 }
 
 const static uint8 blue_ball_frame_num_tbl[] = {
@@ -283,12 +557,88 @@ void actor_wt_blue_bird(ActorData *actor)
 
 void actor_wt_blue_cube_platform(ActorData *actor)
 {
-
+    if(sprite_blocking_check(1, 0xa3, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+    {
+        actor->is_deactivated_flag_maybe = 1;
+        explode_effect_add_sprite(0xa3, 1, actor->x, actor->y);
+        
+        explode_effect_add_sprite(0xa3, 2, actor->x, actor->y);
+        play_sfx(0x19);
+        actor_tile_display_func_index = 2;
+        return;
+    }
+    
+    if(actor->data_1 == 0)
+    {
+        actor->has_moved_left_flag = map_get_tile_cell(actor->x, actor->y - 1);
+        actor->has_moved_right_flag = map_get_tile_cell(actor->x + 1, actor->y - 1);
+        map_write_tile_cell(0x50, actor->x, actor->y - 1);
+        map_write_tile_cell(0x50, actor->x + 1, actor->y - 1);
+        actor->data_1 = 1;
+    }
+    
+    if(actor->y - 2 == player_y_pos)
+    {
+        if(actor->x <= player_x_pos + 1 + 1)
+        {
+            if(actor->x + 1 >= player_x_pos)
+            {
+                actor->data_2 = 7;
+            }
+        }
+    }
+    
+    if(actor->data_2 != 0)
+    {
+        actor->data_2--;
+        if(actor->data_2 == 0)
+        {
+            actor->can_fall_down_flag = 1;
+            map_write_tile_cell((uint16)actor->has_moved_left_flag, actor->x, actor->y - 1);
+            map_write_tile_cell((uint16)actor->has_moved_right_flag, actor->x + 1, actor->y - 1);
+        }
+    }
+    return;
 }
 
 void actor_wt_blue_mobile_trampoline_car(ActorData *actor)
 {
+    if(actor->data_1 <= 0)
+    {
+        actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+        if(actor->data_2 == 0)
+        {
+            actor->x = actor->x - 1;
+            check_actor_move_left_or_right(actor, LEFT);
+            
+            if(actor->has_moved_left_flag == 0)
+            {
+                actor->data_2 = 1;
+            }
+        }
+        else
+        {
+            actor->x = actor->x + 1;
+            check_actor_move_left_or_right(actor, RIGHT);
+            
+            if(actor->has_moved_right_flag == 0)
+            {
+                actor->data_2 = 0;
+            }
+        }
+    }
+    else
+    {
+        actor->frame_num = 2;
+        actor->data_1--;
+    }
 
+    if(is_sprite_on_screen(0x10, 2, actor->x, actor->y) == 0)
+    {
+        actor->frame_num = 0;
+        return;
+    }
+    return;
 }
 
 void actor_wt_blue_platform(ActorData *actor)
@@ -767,9 +1117,32 @@ void actor_wt_hint_dialog(ActorData *actor)
     return;
 }
 
+const static uint8 flame_frame_num_tbl[] = {
+        0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 1, 0, 0
+};
 void actor_wt_horizontal_flame(ActorData *actor)
 {
-
+    if(actor->data_1 != 0)
+    {
+        actor->data_1--;
+        actor_tile_display_func_index = 1;
+    }
+    else
+    {
+        actor->frame_num = flame_frame_num_tbl[actor->data_2];
+        if(actor->frame_num == 2)
+        {
+            effect_add_sprite(0x61, 6, actor->x - actor->data_5, actor->y - 3, 1, 1);
+            play_sfx(0x36);
+        }
+        actor->data_2++;
+        if(actor->data_2 == 0x10)
+        {
+            actor->data_1 = 0x1e;
+            actor->data_2 = 0;
+        }
+    }
+    return;
 }
 
 void actor_wt_hoverboard(ActorData *actor)
@@ -816,7 +1189,6 @@ void actor_wt_invisible_exit_marker_right(ActorData *actor)
 }
 
 const static uint8 jaws_and_tongue_frame_num_tbl[] = {2, 3, 4, 3};
-
 void actor_wt_jaws_and_tongue(ActorData *actor)
 {
     if(actor->data_1 == 0)
@@ -1511,7 +1883,57 @@ void actor_wt_robotic_spike_ceiling(ActorData *actor)
 
 void actor_wt_robotic_spike_ground(ActorData *actor)
 {
-
+    actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
+    if(actor->actorInfoIndex == 0x14)
+    {
+        actor->data_3 = 1;
+        if(is_sprite_on_screen(actor->actorInfoIndex, 0, actor->x, actor->y) != 0)
+        {
+            play_sfx(0x23);
+        }
+    }
+    
+    if(actor->data_4 != 0)
+    {
+        actor->data_4--;
+    }
+    
+    if(actor->data_3 == 0)
+    {
+        return;
+    }
+    if(actor->data_4 == 0)
+    {
+        if(actor->data_2 == 0)
+        {
+            actor->x = actor->x - 1;
+            check_actor_move_left_or_right(actor, LEFT);
+            
+            if(actor->has_moved_left_flag == 0)
+            {
+                actor->data_2 = 1;
+                actor->data_4 = actor->data_1;
+            }
+        }
+        else
+        {
+            actor->x = actor->x + 1;
+            check_actor_move_left_or_right(actor, RIGHT);
+            
+            if(actor->has_moved_right_flag == 0)
+            {
+                actor->data_2 = 0;
+                actor->data_4 = actor->data_1;
+            }
+        }
+    }
+    
+    actor->frame_num++;
+    if(actor->frame_num > actor->data_5)
+    {
+        actor->frame_num = 0;
+    }
+    return;
 }
 
 void actor_wt_rocket(ActorData *actor)
@@ -1719,7 +2141,108 @@ void actor_wt_satellite(ActorData *actor)
 
 void actor_wt_security_robot(ActorData *actor)
 {
-
+    if(actor->count_down_timer != 0)
+    {
+        return;
+    }
+    actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
+    if(actor->data_3 != 0)
+    {
+        return;
+    }
+    if(word_2E4CE != 0)
+    {
+        if(sub_1106F() % 0x32 > 0x30)
+        {
+            if(actor->data_4 == 0)
+            {
+                actor->data_4 = 10;
+            }
+        }
+    }
+    
+    if(actor->data_4 != 0)
+    {
+        actor->data_2 = (actor->data_2 ? -1 : 0) + 1;
+        actor->data_4--;
+        if(actor->data_4 == 1)
+        {
+            if(actor->x + 1 <= player_x_pos)
+            {
+                actor->data_1 = 1;
+            }
+            else
+            {
+                actor->data_1 = 0;
+            }
+            
+            if(actor->data_1 == 0)
+            {
+                actor_add_new(0x6d, actor->x - 1, actor->y - 1);
+            }
+            else
+            {
+                actor_add_new(0x6e, actor->x + 3, actor->y - 1);
+            }
+        }
+        
+        if(actor->data_1 != 0)
+        {
+            if(actor->data_2 == 0)
+            {
+                actor->frame_num = 0;
+            }
+            else
+            {
+                actor->frame_num = 5;
+            }
+            return;
+        }
+        
+        if(actor->data_2 == 0)
+        {
+            actor->frame_num = 2;
+        }
+        else
+        {
+            actor->frame_num = 6;
+        }
+    }
+    else
+    {
+        
+        if(actor->data_1 == 0)
+        {
+            actor->x = actor->x - 1;
+            check_actor_move_left_or_right(actor, LEFT);
+            
+            if(actor->has_moved_left_flag != 0)
+            {
+                
+                actor->data_2 = (actor->data_2 ? -1 : 0) + 1;
+                actor->frame_num = actor->data_2 + 2;
+            }
+            else
+            {
+                actor->data_1 = 1;
+                actor->frame_num = 4;
+            }
+            return;
+        }
+        actor->x = actor->x + 1;
+        check_actor_move_left_or_right(actor, RIGHT);
+        
+        if(actor->has_moved_right_flag != 0)
+        {
+            actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+        }
+        else
+        {
+            actor->data_1 = 0;
+            actor->frame_num = 4;
+        }
+    }
+    return;
 }
 
 void actor_wt_short_dialog(ActorData *actor)
