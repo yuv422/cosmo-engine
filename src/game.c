@@ -157,6 +157,8 @@ void game_loop()
                 player_update_walk_anim(); //TODO check name I think this might be fall anim
             }
 
+            update_moving_platforms();
+
             update_mud_fountains();
 
             map_display();

@@ -98,3 +98,33 @@ void display_mud_fountains()
 
     return;
 }
+
+void update_moving_platforms() {
+
+    for(int i =0;i < num_moving_platforms; i++) {
+        MovingPlatform *platform = &moving_platform_tbl[i];
+        for (int si = 2; si < 7; si++) {
+            map_write_tile_cell(platform->map_tiles[si - 2], platform->x + si - 4, platform->y);
+        }
+
+        uint16 map_tile_num = (uint16) (map_get_tile_cell(platform->x, platform->y) / 8);
+        if (player_death_counter == 0) {
+            if (platform->y - 1 == player_y_pos && move_platform_flag != 0) {
+                player_move_on_platform(platform->x - 2, platform->x + 2, map_tile_num, map_tile_num);
+            }
+        }
+        if (move_platform_flag != 0) {
+            platform->x += player_x_offset_tbl[map_tile_num];
+            platform->y += player_y_offset_tbl[map_tile_num];
+        }
+
+        for (int si = 2; si < 7; si++) {
+            platform->map_tiles[si - 2] = (uint16) map_get_tile_cell(platform->x + si - 4, platform->y);
+        }
+
+        for (int si = 2; si < 7; si++) {
+            map_write_tile_cell(((si - 2) / 8) + 0x3dd0, platform->x + si - 4, platform->y);
+        }
+    }
+    return;
+}

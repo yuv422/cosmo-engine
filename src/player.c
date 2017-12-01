@@ -1147,7 +1147,14 @@ void display_player_sprite(char frame_num, int x_pos, int y_pos, int tile_displa
                                  screen_y >= 8 && screen_y < 152 &&
                     !(tileattr_mni_data[map_get_tile_cell(x_pos+x,y_pos - info->height + y + 1)/8] & TILE_ATTR_IN_FRONT))
             {
-                video_draw_tile(tile, screen_x, screen_y);
+                if(tile_display_func_index == 2)
+                {
+                    video_draw_tile_solid_white(tile, screen_x, screen_y);
+                }
+                else
+                {
+                    video_draw_tile(tile, screen_x, screen_y);
+                }
             }
             tile++;
         }
