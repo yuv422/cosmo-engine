@@ -5,6 +5,6 @@
 #ifndef COSMO_ENGINE_UTIL_H
 #define COSMO_ENGINE_UTIL_H
 
-int _rand();
+int cosmo_rand();
 
 #endif //COSMO_ENGINE_UTIL_H

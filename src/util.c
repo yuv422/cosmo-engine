@@ -2,8 +2,10 @@
 // Created by efry on 25/10/2017.
 //
 
-int _rand()
+#include <stdlib.h>
+
+int cosmo_rand()
 {
-    //FIXMEcd
-    return 0;
+    //FIXME
+    return rand() % 0xffff;
 }

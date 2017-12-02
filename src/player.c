@@ -882,7 +882,7 @@ void handle_player_input_maybe()
                     {
                         if(left_key_pressed == right_key_pressed)
                         {
-                            uint8 rvalue = (uint8)(_rand() % 0x32);
+                            uint8 rvalue = (uint8)(cosmo_rand() % 0x32);
 
                             player_sprite_dir_frame_offset = 4;
                             if(left_key_pressed == 0 && right_key_pressed == 0 && byte_2E2E4 == 0)
