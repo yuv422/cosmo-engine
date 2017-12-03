@@ -12,6 +12,7 @@
 
 #define SFX_SAMPLE_RATE 140
 #define PC_PIT_RATE 1193181
+#define WAVE_AMPLITUDE_VALUE 3500
 
 typedef struct Sfx {
     uint8 priority;
@@ -65,7 +66,7 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
             float freq = PC_PIT_RATE / (float)sample;
             int half_cycle_length = (int)(AUDIO_SAMPLE_RATE / (freq * 2));
             //printf("sample %d, freq=%f, half_cycle_len = %d\n", i, freq, half_cycle_length);
-            sint16 beepWaveVal = 5000;
+            sint16 beepWaveVal = WAVE_AMPLITUDE_VALUE;
             uint16 beepHalfCycleCounter = 0;
             for (int sampleCounter = 0; sampleCounter < sample_length; sampleCounter++) {
                 wave_data[i*sample_length+sampleCounter] = beepWaveVal;

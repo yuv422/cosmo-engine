@@ -9,7 +9,7 @@
 #include "game.h"
 #include "video.h"
 #include "map.h"
-#include "music.h"
+#include "sound/music.h"
 #include "dialog.h"
 #include "palette.h"
 #include "player.h"
@@ -102,7 +102,7 @@ void load_level(int level_number)
     background_y_scroll_flag = (uint8)(level_flags & 0x80);
 
     palette_anim_type = (uint8)(level_flags >> 8 & 7);
-    music_index = (uint16)((level_flags >> 11) & 0x1f);
+    uint16 music_index = (uint16)((level_flags >> 11) & 0x1f);
 
     printf("Level %d: rain=%d, backdrop_index=%d, bg_x_scroll=%d, bg_y_scroll=%d, pal_anim_type=%d, music_index=%d\n", current_level, rain_flag, backdrop_index, background_x_scroll_flag, background_y_scroll_flag, palette_anim_type, music_index);
     reset_game_state();

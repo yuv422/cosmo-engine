@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include "audio.h"
+#include "music.h"
 
 
 void audio_init()
@@ -20,6 +21,7 @@ void audio_init()
         printf("ERROR: Opening audio mixer!\n");
         return;
     }
+    music_init();
 }
 
 void audio_shutdown()

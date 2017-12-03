@@ -19,10 +19,11 @@ set(SOURCE_FILES
         src/player.h src/game.h src/game.c src/palette.c src/palette.h src/util.h src/util.c
         src/map.c src/map.h src/defines.h src/input.c src/input.h src/dialog.c src/dialog.h src/tile.c src/tile.h
         src/files/vol.c src/files/vol.h src/files/file.c src/files/file.h src/video.c src/video.h
-        src/music.c src/music.h src/backdrop.c src/backdrop.h src/save.c src/save.h src/status.c src/status.h
-        src/actor_worktype.c src/actor_worktype.h src/actor_worktype.c src/actor_worktype.h src/effects.c src/effects.h
-        src/actor_collision.c src/actor_collision.h src/actor_toss.c src/actor_toss.h src/font.c src/font.h
-        src/sound/sfx.c src/sound/sfx.h src/sound/audio.c src/sound/audio.h src/platforms.c src/platforms.h)
+        src/sound/music.c src/sound/music.h src/backdrop.c src/backdrop.h src/save.c src/save.h
+        src/status.c src/status.h src/actor_worktype.c src/actor_worktype.h src/actor_worktype.c src/actor_worktype.h
+        src/effects.c src/effects.h src/actor_collision.c src/actor_collision.h src/actor_toss.c src/actor_toss.h
+        src/font.c src/font.h src/sound/sfx.c src/sound/sfx.h src/sound/audio.c src/sound/audio.h
+        src/platforms.c src/platforms.h src/sound/opl.c src/sound/opl.h)
 
 include_directories(src)
 

@@ -8,9 +8,10 @@
 #include "defines.h"
 
 //Data
-extern uint16 music_index;
 
+
+void music_init();
 void music_related_229C7();
-void load_music(uint16 music_index);
+void load_music(uint16 new_music_index);
 
 #endif //COSMO_ENGINE_MUSIC_H
