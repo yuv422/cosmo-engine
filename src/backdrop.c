@@ -8,6 +8,8 @@
 #include "map.h"
 #include "video.h"
 
+#define BACKGROUND_WIDTH 40
+
 //Data
 uint16 backdrop_index = 0xff;
 uint8 background_x_scroll_flag = 0;
@@ -72,11 +74,23 @@ bool set_backdrop(uint16 new_backdrop_index)
 
 void backdrop_display()
 {
+    int x_offset = 0;
+    int y_offset = 0;
+    int sub_tile_x = 0;
+
+    if(background_x_scroll_flag)
+    {
+        x_offset = mapwindow_x_offset % (BACKGROUND_WIDTH*2);
+        x_offset /= 2;
+        sub_tile_x = mapwindow_x_offset & 1 ? 4 : 0;
+    }
+
     for(int y=0; y < MAP_WINDOW_HEIGHT; y++)
     {
         for(int x=0; x < MAP_WINDOW_WIDTH; x++)
         {
             video_draw_tile(&bg_tiles[x + y * 40], (x+1)*8, (y+1)*8);
+            //video_draw_tile(&bg_tiles[((x+x_offset) % BACKGROUND_WIDTH) + y * BACKGROUND_WIDTH], (x+1)*8 - sub_tile_x, (y+1)*8);
         }
     }
 }
