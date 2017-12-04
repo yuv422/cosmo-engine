@@ -9,6 +9,7 @@
 #include "video.h"
 
 #define BACKGROUND_WIDTH 40
+#define BACKGROUND_HEIGHT 18
 
 //Data
 uint16 backdrop_index = 0xff;
@@ -77,6 +78,7 @@ void backdrop_display()
     int x_offset = 0;
     int y_offset = 0;
     int sub_tile_x = 0;
+    int sub_tile_y = 0;
 
     if(background_x_scroll_flag)
     {
@@ -85,12 +87,18 @@ void backdrop_display()
         sub_tile_x = mapwindow_x_offset & 1 ? 4 : 0;
     }
 
-    for(int y=0; y < MAP_WINDOW_HEIGHT; y++)
+    if(background_y_scroll_flag)
     {
-        for(int x=0; x < MAP_WINDOW_WIDTH; x++)
+        y_offset = mapwindow_y_offset % (BACKGROUND_HEIGHT*2);
+        y_offset /= 2;
+        sub_tile_y = mapwindow_y_offset & 1 ? 4 : 0;
+    }
+
+    for(int y=0; y < MAP_WINDOW_HEIGHT + 1; y++)
+    {
+        for(int x=0; x < MAP_WINDOW_WIDTH + 1; x++)
         {
-            video_draw_tile(&bg_tiles[x + y * 40], (x+1)*8, (y+1)*8);
-            //video_draw_tile(&bg_tiles[((x+x_offset) % BACKGROUND_WIDTH) + y * BACKGROUND_WIDTH], (x+1)*8 - sub_tile_x, (y+1)*8);
+            video_draw_tile_with_clip_rect(&bg_tiles[((x+x_offset) % BACKGROUND_WIDTH) + ((y+y_offset) % BACKGROUND_HEIGHT) * BACKGROUND_WIDTH], (x+1)*8 - sub_tile_x, (y+1)*8 - sub_tile_y, 8, 8, 8*MAP_WINDOW_WIDTH, 8*MAP_WINDOW_HEIGHT);
         }
     }
 }

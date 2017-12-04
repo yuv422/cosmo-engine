@@ -163,6 +163,62 @@ void video_draw_tile_solid_white(Tile *tile, uint16 x, uint16 y)
         }
     }
 }
+
+void video_draw_tile_with_clip_rect(Tile *tile, uint16 x, uint16 y, uint16 clip_x, uint16 clip_y, uint16 clip_w, uint16 clip_h)
+{
+    uint16 tx = 0;
+    uint16 ty = 0;
+    uint16 w = TILE_WIDTH;
+    uint16 h = TILE_HEIGHT;
+
+    if (x + w < clip_x ||
+        y + h < clip_y ||
+        x > clip_x + clip_w ||
+        y > clip_y + clip_h)
+    {
+        return;
+    }
+
+    if (x < clip_x)
+    {
+        tx = (clip_x - x);
+        w = TILE_WIDTH - tx;
+        x = clip_x;
+    }
+
+    if (x + w > clip_x + clip_w)
+    {
+        w -= ((x + w) - (clip_x + clip_w));
+    }
+
+    if (y < clip_y)
+    {
+        ty = (clip_y - y);
+        h = TILE_HEIGHT - ty;
+        y = clip_y;
+    }
+
+    if (y + h > clip_y + clip_h)
+    {
+        h -= ((y + h) - (clip_y + clip_h));
+    }
+
+    uint8 *pixel = &surface->pixels[x + y * SCREEN_WIDTH];
+    uint8 *tile_pixel = &tile->pixels[tx + ty * TILE_WIDTH];
+        for(int i=0;i<h;i++)
+        {
+            for(int j=0; j < w; j++)
+            {
+                if(tile_pixel[j] != TRANSPARENT_COLOR)
+                {
+                    pixel[j] = tile_pixel[j];
+                }
+            }
+            pixel += SCREEN_WIDTH;
+            tile_pixel += TILE_WIDTH;
+        }
+}
+
 void video_update_palette(int palette_index, SDL_Color new_color)
 {
     SDL_SetPaletteColors(surface->format->palette, &new_color, palette_index, 1);
