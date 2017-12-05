@@ -1003,7 +1003,48 @@ void actor_wt_cyan_spitting_plant(ActorData *actor)
 
 void actor_wt_destructable_pedestal(ActorData *actor)
 {
+    actor_tile_display_func_index = 1;
+    int i=0;
+    for(; i < actor->data_1;i++)
+    {
+        display_actor_sprite_maybe(0xc0, 1, actor->x, actor->y - i, 0);
+    }
 
+    display_actor_sprite_maybe(0xc0, 0, actor->x - 2, actor->y - i, 0);
+
+    map_write_row_of_tiles(0x48, 5, actor->x - 2, actor->y - i);
+
+    if(actor->data_2 == 0)
+    {
+        if(struct6_1B4FC(0xc0, 1, actor->x, actor->y) != 0)
+        {
+            actor->data_2 = 3;
+        }
+    }
+
+    if(actor->data_2 > 1)
+    {
+        actor->data_2--;
+    }
+
+    if(actor->data_2 != 1)
+    {
+        return;
+    }
+    actor->data_2 = 3;
+    map_write_row_of_tiles(0, 5, actor->x - 2, actor->y - i);
+
+    actor->data_1--;
+    if(actor->data_1 != 1)
+    {
+        explode_effect_add_sprite(0xc0, 1, actor->x, actor->y);
+        effect_add_sprite(0x61, 6, actor->x - 1, actor->y + 1, 1, 1);
+    }
+    else
+    {
+        actor->is_deactivated_flag_maybe = 1;
+        explode_effect_add_sprite(0xc0, 0, actor->x, actor->y);
+    }
 }
 
 void actor_wt_door(ActorData *actor)

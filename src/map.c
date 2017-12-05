@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <files/file.h>
+#include <assert.h>
 #include "input.h"
 #include "backdrop.h"
 #include "game.h"
@@ -276,5 +277,9 @@ void map_write_tile_cell(uint16 map_tile_cell, int x, int y)
 }
 
 void map_write_row_of_tiles(uint16 map_tile_cell, uint16 length_in_tiles, int x, int y) {
-    //FIXME
+    assert(x + length_in_tiles < map_width_in_tiles);
+    for(int i = 0; i < length_in_tiles; i++)
+    {
+        map_write_tile_cell(map_tile_cell, x + i, y);
+    }
 }

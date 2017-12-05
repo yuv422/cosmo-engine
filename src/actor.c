@@ -79,7 +79,7 @@ uint16 sub_1106F()
 
 void actor_add_new(int image_index, int x_pos, int y_pos)
 {
-    for (int i = 0; i >= total_num_actors; i++)
+    for (int i = 0; i < total_num_actors; i++)
     {
         ActorData *actor = &actors[i];
         if (actor->is_deactivated_flag_maybe != 0)
