@@ -85,4 +85,6 @@ void actor_update_all();
 
 TileInfo *actor_get_tile_info(int actorInfoIndex, int frame_num);
 
+ActorData *get_actor(uint16 actor_num);
+
 #endif //COSMO_ENGINE_ACTOR_H

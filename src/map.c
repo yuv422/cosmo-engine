@@ -37,7 +37,7 @@ uint16 map_data[32768];
 Tile *map_bg_tiles;
 Tile *map_fg_tiles;
 
-int map_get_tile_cell(int x, int y) {
+uint16 map_get_tile_cell(int x, int y) {
     return map_data[x + y * map_width_in_tiles];
 }
 
@@ -273,4 +273,8 @@ void map_display() {
 void map_write_tile_cell(uint16 map_tile_cell, int x, int y)
 {
     map_data[x + y * map_width_in_tiles] = map_tile_cell;
+}
+
+void map_write_row_of_tiles(uint16 map_tile_cell, uint16 length_in_tiles, int x, int y) {
+    //FIXME
 }

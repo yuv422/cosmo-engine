@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include "actor.h"
 #include "defines.h"
 #include "map.h"
@@ -1488,4 +1489,9 @@ int is_sprite_on_screen(int actorInfoIndex, int frame_num, int x_pos, int y_pos)
 
 TileInfo *actor_get_tile_info(int actorInfoIndex, int frame_num) {
     return &actor_sprites[actorInfoIndex].frames[frame_num];
+}
+
+ActorData *get_actor(uint16 actor_num) {
+    assert(actor_num < MAX_ACTORS);
+    return &actors[actor_num];
 }

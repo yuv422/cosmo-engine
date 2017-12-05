@@ -80,6 +80,7 @@ void backdrop_display()
     int sub_tile_x = 0;
     int sub_tile_y = 0;
 
+    //background scrolls in 4 pixel increments.
     if(background_x_scroll_flag)
     {
         x_offset = mapwindow_x_offset % (BACKGROUND_WIDTH*2);

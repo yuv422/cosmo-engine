@@ -13,6 +13,7 @@
 #include "tile.h"
 #include "map.h"
 #include "actor_toss.h"
+#include "actor_collision.h"
 
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
@@ -643,7 +644,7 @@ void actor_wt_blue_mobile_trampoline_car(ActorData *actor)
 
 void actor_wt_blue_platform(ActorData *actor)
 {
-
+  // FIXME need to fix issue with desquirr
 }
 
 void actor_wt_blue_turret_alien(ActorData *actor)
@@ -795,7 +796,25 @@ void actor_wt_bomb(ActorData *actor)
 
 void actor_wt_bonus_bomb(ActorData *actor)
 {
-
+    if(actor->data_1 == 2)
+    {
+        struct6_add_sprite(actor->x - 2, actor->y);
+        actor->is_deactivated_flag_maybe = 1;
+        return;
+    }
+    
+    if(actor->data_1 != 0)
+    {
+        actor->data_1 = actor->data_1 + 1;
+    }
+    
+    if(actor->data_1 == 0)
+    {
+        if(struct6_1B4FC(0x39, 0, actor->x, actor->y) != 0)
+        {
+            actor->data_1 = 1;
+        }
+    }
 }
 
 void actor_wt_bonus_item(ActorData *actor)
@@ -830,8 +849,6 @@ void actor_wt_bonus_item(ActorData *actor)
             effect_add_sprite(0x17, 8, rand() % actor->data_1 + actor->x, rand() % actor->data_2 + actor->y, 0, 1);
         }
     }
-
-    return;
 }
 
 const static uint8  clam_trap_frame_num_tbl[] = {
@@ -879,17 +896,81 @@ void actor_wt_clam_trap(ActorData *actor)
             actor->is_deactivated_flag_maybe = 1;
         }
     }
-    return;
 }
 
 void actor_wt_container(ActorData *actor)
 {
-
+    if(struct6_1B4FC(0x1d, 0, actor->x, actor->y) != 0)
+    {
+        actor_explode_container(actor);
+        player_add_to_score(0x640);
+        
+        actor_add_new(0xb5, actor->x, actor->y);
+    }
 }
 
 void actor_wt_crate_bomb_box(ActorData *actor)
 {
+    if(actor->data_4 == 0)
+    {
+        map_write_row_of_tiles(0x50, 4, actor->x, actor->y - 2);
+        actor->data_4 = 1;
+        return;
+    }
+    
+    if(sprite_blocking_check(1, 0x82, 0, actor->x, actor->y + 1) == 0)
+    {
+        
+        map_write_row_of_tiles(0, 4, actor->x, actor->y - 2);
+        
+        actor->y = actor->y + 1;
+        if(sprite_blocking_check(1, 0x82, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+        {
+            
+            map_write_row_of_tiles(0x50, 4, actor->x, actor->y - 2);
+        }
+        return;
+    }
+    
+    if(is_sprite_on_screen(0x82, 0, actor->x, actor->y) == 0)
+    {
+        return;
+    }
+    
+    if(struct6_1B4FC(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0)
+    {
+        
+        actor->data_5 = 1;
+        actor->has_moved_right_flag = 0xf1f1;
+    }
+    
+    if(actor->data_5 != 0)
+    {
+        actor->data_5--;
+        return;
+    }
+    
+    actor->is_deactivated_flag_maybe = 1;
+    if(actor->has_moved_right_flag == 0xf1f1)
+    {
+        struct6_add_sprite(actor->x - 1, actor->y - 1);
+        return;
+    }
+    
+    map_write_row_of_tiles(0, 4, actor->x, actor->y - 2);
+    
+    actor_add_new(0x7c, actor->x, actor->y);
+    actor_tile_display_func_index = 2;
+    
+    explode_effect_add_sprite(0x83, 0, actor->x - 1, actor->y + 3);
+    explode_effect_add_sprite(0x83, 1, actor->x, actor->y - 1);
+    explode_effect_add_sprite(0x83, 2, actor->x + 1, actor->y);
+    explode_effect_add_sprite(0x83, 3, actor->x, actor->y);
+    explode_effect_add_sprite(0x83, 4, actor->x + 3, actor->y + 1 + 1);
+    explode_effect_add_sprite(0x83, 5, actor->x, actor->y);
+    explode_effect_add_sprite(0x83, 6, actor->x + 5, actor->y + 5);
 
+    play_sfx(0x19);
 }
 
 void actor_wt_cyan_spitting_plant(ActorData *actor)
@@ -918,7 +999,6 @@ void actor_wt_cyan_spitting_plant(ActorData *actor)
             actor_add_new(0x6d, actor->x - 1, actor->y - 1);
         }
     }
-    return;
 }
 
 void actor_wt_destructable_pedestal(ActorData *actor)
@@ -928,17 +1008,114 @@ void actor_wt_destructable_pedestal(ActorData *actor)
 
 void actor_wt_door(ActorData *actor)
 {
+    if (actor->has_moved_left_flag != 0)
+    {
+        return;
+    }
 
+    actor->has_moved_left_flag = 1;
+
+    actor->data_1 = map_get_tile_cell(actor->x + 1, actor->y);
+    actor->data_2 = map_get_tile_cell(actor->x + 1, actor->y - 1);
+    actor->data_3 = map_get_tile_cell(actor->x + 1, actor->y - 2);
+    actor->data_4 = map_get_tile_cell(actor->x + 1, actor->y - 3);
+    actor->data_5 = map_get_tile_cell(actor->x + 1, actor->y - 4);
+
+    for(int si=0; si < 5; si++)
+    {
+        map_write_tile_cell(0x3dc8, actor->x + 1, actor->y - si);
+    }
+
+    return;
 }
 
 void actor_wt_dragonfly(ActorData *actor)
 {
+    if(actor->data_1 != 0)
+    {
+        if(sprite_blocking_check(3, 0x81, 0, actor->x + 1, actor->y) == NOT_BLOCKED)
+        {
+            actor->x = actor->x + 1;
+            actor->data_2 = (actor->data_2 ? -1 : 0) + 1;
+            actor->frame_num = actor->data_2 + 2;
+        }
+        else
+        {
+            actor->data_1 = 0;
+        }
+        return;
+    }
 
+    if(sprite_blocking_check(2, 0x81, 0, actor->x - 1, actor->y) == NOT_BLOCKED)
+    {
+        actor->x = actor->x - 1;
+        actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+    }
+    else
+    {
+        actor->data_1 = 1;
+    }
 }
 
 void actor_wt_egg_head(ActorData *actor)
 {
+    if(actor->data_2 != 0)
+    {
+        actor->frame_num = 2;
+        return;
+    }
 
+    if(sub_1106F() % 0x46 == 0)
+    {
+
+        if(actor->data_3 == 0)
+        {
+            actor->data_3 = 2;
+        }
+        return;
+    }
+    actor->frame_num = 0;
+
+    if(actor->data_3 != 0)
+    {
+        actor->data_3--;
+        actor->frame_num = 1;
+    }
+
+    if(actor->data_5 == 0 && actor->data_1 == 0)
+    {
+        if(actor->y <= player_y_pos)
+        {
+            if(actor->x - 6 < player_x_pos)
+            {
+                if(actor->x + 4 > player_x_pos)
+                {
+                    actor->data_1 = 1;
+                    actor->data_2 = 0x14;
+                    play_sfx(0x21);
+                }
+            }
+        }
+    }
+
+    if(actor->data_2 > 1)
+    {
+        actor->data_2--;
+        return;
+    }
+
+    if(actor->data_2 == 1)
+    {
+        actor->is_deactivated_flag_maybe = 1;
+        actor_tile_display_func_index = 1;
+        actor_add_new(0x41, actor->x, actor->y);
+
+        effect_add_sprite(0x4c, 1, actor->x, actor->y - 1, 8, 5);
+        effect_add_sprite(0x4d, 1, actor->x + 1, actor->y - 1, 2, 5);
+        effect_add_sprite(0x84, 1, actor->x, actor->y, 3, 5);
+        effect_add_sprite(0x85, 1, actor->x + 1, actor->y, 7, 5);
+        play_sfx(0x22);
+    }
 }
 
 void actor_wt_end_of_level_marker(ActorData *actor)
@@ -961,7 +1138,54 @@ void actor_wt_end_of_level_marker(ActorData *actor)
 
 void actor_wt_energy_beam(ActorData *actor)
 {
+    actor->data_1 = 0;
+    actor->data_4++;
+    if(actor->data_4 == 3)
+    {
+        actor->data_4 = 0;
+    }
+    actor_tile_display_func_index = 1;
+    if(energy_beam_enabled_flag == 0)
+    {
+        actor->is_deactivated_flag_maybe = 1;
+        return;
+    }
+    if (actor->data_5 != 0)
+    {
+        for(;;actor->data_1++)
+        {
+            if(player_check_collision_with_actor(actor->actorInfoIndex, 0, actor->x + actor->data_1, actor->y) != 0)
+            {
+                player_decrease_health();
+                break;
+            }
 
+            if((tileattr_mni_data[map_get_tile_cell(actor->x + actor->data_1, actor->y)/8] & TILE_ATTR_BLOCK_RIGHT) != 0)
+            {
+                break;
+            }
+
+            display_actor_sprite_maybe(actor->actorInfoIndex, actor->data_4, actor->x + actor->data_1, actor->y, 0);
+        }
+    }
+    else
+    {
+        for(;;actor->data_1++)
+        {
+            if (player_check_collision_with_actor(actor->actorInfoIndex, 0, actor->x, actor->y - actor->data_1) != 0)
+            {
+                player_decrease_health();
+                break;
+            }
+
+            if((tileattr_mni_data[map_get_tile_cell(actor->x, actor->y - actor->data_1)/8] & TILE_ATTR_BLOCK_UP) != 0)
+            {
+                break;
+            }
+
+            display_actor_sprite_maybe(actor->actorInfoIndex, actor->data_4, actor->x, actor->y - actor->data_1, 0);
+        }
+    }
 }
 
 void actor_wt_extending_arrow(ActorData *actor)
@@ -972,7 +1196,7 @@ void actor_wt_extending_arrow(ActorData *actor)
     }
     else
     {
-        actor->data_1 = actor->data_1 + 1;
+        actor->data_1++;
     }
     
     if(actor->data_1 == 0x1d || actor->data_1 == 0x1a)
