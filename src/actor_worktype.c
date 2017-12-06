@@ -17,7 +17,7 @@
 
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_159_unknown(ActorData *actor)
@@ -154,6 +154,7 @@ void actor_wt_angry_moon(ActorData *actor)
 
 void actor_wt_big_red_jumper_frozen(ActorData *actor)
 {
+    //TODO
     //FIXME get logic out of other exes for this one.
 }
 
@@ -1279,12 +1280,12 @@ void actor_wt_extending_arrow(ActorData *actor)
 
 void actor_wt_frozen_duke_nukum(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_ghost(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_green_plant(ActorData *actor)
@@ -1334,14 +1335,184 @@ void actor_wt_green_plant(ActorData *actor)
     return;
 }
 
+const static sint8 cabbage_ball_y_tbl[] = {-1, -1, 0, 0};
+
 void actor_wt_green_pruny_cabbage_ball(ActorData *actor)
 {
+    if(actor->data_2 == 10 && actor->data_3 == 3)
+    {
+        if(sprite_blocking_check(1, 0x19, 0, actor->x, actor->y + 1) == NOT_BLOCKED)
+        {
+            if(actor->data_4 == 0)
+            {
+                actor->frame_num = 1;
+            }
+            else
+            {
+                actor->frame_num = 3;
+            }
+            return;
+        }
+    }
 
+    if(actor->data_2 < 10)
+    {
+        if(sprite_blocking_check(1, 0x19, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+        {
+
+            actor->data_2 = actor->data_2 + 1;
+            if(actor->x <= player_x_pos)
+            {
+                actor->frame_num = 2;
+                actor->data_4 = 2;
+            }
+            else
+            {
+                actor->frame_num = 0;
+                actor->data_4 = 0;
+            }
+            return;
+        }
+    }
+
+    if(actor->data_3 < 3)
+    {
+        actor->y = actor->y + cabbage_ball_y_tbl[actor->data_3];
+        if(actor->data_4 == 0)
+        {
+            actor->x = actor->x - 1;
+            check_actor_move_left_or_right(actor, 2);
+        }
+        else
+        {
+            actor->x = actor->x + 1;
+            check_actor_move_left_or_right(actor, 3);
+        }
+
+        actor->data_3++;
+        if(actor->data_4 == 0)
+        {
+            actor->frame_num = 1;
+        }
+        else
+        {
+            actor->frame_num = 3;
+        }
+        return;
+    }
+
+    actor->data_2 = 0;
+    actor->data_3 = 0;
+    if(actor->x <= player_x_pos)
+    {
+        actor->frame_num = 2;
+        actor->data_4 = 2;
+    }
+    else
+    {
+        actor->frame_num = 0;
+        actor->data_4 = 0;
+    }
 }
 
 void actor_wt_green_roamer_worm(ActorData *actor)
 {
+    if(actor->data_5 != 0)
+    {
+        int si = sub_1106F() & 3;
+        if(si == 0)
+        {
+            if(sprite_blocking_check(0, 0x45, 0, actor->x, actor->y - 1) == 0)
+            {
+                actor->data_5 = 0;
+                actor->data_1 = 0;
+            }
+        }
+        if(si == 1)
+        {
+            if(sprite_blocking_check(1, 0x45, 0, actor->x, actor->y + 1) == 0)
+            {
+                actor->data_5 = 0;
+                actor->data_1 = 1;
+            }
+        }
+        if(si == 2)
+        {
+            if(sprite_blocking_check(2, 0x45, 0, actor->x - 1, actor->y) == 0)
+            {
+                actor->data_5 = 0;
+                actor->data_1 = 2;
+            }
+        }
+        if(si == 3)
+        {
+            if(sprite_blocking_check(3, 0x45, 0, actor->x + 1, actor->y) == 0)
+            {
+                actor->data_5 = 0;
+                actor->data_1 = 3;
+            }
+        }
+    }
+    else
+    {
+        switch (actor->data_1)
+        {
+            case 0:
 
+                if(sprite_blocking_check(0, 0x45, 0, actor->x, actor->y - 1) == NOT_BLOCKED)
+                {
+                    actor->y = actor->y - 1;
+                }
+                else
+                {
+                    actor->data_5 = 1;
+                }
+                actor->data_3 = 0;
+                break;
+
+            case 1:
+
+                if(sprite_blocking_check(1, 0x45, 0, actor->x, actor->y + 1) == 0)
+                {
+                    actor->y = actor->y + 1;
+                }
+                else
+                {
+                    actor->data_5 = 1;
+                }
+                actor->data_3 = 4;
+                break;
+
+            case 2:
+
+                if(sprite_blocking_check(2, 0x45, 0, actor->x - 1, actor->y) == 0)
+                {
+                    actor->x = actor->x - 1;
+                }
+                else
+                {
+                    actor->data_5 = 1;
+                }
+                actor->data_3 = 6;
+                break;
+
+            case 3:
+
+                if(sprite_blocking_check(3, 0x45, 0, actor->x + 1, actor->y) == 0)
+                {
+                    actor->x = actor->x + 1;
+                }
+                else
+                {
+                    actor->data_5 = 1;
+                }
+                actor->data_3 = 2;
+                break;
+        }
+    }
+
+    actor->data_4 = (actor->data_4 ? -1 : 0) + 1;
+    actor->frame_num = actor->data_3 + actor->data_4;
 }
 
 const uint8 byte_28EFE[] = { 0, 4, 5, 6, 5, 4};
@@ -1497,10 +1668,28 @@ void actor_wt_jaws_and_tongue(ActorData *actor)
     display_actor_sprite_maybe(actor->actorInfoIndex, 0, actor->x, actor->y - 1 - actor->data_5, 0);
     return;
 }
-
+const static sint16 bullet_head_y_tbl[] = {-2, -2, -2, -2, -1, -1, -1, 0, 0, 1, 1, 1, 2, 2, 2, 2};
 void actor_wt_jumping_bullet_head(ActorData *actor)
 {
-
+    if(actor->data_2 != 0)
+    {
+        actor->x = actor->x + 1;
+    }
+    else
+    {
+        actor->x = actor->x - 1;
+    }
+    actor->y = actor->y + bullet_head_y_tbl[actor->data_3];
+    actor->data_3++;
+    if(actor->data_3 == 0x10)
+    {
+        actor->data_2 = (actor->data_2 ? -1 : 0) + 1;
+        if(is_sprite_on_screen(0x2e, 0, actor->x, actor->y) != 0)
+        {
+            play_sfx(0x25);
+        }
+        actor->data_3 = 0;
+    }
 }
 
 void actor_wt_mini_ghost(ActorData *actor)
@@ -1679,7 +1868,6 @@ void actor_wt_pink_slug(ActorData *actor)
     }
 
     actor->frame_num = actor->data_2 + 3;
-    return;
 }
 
 void actor_wt_pipe_transit_direction(ActorData *actor)
@@ -1689,7 +1877,39 @@ void actor_wt_pipe_transit_direction(ActorData *actor)
 
 void actor_wt_plasma_energy_blue_sprite(ActorData *actor)
 {
+    actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+    if(actor->data_1 >= 0x3f)
+    {
+        actor->data_1 = 0;
+    }
+    else
+    {
+        actor->data_1++;
+    }
 
+    if(actor->data_1 > 0x32)
+    {
+        actor->y = actor->y + 2;
+        if(actor->data_1 < 0x37)
+        {
+            actor->y = actor->y - 1;
+        }
+        actor_tile_display_func_index = 4;
+        return;
+    }
+
+    if(actor->data_1 > 0x22)
+    {
+        if(actor->data_1 < 0x2f)
+        {
+            actor->y = actor->y - 1;
+        }
+
+        if(actor->data_1 < 0x2d)
+        {
+            actor->y = actor->y - 1;
+        }
+    }
 }
 
 void actor_wt_plasma_fireball(ActorData *actor)
@@ -2086,7 +2306,7 @@ void actor_wt_retracting_spikes(ActorData *actor)
 
 void actor_wt_robot_with_blue_arc(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_robotic_spike_ceiling(ActorData *actor)
@@ -2401,7 +2621,52 @@ void actor_wt_rubber_wall(ActorData *actor)
 
 void actor_wt_satellite(ActorData *actor)
 {
+    if(actor->data_2 != 0)
+    {
+        actor->data_2--;
+        if(actor->data_2 != 0)
+        {
+            if((actor->data_2 & 1) != 0)
+            {
+                actor_tile_display_func_index = 2;
+            }
+            return;
+        }
+    }
 
+    if(struct6_1B4FC(0x8f, 0, actor->x, actor->y) == 0)
+    {
+        return;
+    }
+
+    if(actor->data_1 == 0)
+    {
+        actor->data_1 = 1;
+        actor->data_2 = 15;
+        return;
+    }
+
+    actor->is_deactivated_flag_maybe = 1;
+    actor_tile_display_func_index = 2;
+    play_sfx(0x12);
+    actor->data_1 = 1;
+
+    for(; actor->data_1 < 9; actor->data_1++)
+    {
+        effect_add_sprite(0x61, 6, actor->x + 3, actor->y - 3, actor->data_1, 3);
+    }
+
+    exploding_balls_effect(actor->x, actor->y + 5);
+    explode_effect_add_sprite(0x90, 0, actor->x, actor->y - 2);
+    explode_effect_add_sprite(0x90, 1, actor->x + 1, actor->y - 2);
+    explode_effect_add_sprite(0x90, 2, actor->x + 7, actor->y + 1 + 1);
+    explode_effect_add_sprite(0x90, 3, actor->x + 3, actor->y - 2);
+    explode_effect_add_sprite(0x90, 4, actor->x - 1, actor->y - 8);
+    explode_effect_add_sprite(0x90, 5, actor->x + 1 + 1, actor->y + 3);
+    explode_effect_add_sprite(0x90, 6, actor->x + 6, actor->y - 2);
+    explode_effect_add_sprite(0x90, 7, actor->x - 4, actor->y + 1);
+
+    actor_toss_add_new(0x52, actor->x + 4, actor->y);
 }
 
 void actor_wt_security_robot(ActorData *actor)
@@ -2512,7 +2777,7 @@ void actor_wt_security_robot(ActorData *actor)
 
 void actor_wt_short_dialog(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_silver_robot(ActorData *actor)
@@ -2690,7 +2955,7 @@ void actor_wt_smoke_rising(ActorData *actor)
 
 void actor_wt_spark(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_spear_vertical(ActorData *actor)
@@ -2823,17 +3088,17 @@ void actor_wt_stone_head(ActorData *actor)
 
 void actor_wt_suction_cup_alien_enemy(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_switch(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_switch_multi_use(ActorData *actor)
 {
-
+    //TODO
 }
 
 void actor_wt_teleporter(ActorData *actor)
@@ -3074,7 +3339,7 @@ void actor_wt_speech_bubble(ActorData *actor)
 
 void actor_wt_unknown_232(ActorData *actor)
 {
-
+    //TODO
 }
 
 void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_movement)
