@@ -14,6 +14,7 @@
 #include "map.h"
 #include "actor_toss.h"
 #include "actor_collision.h"
+#include "util.h"
 
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
@@ -1285,7 +1286,113 @@ void actor_wt_frozen_duke_nukum(ActorData *actor)
 
 void actor_wt_ghost(ActorData *actor)
 {
-    //TODO
+    actor->data_4++;
+    if(actor->data_4 % 3 == 0)
+    {
+        actor->data_1++;
+    }
+    
+    if(actor->data_1 == 4)
+    {
+        actor->data_1 = 0;
+    }
+    if (player_direction == 0)
+    {
+        if (actor->x <= player_x_pos + 1 + 1 || player_hanging_on_wall_direction != 2 || right_key_pressed == 0)
+        {
+            if (actor->x <= player_x_pos)
+            {
+                if(cosmo_rand() % 0x23 != 0)
+                {
+                    actor->frame_num = 5;
+                }
+                else
+                {
+                    actor->frame_num = 7;
+                }
+                return;
+            }
+            else
+            {
+                actor->frame_num = actor->data_1 & 1;
+                if(actor->data_1 != 0)
+                {
+                    return;
+                }
+                actor->x = actor->x - 1;
+                if(actor->y < player_y_pos)
+                {
+                    actor->y = actor->y + 1;
+                    return;
+                }
+
+                if(actor->y > player_y_pos)
+                {
+                    actor->y = actor->y - 1;
+                }
+                return;
+            }
+        }
+        else
+        {
+            if(cosmo_rand() % 0x23 != 0)
+            {
+                actor->frame_num = 2;
+            }
+            else
+            {
+                actor->frame_num = 6;
+            }
+            return;
+        }
+    }
+    else
+    {
+        if (actor->x >= player_x_pos || player_hanging_on_wall_direction != 3 || left_key_pressed == 0)
+        {
+            if (actor->x >= player_x_pos)
+            {
+                if(cosmo_rand() % 0x23 != 0)
+                {
+                    actor->frame_num = 2;
+                }
+                else
+                {
+                    actor->frame_num = 6;
+                }
+            }
+            else
+            {
+                actor->frame_num = (actor->data_1 & 1) + 3;
+                if (actor->data_1 == 0)
+                {
+                    actor->x = actor->x + 1;
+                    if(actor->y < player_y_pos)
+                    {
+                        actor->y = actor->y + 1;
+                        return;
+                    }
+
+                    if(actor->y > player_y_pos)
+                    {
+                        actor->y = actor->y - 1;
+                    }
+                }
+                return;
+            }
+        }
+        else
+        {
+            if(cosmo_rand() % 0x23 != 0)
+            {
+                actor->frame_num = 5;
+            }
+            else
+            {
+                actor->frame_num = 7;
+            }
+        }
+    }
 }
 
 void actor_wt_green_plant(ActorData *actor)
@@ -1331,8 +1438,6 @@ void actor_wt_green_plant(ActorData *actor)
     {
         actor->data_2 = 1;
     }
-
-    return;
 }
 
 const static sint8 cabbage_ball_y_tbl[] = {-1, -1, 0, 0};
@@ -2955,7 +3060,77 @@ void actor_wt_smoke_rising(ActorData *actor)
 
 void actor_wt_spark(ActorData *actor)
 {
-    //TODO
+    actor->data_5++;
+    actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
+    if((actor->data_5 & 1) != 0)
+    {
+        return;
+    }
+    if(actor->data_1 == 0)
+    {
+        actor->x = actor->x - 1;
+        if(sprite_blocking_check(2, actor->actorInfoIndex, 0, actor->x - 1, actor->y) != NOT_BLOCKED)
+        {
+            actor->data_1 = 2;
+            return;
+        }
+        
+        if(sprite_blocking_check(1, actor->actorInfoIndex, 0, actor->x, actor->y + 1) == NOT_BLOCKED)
+        {
+            actor->data_1 = 3;
+        }
+        return;
+    }
+    
+    if (actor->data_1 != 1)
+    {
+        if(actor->data_1 == 2)
+        {
+            actor->y = actor->y - 1;
+            if(sprite_blocking_check(0, actor->actorInfoIndex, 0, actor->x, actor->y - 1) != NOT_BLOCKED)
+            {
+                actor->data_1 = 1;
+                return;
+            }
+
+            if(sprite_blocking_check(2, actor->actorInfoIndex, 0, actor->x - 1, actor->y) == NOT_BLOCKED)
+            {
+                actor->data_1 = 0;
+                return;
+            }
+            return;
+        }
+
+        if(actor->data_1 == 3)
+        {
+            actor->y = actor->y + 1;
+            if(sprite_blocking_check(1, actor->actorInfoIndex, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+            {
+                actor->data_1 = 0;
+                return;
+            }
+
+            if(sprite_blocking_check(3, actor->actorInfoIndex, 0, actor->x + 1, actor->y) == NOT_BLOCKED)
+            {
+                actor->data_1 = 1;
+            }
+            return;
+        }
+    }
+    else
+    {
+        actor->x = actor->x + 1;
+        if(sprite_blocking_check(3, actor->actorInfoIndex, 0, actor->x + 1, actor->y) != NOT_BLOCKED)
+        {
+            actor->data_1 = 3;
+            return;
+        }
+
+        if(sprite_blocking_check(0, actor->actorInfoIndex, 0, actor->x, actor->y - 1) == NOT_BLOCKED)
+        {
+            actor->data_1 = 2;
+        }
+    }
 }
 
 void actor_wt_spear_vertical(ActorData *actor)
