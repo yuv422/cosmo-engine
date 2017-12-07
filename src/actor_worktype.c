@@ -2411,7 +2411,81 @@ void actor_wt_retracting_spikes(ActorData *actor)
 
 void actor_wt_robot_with_blue_arc(ActorData *actor)
 {
-    //TODO
+    static uint16 spark_frame_num = 0;
+
+    actor_tile_display_func_index = 1;
+    if (actor->data_2 == 0)
+    {
+        actor->data_5 = (actor->data_5 ? -1 : 0) + 1;
+        actor->data_4++;
+        if(actor->data_1 == 0)
+        {
+
+            if((actor->data_4 & 1) != 0)
+            {
+                actor->x++;
+            }
+            check_actor_move_left_or_right(actor, RIGHT);
+
+            if(actor->has_moved_right_flag == 0)
+            {
+                actor->data_1 = 1;
+            }
+        }
+        else
+        {
+            if((actor->data_4 & 1) != 0)
+            {
+                actor->x--;
+            }
+            check_actor_move_left_or_right(actor, LEFT);
+
+            if(actor->has_moved_left_flag == 0)
+            {
+                actor->data_1 = 0;
+            }
+        }
+
+        display_actor_sprite_maybe(0x5a, actor->data_5, actor->x, actor->y, 0);
+
+        if(player_check_collision_with_actor(0x5a, 0, actor->x, actor->y) != 0)
+        {
+            player_decrease_health();
+        }
+        spark_frame_num++;
+
+        int si;
+        for(si=2; si < 21 && sprite_blocking_check(0, 0x5a, 2, actor->x + 1, actor->y - si) == NOT_BLOCKED; si++)
+        {
+            display_actor_sprite_maybe(0x5a, (spark_frame_num & 3) + 4, actor->x + 1, actor->y - si, 0);
+
+            if(player_check_collision_with_actor(0x5a, 4, actor->x + 1, actor->y - si) != 0)
+            {
+                player_decrease_health();
+            }
+        }
+        display_actor_sprite_maybe(0x5a, actor->data_5 + 1 + 1, actor->x + 1, actor->y - si + 1, 0);
+
+        if(player_check_collision_with_actor(0x5a, 0, actor->x, actor->y + 1) != 0)
+        {
+            player_decrease_health();
+        }
+
+        if(struct6_1B4FC(actor->actorInfoIndex, actor->frame_num, actor->x, actor->y) != 0)
+        {
+            actor->data_2 = si;
+        }
+    }
+    else
+    {
+        for(int si = 0; si < actor->data_2; si += 4)
+        {
+            struct6_add_sprite(actor->x, actor->y - si);
+            actor_add_new(1, actor->x, actor->y - si);
+        }
+
+        actor->is_deactivated_flag_maybe = 1;
+    }
 }
 
 void actor_wt_robotic_spike_ceiling(ActorData *actor)
@@ -3291,7 +3365,7 @@ void actor_wt_teleporter(ActorData *actor)
     }
     if((sub_1106F() & 1) != 0)
     {
-        display_actor_sprite_maybe(0x6b, (rand() & 1) + 1, actor->x, actor->y, 0);
+        display_actor_sprite_maybe(0x6b, (rand() & 1) + 1, actor->x, actor->y, 0); //FIXME this crashed when frame_num was 2. :(
     }
     if(teleporter_counter == 15)
     {

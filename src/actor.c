@@ -1235,6 +1235,13 @@ void actor_load_tiles()
 void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, int y_pos, int tile_display_func_index)
 {
     //FIXME
+
+    if(actor_sprites[actorInfoIndex].num_frames==0)
+    {
+        //printf("WARN: actorInfoIndex %d has no frames!. Wanted frame_num: %d\n", actorInfoIndex, frame_num);
+        return;
+    }
+
     TileInfo *info = &actor_sprites[actorInfoIndex].frames[frame_num];
     Tile *tile = &actor_tiles[info->tile_num];
 
