@@ -2956,7 +2956,18 @@ void actor_wt_security_robot(ActorData *actor)
 
 void actor_wt_short_dialog(ActorData *actor)
 {
-    //TODO
+    actor_tile_display_func_index = 1;
+    if(actor->data_2 == 0)
+    {
+        if(actor->y <= player_y_pos)
+        {
+            if(actor->y >= player_y_pos - 4)
+            {
+                display_short_ingame_dialog(actor->data_1);
+                actor->data_2 = 1;
+            }
+        }
+    }
 }
 
 void actor_wt_silver_robot(ActorData *actor)
@@ -3340,14 +3351,52 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
     //TODO
 }
 
+void activate_switch_maybe(int actorInfoIndex, ActorData *switch_actor)
+{
+    for(int di=0; di < total_num_actors; di++)
+    {
+        ActorData *actor = get_actor(di);
+        if (actor->actorInfoIndex != actorInfoIndex)
+        {
+            break;
+        }
+
+        if (switch_actor->data_1 != 2)
+        {
+            if (switch_actor->data_1 != 1)
+            {
+                break;
+            }
+
+            map_write_tile_cell(actor->data_1, actor->x + 1, actor->y - 0);
+            map_write_tile_cell(actor->data_2, actor->x + 1, actor->y - 1);
+            map_write_tile_cell(actor->data_3, actor->x + 1, actor->y - 2);
+            map_write_tile_cell(actor->data_4, actor->x + 1, actor->y - 3);
+            map_write_tile_cell(actor->data_5, actor->x + 1, actor->y - 4);
+        }
+        else
+        {
+            actor->is_deactivated_flag_maybe = 1;
+            play_sfx(8);
+            effect_add_sprite(actorInfoIndex, 1, actor->x, actor->y, 5, 5);
+        }
+    }
+}
 void actor_wt_switch(ActorData *actor)
 {
-    //TODO
+    if(actor->frame_num == 1)
+    {
+        if(actor->data_1 < 3)
+        {
+            actor->data_1++;
+        }
+        activate_switch_maybe(actor->data_5, actor);
+    }
 }
 
 void actor_wt_switch_multi_use(ActorData *actor)
 {
-    //TODO
+    //TODO crashes desquirr
 }
 
 void actor_wt_teleporter(ActorData *actor)
@@ -3586,9 +3635,30 @@ void actor_wt_speech_bubble(ActorData *actor)
     return;
 }
 
+const static uint8 unk_232_frame_num_tbl[] = {0, 1, 2, 1};
 void actor_wt_unknown_232(ActorData *actor)
 {
-    //TODO
+    byte_32EB8 = 1;
+    
+    actor->data_1++;
+    actor->frame_num = unk_232_frame_num_tbl[actor->data_1 & 3];
+    if(actor->data_1 > 0xc8 && (actor->data_1 & 1) != 0)
+    {
+        actor_tile_display_func_index = 1;
+    }
+    
+    if(actor->data_1 != 0xf0)
+    {
+        
+        actor->x = player_x_pos - 1;
+        actor->y = player_y_pos + 1;
+    }
+    else
+    {
+        actor->is_deactivated_flag_maybe = 1;
+        actor_tile_display_func_index = 1;
+        byte_32EB8 = 0;
+    }
 }
 
 void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_movement)

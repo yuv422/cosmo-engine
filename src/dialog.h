@@ -25,4 +25,6 @@ void power_up_module_dialog();
 
 void display_end_of_level_score_dialog(const char *header_text, const char *footer_text);
 
+void display_short_ingame_dialog(uint16 dialog_number);
+
 #endif //COSMO_ENGINE_DIALOG_H

@@ -39,3 +39,7 @@ void display_end_of_level_score_dialog(const char *header_text, const char *foot
 
 }
 
+void display_short_ingame_dialog(uint16 dialog_number) {
+
+}
+
