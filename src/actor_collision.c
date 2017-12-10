@@ -895,7 +895,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             display_num_stars_collected();
             return 1;
 
-        case 81: // 113 Unknown Hamburger???? FIXME find out what this is.
+        case 81: // 113 Hamburger
             actor->is_deactivated_flag_maybe = 1;
             player_add_to_score(0x3200);
             actor_add_new(0xb8, x_pos, y_pos);

@@ -22,6 +22,7 @@
 #include "status.h"
 #include "platforms.h"
 
+#define MAX_MAP_TILES 32768
 //Data
 uint16 current_level;
 
@@ -33,12 +34,17 @@ int map_max_y_offset = 0;
 
 uint8 rain_flag = 0;
 
-uint16 map_data[32768];
+uint16 map_data[MAX_MAP_TILES];
 
 Tile *map_bg_tiles;
 Tile *map_fg_tiles;
 
 uint16 map_get_tile_cell(int x, int y) {
+    if (x + y * map_width_in_tiles >= MAX_MAP_TILES)
+    {
+        return 0;
+    }
+
     return map_data[x + y * map_width_in_tiles];
 }
 
@@ -215,9 +221,7 @@ void load_level_data(int level_number)
         }
     }
 
-    //file_read_to_buffer(&map_file, (unsigned char *)map_data, 65535);
-
-    for(int i=0;i < 32764; i++)
+    for(int i=0;i < MAX_MAP_TILES - 4; i++)
     {
         map_data[i] = file_read2(&map_file);
     }

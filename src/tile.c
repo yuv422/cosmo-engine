@@ -132,22 +132,31 @@ Sprite *load_tile_info(const char *filename, uint16 *num_records_loaded)
     *num_records_loaded = (uint16)file_read2(&file);
     Sprite *sprites = (Sprite *)malloc((size_t)*num_records_loaded * sizeof(Sprite));
 
-    for(uint16 i=0;i < *num_records_loaded; i++)
+    for(uint16 sprite_index=0;sprite_index < *num_records_loaded; sprite_index++)
     {
-        file_seek(&file, (uint32)i*2);
-        uint16 offset = file_read2(&file);
-        sprites[i].num_frames = get_number_of_sprite_frames(i, offset, *num_records_loaded, &file);
-
-        file_seek(&file, (uint32)offset * 2);
-
-        sprites[i].frames = (TileInfo *)malloc((size_t)sprites[i].num_frames * sizeof(TileInfo));
-
-        for(int j=0;j < sprites[i].num_frames; j++)
+        sprites[sprite_index].num_frames = 0;
+        for(int j=sprite_index; sprites[sprite_index].num_frames == 0 && j < *num_records_loaded; j++) //advance through the sprite info offsets until we find some frames
         {
-            sprites[i].frames[j].height = file_read2(&file);
-            sprites[i].frames[j].width = file_read2(&file);
-            uint32 frameOffset = file_read4(&file);
-            sprites[i].frames[j].tile_num = (uint16)((frameOffset >> 16) * 1638 + (frameOffset & 0xffff) / 40);
+            file_seek(&file, (uint32) j * 2);
+            sprites[sprite_index].num_frames = 0;
+
+            uint16 offset = file_read2(&file);
+            sprites[sprite_index].num_frames = get_number_of_sprite_frames(j, offset, *num_records_loaded, &file);
+
+            if (sprites[sprite_index].num_frames != 0)
+            {
+                file_seek(&file, (uint32) offset * 2);
+
+                sprites[sprite_index].frames = (TileInfo *) malloc((size_t) sprites[sprite_index].num_frames * sizeof(TileInfo));
+
+                for (int frame_num = 0; frame_num < sprites[sprite_index].num_frames; frame_num++)
+                {
+                    sprites[sprite_index].frames[frame_num].height = file_read2(&file);
+                    sprites[sprite_index].frames[frame_num].width = file_read2(&file);
+                    uint32 frameOffset = file_read4(&file);
+                    sprites[sprite_index].frames[frame_num].tile_num = (uint16)((frameOffset >> 16) * 1638 + (frameOffset & 0xffff) / 40);
+                }
+            }
         }
     }
 
