@@ -40,6 +40,7 @@ void write_savegame_file(char suffix)
         temp_save.show_monster_attack_hint = show_monster_attack_hint;
         temp_save.knows_about_powerups_flag = knows_about_powerups_flag;
     }
+    //TODO save game here.
 }
 
 void load_savegame_file(char suffix)
@@ -57,4 +58,5 @@ void load_savegame_file(char suffix)
          show_monster_attack_hint = temp_save.show_monster_attack_hint;
          knows_about_powerups_flag = temp_save.knows_about_powerups_flag;
     }
+    //TODO load game here.
 }

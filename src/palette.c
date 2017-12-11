@@ -147,5 +147,5 @@ void update_palette_anim()
 
 void update_palette_related_delay_3()
 {
-
+    //TODO
 }

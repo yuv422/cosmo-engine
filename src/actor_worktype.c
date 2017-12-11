@@ -3736,7 +3736,7 @@ void actor_wt_switch_multi_use(ActorData *actor)
 void actor_wt_teleporter(ActorData *actor)
 {
     actor_tile_display_func_index = 1;
-    if(teleporter_counter == 0 || (rand() & 1) == 0)
+    if(teleporter_counter == 0 || (cosmo_rand() & 1) == 0)
     {
         
         display_actor_sprite_maybe(0x6b, 0, actor->x, actor->y, 0);
@@ -3748,7 +3748,7 @@ void actor_wt_teleporter(ActorData *actor)
     }
     if((sub_1106F() & 1) != 0)
     {
-        display_actor_sprite_maybe(0x6b, (rand() & 1) + 1, actor->x, actor->y, 0); //FIXME this crashed when frame_num was 2. :(
+        display_actor_sprite_maybe(0x6b, (cosmo_rand() & 1) + 1, actor->x, actor->y, 0);
     }
     if(teleporter_counter == 15)
     {

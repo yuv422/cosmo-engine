@@ -22,24 +22,24 @@ game_play_mode_enum main_menu() {
 
 void now_entering_level_n_dialog(uint16 level_number)
 {
-
+    //TODO
 }
 
 void ingame_hint_dialogs(uint16 hint_number) {
-
+    //TODO
 }
 
 void power_up_module_dialog()
 {
-
+    //TODO
 }
 
 void display_end_of_level_score_dialog(const char *header_text, const char *footer_text)
 {
-
+    //TODO
 }
 
 void display_short_ingame_dialog(uint16 dialog_number) {
-
+    //TODO
 }
 

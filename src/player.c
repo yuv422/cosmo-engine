@@ -1083,14 +1083,7 @@ void handle_player_input_maybe()
     if(player_x_pos - mapwindow_x_offset < 12 && mapwindow_x_offset > 0)
     {
         mapwindow_x_offset = mapwindow_x_offset - 1;
-        return;
     }
-
-// node 0001e96f-0001e972 #insn=4 use={} def={si, di} in={} out={} pred={ 1E615 1E8D8} RETURN
-    //loc_1E96F:
-    /* pop  */
-    /* pop  */
-    return ;
 }
 
 void sub_11062()
@@ -1190,7 +1183,7 @@ int player_update_sprite()
 
         while (player_fall_off_map_bottom_counter < 12)
         {
-            //FIXME wait(2);
+            cosmo_wait(2);
             player_fall_off_map_bottom_counter++;
         }
 
