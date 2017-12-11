@@ -3381,17 +3381,11 @@ uint8 suction_cup_enemy_check_if_blocked(ActorData *actor, uint8 blocking_check)
 
 void actor_wt_suction_cup_alien_enemy(ActorData *actor)
 {
-    // node 00015d46-00015d72 #insn=9 use={si, di} def={ax, bx} in={si, di, al} out={ax, bx, al} pred={} CONDJUMP target=00015d77 follow=00015fde
-
     actor->data_4 = (actor->data_4 ? -1 : 0) + 1;
-    if (actor->data_1 == 0) //goto loc_15D77;
+    if (actor->data_1 == 0)
     {
-// node 00015d77-00015d7c #insn=2 use={bx} def={} in={ax, bx, al} out={ax, bx, al} pred={ 15D46} CONDJUMP target=00015d81 follow=00015e26
-        loc_15D77:
-        if (actor->data_2 == 0) //goto loc_15D81;
+        if (actor->data_2 == 0)
         {
-            // node 00015d81-00015de7 #insn=9 use={al} def={ax, bx, si, di, al} in={al} out={di, al} pred={ 15D77} CONDJUMP target=00015dff follow=00015dee
-            loc_15D81:
             if(actor->data_4 != 0)
             {
                 actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
@@ -3399,64 +3393,37 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             }
 
             uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x - 1, actor->y + 1)/8];
-            if (sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0) //goto loc_15DFF;
+            if (sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0)
             {
-                // node 00015dff-00015e0c #insn=3 use={al} def={ax} in={al} out={ax} pred={ 15D81 15DEE} CONDJUMP target=00015e1a follow=00015e0e
-                loc_15DFF:
-                if (suction_cup_enemy_check_if_blocked(actor, 0) == 0) //goto loc_15E1A;
+                if (suction_cup_enemy_check_if_blocked(actor, 0) == 0)
                 {
-                    // node 00015e1a-00015fdb #insn=4 use={} def={bx} in={ax} out={ax} pred={ 15DFF} JUMP target=0001622b
-                    loc_15E1A:
                     actor->data_1 = 1;
                     actor->data_2 = 0;
-                    //goto loc_1622B;
-                    return;
                 }
                 else
                 {
-                    //00015e0e
-                    // node 00015e0e-00015e17 #insn=2 use={} def={bx} in={ax} out={ax} pred={ 15DFF} JUMP target=00015ee8
                     actor->data_2 = 2;
-                    // goto loc_15EE8;
-                    // node 00015ee8-00015ef1 #insn=3 use={} def={bx} in={ax} out={ax} pred={ 15E0E 15EDF} JUMP target=0001622b
-                    loc_15EE8:
                     actor->frame_num = 9;
-                    //goto loc_1622B;
-                    return;
                 }
+                return;
             }
             else
             {
-                // node 00015dee-00015dfa #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 15D81} CONDJUMP target=00015dff follow=00015f09
-                if (sub_1106F() % 0x32 == 0) //goto loc_15DFF;
+                if (sub_1106F() % 0x32 == 0)
                 {
-                    // node 00015dff-00015e0c #insn=3 use={al} def={ax} in={al} out={ax} pred={ 15D81 15DEE} CONDJUMP target=00015e1a follow=00015e0e
-                    //loc_15DFF:
-                    if (suction_cup_enemy_check_if_blocked(actor, 0) == 0) //goto loc_15E1A;
+                    if (suction_cup_enemy_check_if_blocked(actor, 0) == 0)
                     {
-                        // node 00015e1a-00015fdb #insn=4 use={} def={bx} in={ax} out={ax} pred={ 15DFF} JUMP target=0001622b
-                        //loc_15E1A:
                         actor->data_1 = 1;
                         actor->data_2 = 0;
-                        //goto loc_1622B;
                     }
                     else
                     {
-                        //00015e0e
-                        // node 00015e0e-00015e17 #insn=2 use={} def={bx} in={ax} out={ax} pred={ 15DFF} JUMP target=00015ee8
                         actor->data_2 = 2;
-                        // goto loc_15EE8;
-                        // node 00015ee8-00015ef1 #insn=3 use={} def={bx} in={ax} out={ax} pred={ 15E0E 15EDF} JUMP target=0001622b
-                        //loc_15EE8:
                         actor->frame_num = 9;
-                        //goto loc_1622B;
                     }
                 }
                 else
                 {
-                    //00015f09
-                    // node 00015f09-00015f11 #insn=2 use={} def={} in={} out={} pred={ 15DEE 15EC2} FALLTHROUGH follow=0001622b
-                    loc_15F09:
                     if(actor->data_4 != 0)
                     {
                         actor->x = actor->x - 1;
@@ -3467,13 +3434,8 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
         }
         else
         {
-            //00015e26
-            // node 00015e26-00015ebb #insn=13 use={si} def={} in={si, di, al} out={di, al} pred={ 15D77} CONDJUMP target=00015ed0 follow=00015ec2
-            loc_15E26:
-
             if(actor->data_2 != 1)
             {
-
                 if(actor->data_2 == 2)
                 {
                     if(sprite_blocking_check(0, 0x6a, 0, actor->x, actor->y - 1) == 0)
@@ -3538,71 +3500,39 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                     return;
                 }
             }
-            if (blocking_check != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0) //goto loc_15ED0;
+            if (blocking_check != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0)
             {
-                // node 00015ed0-00015edd #insn=3 use={al} def={ax} in={al} out={ax} pred={ 15E26 15EC2} CONDJUMP target=00015ef4 follow=00015edf
-                loc_15ED0:
-                if (suction_cup_enemy_check_if_blocked(actor, 1) == 0) //goto loc_15EF4;
+                if (suction_cup_enemy_check_if_blocked(actor, 1) == 0)
                 {
-                    // node 00015ef4-00015f06 #insn=4 use={} def={bx} in={ax} out={ax} pred={ 15ED0} JUMP target=0001622b
-                    loc_15EF4:
                     actor->data_1 = 1;
                     actor->data_2 = 1;
-                    //goto loc_1622B;
-                    return;
                 }
                 else
                 {
-                    //00015edf
-                    // node 00015edf-00015ee2 #insn=1 use={} def={bx} in={ax} out={ax} pred={ 15ED0} FALLTHROUGH follow=00015ee8
                     actor->data_2 = 3;
-
-// node 00015ee8-00015ef1 #insn=3 use={} def={bx} in={ax} out={ax} pred={ 15EDF} JUMP target=0001622b
-                    //loc_15EE8:
                     actor->frame_num = 9;
-                    //goto loc_1622B;
-                    return;
                 }
             }
             else
             {
-                //00015ec2
-                // node 00015ec2-00015ece #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 15E26} CONDJUMP target=00015f09 follow=00015ed0
-                if (sub_1106F() % 0x32 != 0) //goto loc_15F09;
+                if (sub_1106F() % 0x32 != 0)
                 {
-                    // node 00015f09-00015f11 #insn=2 use={} def={} in={} out={} pred={ 15EC2} FALLTHROUGH follow=0001622b
-                    //loc_15F09:
                     if(actor->data_4 != 0)
                     {
                         actor->x = actor->x - 1;
                     }
-                    return;
                 }
                 else
                 {
-                    //00015ed0
-                    // node 00015ed0-00015edd #insn=3 use={al} def={ax} in={al} out={ax} pred={ 15E26 15EC2} CONDJUMP target=00015ef4 follow=00015edf
-                    //loc_15ED0:
-                    if (suction_cup_enemy_check_if_blocked(actor, 1) == 0) //goto loc_15EF4;
+                    if (suction_cup_enemy_check_if_blocked(actor, 1) == 0)
                     {
-                        // node 00015ef4-00015f06 #insn=4 use={} def={bx} in={ax} out={ax} pred={ 15ED0} JUMP target=0001622b
-                        //loc_15EF4:
                         actor->data_1 = 1;
                         actor->data_2 = 1;
-                        //goto loc_1622B;
-                        return;
                     }
                     else
                     {
-                        //00015edf
-                        // node 00015edf-00015ee2 #insn=1 use={} def={bx} in={ax} out={ax} pred={ 15ED0} FALLTHROUGH follow=00015ee8
                         actor->data_2 = 3;
-
-// node 00015ee8-00015ef1 #insn=3 use={} def={bx} in={ax} out={ax} pred={ 15EDF} JUMP target=0001622b
-                        //loc_15EE8:
                         actor->frame_num = 9;
-                        //goto loc_1622B;
-                        return;
                     }
                 }
             }
@@ -3610,18 +3540,12 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
     }
     else
     {
-        //00015fde
-        // node 00015fde-00015ff0 #insn=4 use={bx} def={} in={ax, bx, al} out={ax, bx, al} pred={ 15D46} CONDJUMP target=00015ff5 follow=000160af
-        loc_15FDE:
-
         if(actor->data_1 != 1)
         {
             return;
         }
-        if (actor->data_2 == 0) //goto loc_15FF5;
+        if (actor->data_2 == 0)
         {
-// node 00015ff5-0001605f #insn=9 use={al} def={ax, bx, si, di, al} in={al} out={di, al} pred={ 15FDE} CONDJUMP target=00016074 follow=00016066
-            loc_15FF5:
             if(actor->data_4 != 0)
             {
                 actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
@@ -3629,10 +3553,8 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             }
 
             uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + 3, actor->y + 1)/8];
-            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0) //goto loc_16074;
+            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0)
             {
-                // node 00016074-00016081 #insn=3 use={} def={} in={} out={} pred={ 15FF5 16066} FALLTHROUGH follow=0001622b
-                loc_16074:
                 if(suction_cup_enemy_check_if_blocked(actor, 0) == 0)
                 {
                     actor->data_1 = 0;
@@ -3643,28 +3565,18 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                     actor->data_2 = 2;
                     actor->frame_num = 8;
                 }
-
-                return;
             }
             else
             {
-                //00016066
-                // node 00016066-00016072 #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 15FF5} CONDJUMP target=0001609b follow=00016074
-                if (sub_1106F() % 0x32 != 0) //goto loc_1609B;
+                if (sub_1106F() % 0x32 != 0)
                 {
-                    // node 0001609b-000160a3 #insn=3 use={} def={} in={} out={} pred={ 16066 16130} FALLTHROUGH follow=0001622b
-                    loc_1609B:
-
                     if(actor->data_4 != 0)
                     {
                         actor->x = actor->x + 1;
                     }
-                    return;
                 }
                 else
                 {
-                    // node 00016074-00016081 #insn=3 use={} def={} in={} out={} pred={ 16066} FALLTHROUGH follow=0001622b
-                    //loc_16074:
                     if(suction_cup_enemy_check_if_blocked(actor, 0) == 0)
                     {
                         actor->data_1 = 0;
@@ -3675,19 +3587,13 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                         actor->data_2 = 2;
                         actor->frame_num = 8;
                     }
-                    return;
                 }
             }
         }
         else
         {
-            //000160af
-            // node 000160af-00016129 #insn=11 use={al} def={ax, bx, si, di, al} in={al} out={di, al} pred={ 15FDE} CONDJUMP target=00016141 follow=00016130
-            loc_160AF:
-
             if(actor->data_2 != 1)
             {
-
                 if(actor->data_2 == 2)
                 {
                     if(sprite_blocking_check(0, 0x6a, 0, actor->x, actor->y - 1) == NOT_BLOCKED)
@@ -3739,10 +3645,8 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             }
 
             uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + 3, actor->y - 4)/8];
-            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0) //goto loc_16141;
+            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0)
             {
-                // node 00016141-0001614e #insn=3 use={} def={} in={} out={} pred={ 160AF 16130} FALLTHROUGH follow=0001622b
-                loc_16141:
                 if(suction_cup_enemy_check_if_blocked(actor, 1) == 0)
                 {
                     actor->data_1 = 0;
@@ -3756,11 +3660,8 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             }
             else
             {
-                // node 00016130-0001613c #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 160AF} CONDJUMP target=00016141 follow=0001609b
-                if (sub_1106F() % 0x32 == 0) // goto loc_16141;
+                if (sub_1106F() % 0x32 == 0)
                 {
-                    // node 00016141-0001614e #insn=3 use={} def={} in={} out={} pred={ 160AF 16130} FALLTHROUGH follow=0001622b
-                    //loc_16141:
                     if(suction_cup_enemy_check_if_blocked(actor, 1) == 0)
                     {
                         actor->data_1 = 0;
@@ -3774,25 +3675,14 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                 }
                 else
                 {
-                    //0001609b
-                    // node 0001609b-000160a3 #insn=3 use={} def={} in={} out={} pred={ 16066 16130} FALLTHROUGH follow=0001622b
-                    //loc_1609B:
-
                     if(actor->data_4 != 0)
                     {
                         actor->x = actor->x + 1;
                     }
-                    return;
                 }
             }
-
         }
     }
-
-// node 0001622b-0001622e #insn=4 use={ax} def={si, di} in={ax} out={} pred={ 15EE8 15EF4 15F09 15E1A 16074 1609B 16141} RETURN
-    loc_1622B:
-    return;
-
 }
 
 void activate_switch_maybe(int actorInfoIndex, ActorData *switch_actor)
