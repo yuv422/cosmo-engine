@@ -3346,9 +3346,41 @@ void actor_wt_stone_head(ActorData *actor)
     return;
 }
 
+uint8 suction_cup_enemy_check_if_blocked(ActorData *actor, uint8 blocking_check)
+{
+    if ((sub_1106F() & 1) == 0)
+    {
+        return 0;
+    }
+
+    if (blocking_check == 0)
+    {
+        for(int si=0;si < 15; si++)
+        {
+            if ((tileattr_mni_data[map_get_tile_cell(actor->x, actor->y - si - 4)/8] & TILE_ATTR_BLOCK_LEFT) != 0 &&
+                (tileattr_mni_data[map_get_tile_cell(actor->x + 1 + 1, actor->y - si - 4)/8] & TILE_ATTR_BLOCK_LEFT) != 0)
+            {
+                return 1;
+            }
+        }
+    }
+    else if(blocking_check == 1)
+    {
+        for(int si=0; si < 15; si++)
+        {
+            if((tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + si)/8] & TILE_ATTR_BLOCK_DOWN) != 0 &&
+               (tileattr_mni_data[map_get_tile_cell(actor->x + 1 + 1, actor->y + si)/8] & TILE_ATTR_BLOCK_DOWN) != 0)
+            {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
 void actor_wt_suction_cup_alien_enemy(ActorData *actor)
 {
-    /*
     // node 00015d46-00015d72 #insn=9 use={si, di} def={ax, bx} in={si, di, al} out={ax, bx, al} pred={} CONDJUMP target=00015d77 follow=00015fde
 
     actor->data_4 = (actor->data_4 ? -1 : 0) + 1;
@@ -3366,17 +3398,12 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                 actor->frame_num = actor->data_3;
             }
 
-            si = sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y);
-
-            ax = map_get_tile_cell(actor->x - 1, actor->y + 1) >> 3;
-            al = (al & 1 ? -1 : 0) + 1;
-            di = al;
-            if (si != 0 || di != 0) //goto loc_15DFF;
+            uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x - 1, actor->y + 1)/8];
+            if (sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0) //goto loc_15DFF;
             {
                 // node 00015dff-00015e0c #insn=3 use={al} def={ax} in={al} out={ax} pred={ 15D81 15DEE} CONDJUMP target=00015e1a follow=00015e0e
                 loc_15DFF:
-                ax = suction_cup_enemy_check_if_blocked(actor_num, 0);
-                if (al == 0) //goto loc_15E1A;
+                if (suction_cup_enemy_check_if_blocked(actor, 0) == 0) //goto loc_15E1A;
                 {
                     // node 00015e1a-00015fdb #insn=4 use={} def={bx} in={ax} out={ax} pred={ 15DFF} JUMP target=0001622b
                     loc_15E1A:
@@ -3401,22 +3428,17 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             else
             {
                 // node 00015dee-00015dfa #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 15D81} CONDJUMP target=00015dff follow=00015f09
-                ax = sub_1106F();
-                bx = 0x32;
-                ax = ax / bx;
-                if (ax % bx == 0) //goto loc_15DFF;
+                if (sub_1106F() % 0x32 == 0) //goto loc_15DFF;
                 {
                     // node 00015dff-00015e0c #insn=3 use={al} def={ax} in={al} out={ax} pred={ 15D81 15DEE} CONDJUMP target=00015e1a follow=00015e0e
-                    loc_15DFF:
-                    ax = suction_cup_enemy_check_if_blocked(actor_num, 0);
-                    if (al == 0) //goto loc_15E1A;
+                    //loc_15DFF:
+                    if (suction_cup_enemy_check_if_blocked(actor, 0) == 0) //goto loc_15E1A;
                     {
                         // node 00015e1a-00015fdb #insn=4 use={} def={bx} in={ax} out={ax} pred={ 15DFF} JUMP target=0001622b
-                        loc_15E1A:
+                        //loc_15E1A:
                         actor->data_1 = 1;
                         actor->data_2 = 0;
                         //goto loc_1622B;
-                        return;
                     }
                     else
                     {
@@ -3425,10 +3447,9 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                         actor->data_2 = 2;
                         // goto loc_15EE8;
                         // node 00015ee8-00015ef1 #insn=3 use={} def={bx} in={ax} out={ax} pred={ 15E0E 15EDF} JUMP target=0001622b
-                        loc_15EE8:
+                        //loc_15EE8:
                         actor->frame_num = 9;
                         //goto loc_1622B;
-                        return;
                     }
                 }
                 else
@@ -3440,8 +3461,8 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                     {
                         actor->x = actor->x - 1;
                     }
-                    return;
                 }
+                return;
             }
         }
         else
@@ -3464,8 +3485,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                         actor->data_2 = 1;
                     }
 
-                    ax = sprite_blocking_check(0, 0x6a, 0, actor->x, actor->y - 1);
-                    if(ax != 0)
+                    if(sprite_blocking_check(0, 0x6a, 0, actor->x, actor->y - 1) != NOT_BLOCKED)
                     {
                         actor->data_2 = 1;
                     }
@@ -3473,12 +3493,12 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                     {
                         actor->y = actor->y - 1;
                     }
-                    return ax;
+                    return;
                 }
 
                 if(actor->data_2 != 3)
                 {
-                    return ax;
+                    return;
                 }
                 if(sprite_blocking_check(1, 0x6a, 0, actor->x, actor->y + 1) == 0)
                 {
@@ -3489,8 +3509,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                     actor->data_2 = 0;
                 }
 
-                ax = sprite_blocking_check(1, 0x6a, 0, actor->x, actor->y + 1);
-                if(ax != 0)
+                if(sprite_blocking_check(1, 0x6a, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
                 {
                     actor->data_2 = 0;
                 }
@@ -3498,7 +3517,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                 {
                     actor->y = actor->y + 1;
                 }
-                return ax;
+                return;
             }
             if(actor->data_4 != 0)
             {
@@ -3506,28 +3525,24 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                 actor->frame_num = actor->data_3 + 4;
             }
 
-            si = sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y);
+            BlockingType blocking_check = sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y);
+            uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x - 1, actor->y - 4)/8];
 
-            ax = map_get_tile_cell(actor->x - 1, actor->y - 4) >> 3;
-            al = (al & 4 ? -1 : 0) + 1;
-            ax = al;
-            di = ax;
-            if(si == 2)
+            if(blocking_check == SLOPE)
             {
 
                 if(actor->data_4 != 0)
                 {
                     actor->y = actor->y - 1;
                     actor->x = actor->x - 1;
-                    return ax;
+                    return;
                 }
             }
-            if (si != 0 || di != 0) //goto loc_15ED0;
+            if (blocking_check != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0) //goto loc_15ED0;
             {
                 // node 00015ed0-00015edd #insn=3 use={al} def={ax} in={al} out={ax} pred={ 15E26 15EC2} CONDJUMP target=00015ef4 follow=00015edf
                 loc_15ED0:
-                ax = suction_cup_enemy_check_if_blocked(actor_num, 1);
-                if (al == 0) //goto loc_15EF4;
+                if (suction_cup_enemy_check_if_blocked(actor, 1) == 0) //goto loc_15EF4;
                 {
                     // node 00015ef4-00015f06 #insn=4 use={} def={bx} in={ax} out={ax} pred={ 15ED0} JUMP target=0001622b
                     loc_15EF4:
@@ -3553,10 +3568,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             {
                 //00015ec2
                 // node 00015ec2-00015ece #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 15E26} CONDJUMP target=00015f09 follow=00015ed0
-                ax = sub_1106F();
-                bx = 0x32;
-                ax = ax / bx;
-                if (ax % bx != 0) //goto loc_15F09;
+                if (sub_1106F() % 0x32 != 0) //goto loc_15F09;
                 {
                     // node 00015f09-00015f11 #insn=2 use={} def={} in={} out={} pred={ 15EC2} FALLTHROUGH follow=0001622b
                     //loc_15F09:
@@ -3570,12 +3582,11 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                 {
                     //00015ed0
                     // node 00015ed0-00015edd #insn=3 use={al} def={ax} in={al} out={ax} pred={ 15E26 15EC2} CONDJUMP target=00015ef4 follow=00015edf
-                    loc_15ED0:
-                    ax = suction_cup_enemy_check_if_blocked(actor_num, 1);
-                    if (al == 0) //goto loc_15EF4;
+                    //loc_15ED0:
+                    if (suction_cup_enemy_check_if_blocked(actor, 1) == 0) //goto loc_15EF4;
                     {
                         // node 00015ef4-00015f06 #insn=4 use={} def={bx} in={ax} out={ax} pred={ 15ED0} JUMP target=0001622b
-                        loc_15EF4:
+                        //loc_15EF4:
                         actor->data_1 = 1;
                         actor->data_2 = 1;
                         //goto loc_1622B;
@@ -3605,154 +3616,183 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
 
         if(actor->data_1 != 1)
         {
-            return ax;
+            return;
         }
         if (actor->data_2 == 0) //goto loc_15FF5;
         {
+// node 00015ff5-0001605f #insn=9 use={al} def={ax, bx, si, di, al} in={al} out={di, al} pred={ 15FDE} CONDJUMP target=00016074 follow=00016066
+            loc_15FF5:
+            if(actor->data_4 != 0)
+            {
+                actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
+                actor->frame_num = actor->data_3 + 1 + 1;
+            }
 
+            uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + 3, actor->y + 1)/8];
+            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0) //goto loc_16074;
+            {
+                // node 00016074-00016081 #insn=3 use={} def={} in={} out={} pred={ 15FF5 16066} FALLTHROUGH follow=0001622b
+                loc_16074:
+                if(suction_cup_enemy_check_if_blocked(actor, 0) == 0)
+                {
+                    actor->data_1 = 0;
+                    actor->data_2 = 0;
+                }
+                else
+                {
+                    actor->data_2 = 2;
+                    actor->frame_num = 8;
+                }
+
+                return;
+            }
+            else
+            {
+                //00016066
+                // node 00016066-00016072 #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 15FF5} CONDJUMP target=0001609b follow=00016074
+                if (sub_1106F() % 0x32 != 0) //goto loc_1609B;
+                {
+                    // node 0001609b-000160a3 #insn=3 use={} def={} in={} out={} pred={ 16066 16130} FALLTHROUGH follow=0001622b
+                    loc_1609B:
+
+                    if(actor->data_4 != 0)
+                    {
+                        actor->x = actor->x + 1;
+                    }
+                    return;
+                }
+                else
+                {
+                    // node 00016074-00016081 #insn=3 use={} def={} in={} out={} pred={ 16066} FALLTHROUGH follow=0001622b
+                    //loc_16074:
+                    if(suction_cup_enemy_check_if_blocked(actor, 0) == 0)
+                    {
+                        actor->data_1 = 0;
+                        actor->data_2 = 0;
+                    }
+                    else
+                    {
+                        actor->data_2 = 2;
+                        actor->frame_num = 8;
+                    }
+                    return;
+                }
+            }
         }
         else
         {
             //000160af
+            // node 000160af-00016129 #insn=11 use={al} def={ax, bx, si, di, al} in={al} out={di, al} pred={ 15FDE} CONDJUMP target=00016141 follow=00016130
+            loc_160AF:
+
+            if(actor->data_2 != 1)
+            {
+
+                if(actor->data_2 == 2)
+                {
+                    if(sprite_blocking_check(0, 0x6a, 0, actor->x, actor->y - 1) == NOT_BLOCKED)
+                    {
+                        actor->y = actor->y - 1;
+                    }
+                    else
+                    {
+                        actor->data_2 = 1;
+                    }
+
+                    if(sprite_blocking_check(0, 0x6a, 0, actor->x, actor->y - 1) != NOT_BLOCKED)
+                    {
+                        actor->data_2 = 1;
+                    }
+                    else
+                    {
+                        actor->y = actor->y - 1;
+                    }
+                    return;
+                }
+
+                if(actor->data_2 == 3)
+                {
+                    if(sprite_blocking_check(1, 0x6a, 0, actor->x, actor->y + 1) == NOT_BLOCKED)
+                    {
+                        actor->y = actor->y + 1;
+                    }
+                    else
+                    {
+                        actor->data_2 = 0;
+                    }
+
+                    if(sprite_blocking_check(1, 0x6a, 0, actor->x, actor->y + 1) == NOT_BLOCKED)
+                    {
+                        actor->y = actor->y + 1;
+                    }
+                    else
+                    {
+                        actor->data_2 = 0;
+                    }
+                }
+                return;
+            }
+            if(actor->data_4 != 0)
+            {
+                actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
+                actor->frame_num = actor->data_3 + 6;
+            }
+
+            uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + 3, actor->y - 4)/8];
+            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0) //goto loc_16141;
+            {
+                // node 00016141-0001614e #insn=3 use={} def={} in={} out={} pred={ 160AF 16130} FALLTHROUGH follow=0001622b
+                loc_16141:
+                if(suction_cup_enemy_check_if_blocked(actor, 1) == 0)
+                {
+                    actor->data_1 = 0;
+                    actor->data_2 = 1;
+                }
+                else
+                {
+                    actor->data_2 = 3;
+                    actor->frame_num = 8;
+                }
+            }
+            else
+            {
+                // node 00016130-0001613c #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 160AF} CONDJUMP target=00016141 follow=0001609b
+                if (sub_1106F() % 0x32 == 0) // goto loc_16141;
+                {
+                    // node 00016141-0001614e #insn=3 use={} def={} in={} out={} pred={ 160AF 16130} FALLTHROUGH follow=0001622b
+                    //loc_16141:
+                    if(suction_cup_enemy_check_if_blocked(actor, 1) == 0)
+                    {
+                        actor->data_1 = 0;
+                        actor->data_2 = 1;
+                    }
+                    else
+                    {
+                        actor->data_2 = 3;
+                        actor->frame_num = 8;
+                    }
+                }
+                else
+                {
+                    //0001609b
+                    // node 0001609b-000160a3 #insn=3 use={} def={} in={} out={} pred={ 16066 16130} FALLTHROUGH follow=0001622b
+                    //loc_1609B:
+
+                    if(actor->data_4 != 0)
+                    {
+                        actor->x = actor->x + 1;
+                    }
+                    return;
+                }
+            }
+
         }
-    }
-
-
-
-
-// node 00015ff5-0001605f #insn=9 use={al} def={ax, bx, si, di, al} in={al} out={di, al} pred={ 15FDE} CONDJUMP target=00016074 follow=00016066
-    loc_15FF5:
-    if(actor->data_4 != 0)
-    {
-        actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
-        actor->frame_num = actor->data_3 + 1 + 1;
-    }
-    
-    si = sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y);
-    
-    ax = map_get_tile_cell(actor->x + 3, actor->y + 1) >> 3;
-    al = (al & 1 ? -1 : 0) + 1;
-    di = al;
-    if (si != 0 || di != 0) goto loc_16074;
-
-// node 00016066-00016072 #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 15FF5} CONDJUMP target=0001609b follow=00016074
-    ax = sub_1106F();
-    bx = 0x32;
-    ax = ax / bx;
-    if (ax % bx != 0) goto loc_1609B;
-
-// node 00016074-00016081 #insn=3 use={} def={} in={} out={} pred={ 15FF5 16066} FALLTHROUGH follow=0001622b
-    loc_16074:
-    ax = suction_cup_enemy_check_if_blocked(actor_num, 0);
-    if(al == 0)
-    {
-        actor->data_1 = 0;
-        actor->data_2 = 0;
-    }
-    else
-    {
-        actor->data_2 = 2;
-        actor->frame_num = 8;
-    }
-
-// node 0001609b-000160a3 #insn=3 use={} def={} in={} out={} pred={ 16066 16130} FALLTHROUGH follow=0001622b
-    loc_1609B:
-    
-    if(actor->data_4 != 0)
-    {
-        actor->x = actor->x + 1;
-    }
-
-// node 000160af-00016129 #insn=11 use={al} def={ax, bx, si, di, al} in={al} out={di, al} pred={ 15FDE} CONDJUMP target=00016141 follow=00016130
-    loc_160AF:
-    
-    if(actor->data_2 != 1)
-    {
-        
-        if(actor->data_2 == 2)
-        {
-            if(sprite_blocking_check(0, 0x6a, 0, actor->x, actor->y - 1) == 0)
-            {
-                actor->y = actor->y - 1;
-            }
-            else
-            {
-                actor->data_2 = 1;
-            }
-            
-            ax = sprite_blocking_check(0, 0x6a, 0, actor->x, actor->y - 1);
-            if(ax != 0)
-            {
-                actor->data_2 = 1;
-            }
-            else
-            {
-                actor->y = actor->y - 1;
-            }
-            return ax;
-        }
-        
-        if(actor->data_2 == 3)
-        {
-            if(sprite_blocking_check(1, 0x6a, 0, actor->x, actor->y + 1) == 0)
-            {
-                actor->y = actor->y + 1;
-            }
-            else
-            {
-                actor->data_2 = 0;
-            }
-            
-            ax = sprite_blocking_check(1, 0x6a, 0, actor->x, actor->y + 1);
-            if(ax == 0)
-            {
-                actor->y = actor->y + 1;
-            }
-            else
-            {
-                actor->data_2 = 0;
-            }
-            return ax;
-        }
-        return ax;
-    }
-    if(actor->data_4 != 0)
-    {
-        actor->data_3 = (actor->data_3 ? -1 : 0) + 1;
-        actor->frame_num = actor->data_3 + 6;
-    }
-    
-    si = sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y);
-    
-    ax = map_get_tile_cell(actor->x + 3, actor->y - 4) >> 3;
-    al = (al & 4 ? -1 : 0) + 1;
-    di = al;
-    if (si != 0 || di != 0) goto loc_16141;
-
-// node 00016130-0001613c #insn=4 use={} def={ax, dx, bx} in={al} out={ax, al} pred={ 160AF} CONDJUMP target=00016141 follow=0001609b
-    ax = sub_1106F();
-    bx = 0x32;
-    ax = ax / bx;
-    if (ax % bx == 0) goto loc_16141;
-
-// node 00016141-0001614e #insn=3 use={} def={} in={} out={} pred={ 160AF 16130} FALLTHROUGH follow=0001622b
-    loc_16141:
-    ax = suction_cup_enemy_check_if_blocked(actor_num, 1);
-    if(al == 0)
-    {
-        actor->data_1 = 0;
-        actor->data_2 = 1;
-    }
-    else
-    {
-        actor->data_2 = 3;
-        actor->frame_num = 8;
     }
 
 // node 0001622b-0001622e #insn=4 use={ax} def={si, di} in={ax} out={} pred={ 15EE8 15EF4 15F09 15E1A 16074 1609B 16141} RETURN
     loc_1622B:
-    return ax;
-*/
+    return;
+
 }
 
 void activate_switch_maybe(int actorInfoIndex, ActorData *switch_actor)
