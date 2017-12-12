@@ -3886,8 +3886,6 @@ void actor_wt_switch(ActorData *actor)
 
 void actor_wt_switch_multi_use(ActorData *actor)
 {
-    // node 00012fdc-000130a2 #insn=16 use={} def={} in={} out={} pred={} FALLTHROUGH follow=000130a7
-
     if(actor->actorInfoIndex != 0x3c)
     {
         return;
@@ -3897,7 +3895,7 @@ void actor_wt_switch_multi_use(ActorData *actor)
         actor->has_moved_left_flag = 1;
         write_tile_row_to_tilemap(0x3d88, 0x3d90, 0x3d98, 0x3da0, actor->x, actor->y);
     }
-    
+
     if(actor->data_4 != 0)
     {
         actor->data_4 = 0;
@@ -3907,18 +3905,13 @@ void actor_wt_switch_multi_use(ActorData *actor)
         write_tile_row_to_tilemap(0x3d88, 0x3d90, 0x3d98, 0x3da0, actor->x, actor->y);
         if(actor->data_1 == 4)
         {
-// node 000130a7-000130c6 #insn=4 use={} def={} in={} out={} pred={ 12FDC} FALLTHROUGH follow=00013125
-            loc_130A7:
             play_sfx(0x10);
             switch (actor->data_5)
             {
-// node ffffffff-00000000 #insn=0 use={} def={} in={} out={} pred={}
-// node 000130da-00013125 #insn=3 use={} def={} in={ax} out={ax} pred={ FFFFFFFF} JUMP target=00013125
                 case 59:
                     move_platform_flag = 1;
                     break;
 
-// node 000130e2-00013125 #insn=4 use={} def={} in={} out={} pred={ FFFFFFFF} FALLTHROUGH follow=00013125
                 case 61:
                     word_2E17E = 4;
                     if(word_2E228 == 0)
@@ -3928,17 +3921,13 @@ void actor_wt_switch_multi_use(ActorData *actor)
                     }
                     break;
 
-// node 0001310e-00013125 #insn=3 use={} def={} in={ax} out={ax} pred={ FFFFFFFF} JUMP target=00013125
                 case 120:
                     word_2E4CE = 1;
                     break;
 
-// node 00013116-00013125 #insn=3 use={} def={} in={ax} out={ax} pred={ FFFFFFFF} JUMP target=00013125
                 case 121:
                     energy_beam_enabled_flag = 0;
                     break;
-
-// node 00013125-00000000 #insn=0 use={} def={} in={} out={} pred={ 130DA 130E2 1310E 13116}
             }
         }
         else
@@ -3947,13 +3936,10 @@ void actor_wt_switch_multi_use(ActorData *actor)
         }
     }
 
-// node 00013125-0001317d #insn=3 use={ax} def={} in={ax} out={} pred={ 130A7} RETURN
-    
     if(actor->data_1 < 4 && actor->data_4 == 0)
     {
         if(struct6_1B4FC(0x3c, 0, actor->x, actor->y) != 0)
         {
-            
             actor->data_1 = actor->data_1 + 1;
             if(actor->data_2 != 0)
             {
@@ -3965,11 +3951,8 @@ void actor_wt_switch_multi_use(ActorData *actor)
                 actor->data_2 = 1;
             }
             actor->data_4 = 1;
-            return;
         }
-        return;
     }
-    return;
 }
 
 void actor_wt_teleporter(ActorData *actor)
