@@ -647,6 +647,165 @@ void actor_wt_blue_mobile_trampoline_car(ActorData *actor)
 void actor_wt_blue_platform(ActorData *actor)
 {
   // FIXME need to fix issue with desquirr
+// node 00014ff8-00015042 #insn=9 use={} def={bx} in={ax} out={ax, bx} pred={} CONDJUMP target=000150a6 follow=00015044
+
+    actor->has_moved_left_flag = actor->has_moved_left_flag + 1;
+    if(actor->data_1 == 0)
+    {
+        actor->data_1 = 1;
+        map_write_row_of_tiles(0x3dd0, 4, actor->x, actor->y - 1);
+        return;
+    }
+    
+    if (actor->data_1 != 1) //goto loc_150A6;
+    {
+        // node 000150a6-000150ae #insn=3 use={} def={} in={} out={} pred={ 14FF8 15044} FALLTHROUGH follow=0001514a
+        loc_150A6:
+
+        if(actor->data_1 == 2)
+        {
+            if((actor->has_moved_left_flag & 1) != 0)
+            {
+                actor->data_2 = actor->data_2 + 1;
+            }
+
+            if(actor->data_2 == 5)
+            {
+                map_write_row_of_tiles(0, 4, actor->x, actor->y - 1);
+            }
+
+            if(actor->data_2 >= 5 && actor->data_2 < 8)
+            {
+                actor_tile_display_func_index = 1;
+                display_actor_sprite_maybe(0x5b, 1, actor->x - actor->data_2 + 0xfffb, actor->y, 0);
+
+                display_actor_sprite_maybe(0x5b, 2, actor->x + actor->data_2 - 3, actor->y, 0);
+            }
+
+            if(actor->data_2 == 7)
+            {
+                actor->data_1 = 3;
+                actor->data_2 = 0;
+            }
+            //fallthrough to return.
+        }
+    }
+    else
+    {
+     //00015044
+        // node 00015044-0001504f #insn=2 use={bx} def={ax} in={bx} out={ax, bx} pred={ 14FF8} CONDJUMP target=000150a6 follow=00015051
+        if (actor->y - 2 != player_y_pos) //goto loc_150A6;
+        {
+            // node 000150a6-000150ae #insn=3 use={} def={} in={} out={} pred={ 15044 } FALLTHROUGH follow=0001514a
+            //loc_150A6:
+
+            if(actor->data_1 == 2)
+            {
+                if((actor->has_moved_left_flag & 1) != 0)
+                {
+                    actor->data_2 = actor->data_2 + 1;
+                }
+
+                if(actor->data_2 == 5)
+                {
+                    map_write_row_of_tiles(0, 4, actor->x, actor->y - 1);
+                }
+
+                if(actor->data_2 >= 5 && actor->data_2 < 8)
+                {
+                    actor_tile_display_func_index = 1;
+                    display_actor_sprite_maybe(0x5b, 1, actor->x - actor->data_2 + 0xfffb, actor->y, 0);
+
+                    display_actor_sprite_maybe(0x5b, 2, actor->x + actor->data_2 - 3, actor->y, 0);
+                }
+
+                if(actor->data_2 == 7)
+                {
+                    actor->data_1 = 3;
+                    actor->data_2 = 0;
+                }
+            }
+            //fallthrough to return
+        }
+        else
+        {
+            // node 00015051-00015059 #insn=1 use={bx} def={ax} in={bx} out={bx} pred={ 15044} CONDJUMP target=00015068 follow=0001505b
+            if (actor->x > player_x_pos) //goto loc_15068;
+            {
+                // node 00015068-00015077 #insn=4 use={} def={} in={} out={} pred={ 15051 1505B} FALLTHROUGH follow=0001514a
+                loc_15068:
+
+                if(actor->x <= player_x_pos + 1 + 1)
+                {
+                    if(actor->x + 3 >= player_x_pos + 1 + 1)
+                    {
+
+                        actor->data_1 = 2;
+                        actor->data_2 = 0;
+                        sub_11062();
+                    }
+                }
+                //return fallthrough
+            }
+            else
+            {
+                //0001505b
+                // node 0001505b-00015066 #insn=2 use={bx} def={ax} in={bx} out={ax} pred={ 15051} CONDJUMP target=00015090 follow=00015068
+                if (actor->x + 3 >= player_x_pos) //goto loc_15090;
+                {
+                    // node 00015090-000150a3 #insn=6 use={} def={bx} in={ax} out={ax} pred={ 1505B} JUMP target=0001514a
+                    loc_15090:
+
+                    actor->data_1 = 2;
+                    actor->data_2 = 0;
+                    sub_11062();
+//                    goto loc_1514A;
+                }
+                else
+                {
+                    //00015068
+                    // node 00015068-00015077 #insn=4 use={} def={} in={} out={} pred={ 1505B} FALLTHROUGH follow=0001514a
+  //                  loc_15068:
+
+                    if(actor->x <= player_x_pos + 1 + 1)
+                    {
+                        if(actor->x + 3 >= player_x_pos + 1 + 1)
+                        {
+
+                            actor->data_1 = 2;
+                            actor->data_2 = 0;
+                            sub_11062();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+// node 0001514a-000151d8 #insn=12 use={ax} def={} in={ax} out={} pred={ 15068 15090 150A6} RETURN
+    
+    if(actor->data_1 != 3)
+    {
+        return;
+    }
+    actor_tile_display_func_index = 1;
+    display_actor_sprite_maybe(0x5b, 1, actor->x + actor->data_2 - 2, actor->y, 0);
+    
+    display_actor_sprite_maybe(0x5b, 2, actor->x + 4 - actor->data_2, actor->y, 0);
+    
+    if((actor->has_moved_left_flag & 1) != 0)
+    {
+        actor->data_2 = actor->data_2 + 1;
+    }
+    
+    if(actor->data_2 == 3)
+    {
+        actor_tile_display_func_index = 0;
+        map_write_row_of_tiles(0, 4, actor->x, actor->y - 1);
+        actor->data_1 = 0;
+        return;
+    }
+    return;
 }
 
 void actor_wt_blue_turret_alien(ActorData *actor)
