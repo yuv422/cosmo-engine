@@ -287,3 +287,16 @@ void map_write_row_of_tiles(uint16 map_tile_cell, uint16 length_in_tiles, int x,
         map_write_tile_cell(map_tile_cell, x + i, y);
     }
 }
+
+void write_tile_row_to_tilemap(uint16 map_tile_cell,
+                               uint16 map_tile_cell2,
+                               uint16 map_tile_cell3,
+                               uint16 map_tile_cell4,
+                               int x,
+                               int y)
+{
+    map_write_tile_cell(map_tile_cell, x, y);
+    map_write_tile_cell(map_tile_cell2, x + 1, y);
+    map_write_tile_cell(map_tile_cell3, x + 2, y);
+    map_write_tile_cell(map_tile_cell4, x + 3, y);
+}
