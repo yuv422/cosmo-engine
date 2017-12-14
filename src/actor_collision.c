@@ -384,7 +384,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 byte_2E2E4 = 1;
                 word_2E1E8 = 1;
                 if (actor->count_down_timer != 0 || player_bounce_in_the_air(0x14) == 0)
-                {
+                {//FIXME is this correct?
                 }
                 play_sfx(6);
                 byte_2E17C = 0;
