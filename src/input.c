@@ -18,6 +18,10 @@ uint8 down_key_pressed = 0;
 uint8 left_key_pressed = 0;
 uint8 right_key_pressed = 0;
 
+//This is needed because the game manipulates up_key_pressed as part of the hover board logic. This is the actual
+//key pressed state.
+uint8 sdl_up_key_pressed = 0;
+
 uint8 byte_2E17C; //modifies the left, right and jump key presses
 
 void wait_for_time_or_key(int delay_in_game_cycles)
@@ -41,7 +45,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             right_key_pressed = 1;
             break;
         case SDLK_UP :
-            up_key_pressed = 1;
+            sdl_up_key_pressed = 1;
             break;
         case SDLK_DOWN :
             down_key_pressed = 1;
@@ -66,6 +70,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             break;
         default : break;
     }
+    up_key_pressed = sdl_up_key_pressed;
     return CONTINUE;
 }
 
@@ -81,7 +86,7 @@ input_state_enum handle_key_up(SDL_KeyboardEvent event)
             right_key_pressed = 0;
             break;
         case SDLK_UP :
-            up_key_pressed = 0;
+            sdl_up_key_pressed = 0;
             break;
         case SDLK_DOWN :
             down_key_pressed = 0;
@@ -103,6 +108,7 @@ input_state_enum handle_key_up(SDL_KeyboardEvent event)
             break;
         default : break;
     }
+    up_key_pressed = sdl_up_key_pressed;
     return CONTINUE;
 }
 
@@ -126,6 +132,8 @@ input_state_enum read_input()
             return handle_key_up(event.key);
         }
     }
+
+    up_key_pressed = sdl_up_key_pressed;
 
     return CONTINUE;
 }

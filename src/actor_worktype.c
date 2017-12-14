@@ -675,7 +675,7 @@ void actor_wt_blue_platform(ActorData *actor)
             if(actor->data_2 >= 5 && actor->data_2 < 8)
             {
                 actor_tile_display_func_index = 1;
-                display_actor_sprite_maybe(0x5b, 1, actor->x - actor->data_2 + 0xfffb, actor->y, 0);
+                display_actor_sprite_maybe(0x5b, 1, actor->x - actor->data_2 - 5, actor->y, 0);
 
                 display_actor_sprite_maybe(0x5b, 2, actor->x + actor->data_2 - 3, actor->y, 0);
             }
@@ -712,7 +712,7 @@ void actor_wt_blue_platform(ActorData *actor)
                 if(actor->data_2 >= 5 && actor->data_2 < 8)
                 {
                     actor_tile_display_func_index = 1;
-                    display_actor_sprite_maybe(0x5b, 1, actor->x - actor->data_2 + 0xfffb, actor->y, 0);
+                    display_actor_sprite_maybe(0x5b, 1, actor->x - actor->data_2 - 5, actor->y, 0);
 
                     display_actor_sprite_maybe(0x5b, 2, actor->x + actor->data_2 - 3, actor->y, 0);
                 }
@@ -4327,7 +4327,7 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
                     return;
                 }
 
-                if(actor->non_blocking_flag_maybe == 0 && sprite_blocking_check(3, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == 0)
+                if(actor->non_blocking_flag_maybe == 0 && sprite_blocking_check(3, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == NOT_BLOCKED)
                 {
 
                     tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1) / 8];
