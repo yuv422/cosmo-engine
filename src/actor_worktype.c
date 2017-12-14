@@ -155,8 +155,7 @@ void actor_wt_angry_moon(ActorData *actor)
 
 void actor_wt_big_red_jumper_frozen(ActorData *actor)
 {
-    //TODO
-    //FIXME get logic out of other exes for this one.
+    //TODO get logic out of other exes for this one.
 }
 
 const static uint8 big_red_plant_frame_num_tbl[] ={0, 2, 1, 0, 1};
@@ -646,7 +645,6 @@ void actor_wt_blue_mobile_trampoline_car(ActorData *actor)
 
 void actor_wt_blue_platform(ActorData *actor)
 {
-  // FIXME need to fix issue with desquirr
 // node 00014ff8-00015042 #insn=9 use={} def={bx} in={ax} out={ax, bx} pred={} CONDJUMP target=000150a6 follow=00015044
 
     actor->has_moved_left_flag = actor->has_moved_left_flag + 1;
@@ -803,9 +801,7 @@ void actor_wt_blue_platform(ActorData *actor)
         actor_tile_display_func_index = 0;
         map_write_row_of_tiles(0, 4, actor->x, actor->y - 1);
         actor->data_1 = 0;
-        return;
     }
-    return;
 }
 
 void actor_wt_blue_turret_alien(ActorData *actor)
@@ -4233,7 +4229,7 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
         }
         if(block_status != SLOPE)
         {
-            if(sprite_blocking_check(1, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == 0)
+            if(sprite_blocking_check(1, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == NOT_BLOCKED)
             {
                 uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + sprite_width, actor->y + 1) / 8];
                 if((tile_attr & TILE_ATTR_SLOPED) != 0)
@@ -4299,7 +4295,7 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
         }
         if(block_status != SLOPE)
         {
-            if(sprite_blocking_check(1, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1))
+            if(sprite_blocking_check(1, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == NOT_BLOCKED)
             {
                 uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x - 1, actor->y + 1) /8];
                 if((tile_attr & TILE_ATTR_SLOPED) != 0)

@@ -61,6 +61,9 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             break;
         case SDLK_q :
             return QUIT;
+        case SDLK_i :
+            printf("player info x_pos =%d; y_pos = %d;\n", player_x_pos, player_y_pos);
+            break;
         default : break;
     }
     return CONTINUE;
