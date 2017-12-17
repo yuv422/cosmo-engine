@@ -484,6 +484,7 @@ int actor_init(int actor_num, int image_index, int x_pos, int y_pos)
             {
                 word_2E1E2 = word_2E1E2 + 1;
             }
+            break;
 
         case 96:
             actor_init_struct(actor_num, 0x5f, x_pos, y_pos + 1, 0, 0, 0, 0, actor_wt_pink_eye_plant, 0, 0, 0, 0, 4);
