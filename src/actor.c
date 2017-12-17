@@ -1272,6 +1272,10 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
                 {
                     video_draw_tile_solid_white(tile, screen_x, screen_y);
                 }
+                else if(tile_display_func_index == 4)
+                {
+                    video_draw_tile_flipped(tile, screen_x, screen_y);
+                }
                 else
                 {
                     video_draw_tile(tile, screen_x, screen_y);

@@ -219,6 +219,25 @@ void video_draw_tile_with_clip_rect(Tile *tile, uint16 x, uint16 y, uint16 clip_
         }
 }
 
+void video_draw_tile_flipped(Tile *tile, uint16 x, uint16 y)
+{
+    uint8 *pixel = &surface->pixels[x + (y+TILE_HEIGHT-1) * SCREEN_WIDTH];
+    uint8 *tile_pixel = tile->pixels;
+    for(int i=0;i<TILE_HEIGHT;i++)
+    {
+        for(int j=0;j<TILE_WIDTH;j++)
+        {
+            if(*tile_pixel != TRANSPARENT_COLOR)
+            {
+                *pixel = *tile_pixel;
+            }
+            pixel++;
+            tile_pixel++;
+        }
+        pixel -= (SCREEN_WIDTH + TILE_WIDTH);
+    }
+}
+
 void video_update_palette(int palette_index, SDL_Color new_color)
 {
     SDL_SetPaletteColors(surface->format->palette, &new_color, palette_index, 1);
