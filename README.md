@@ -1,9 +1,8 @@
 Cosmo-Engine
 ============
 
-![Cosmo Engine](https://github.com/yuv422/cosmo-engine/raw/master/img/cosmo-engine.png "Cosmo's Cosmic Adventure")
-
 A new game engine for playing [Cosmo's Cosmic Adventure][1].
+![Cosmo Engine](https://github.com/yuv422/cosmo-engine/raw/master/img/cosmo-engine.png "Cosmo's Cosmic Adventure")
 
 Requirements
 ------------
