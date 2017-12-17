@@ -261,7 +261,7 @@ void map_display() {
             if(map_cell < 16000)
             {
                 uint16 tile = map_cell/8;
-                if(tile != 0)
+                if(tile > 9) // The first 10 tiles aren't shown. They are arrows for moving platform debug.
                 {
                     video_draw_tile(&map_bg_tiles[tile], (x+1)*8, (y+1)*8);
                 }

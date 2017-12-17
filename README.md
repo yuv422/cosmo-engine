@@ -11,7 +11,7 @@ A copy of the original Cosmo game is required to play.
 
 Compiling
 ---------
-Cosmo-engine is build with [CMake][2] and requires [SDL2][3] and [SDL_mixer][4]
+Cosmo-engine is built with [CMake][2] and requires [SDL2][3] and [SDL_mixer][4]
 
 [1]: https://3drealms.com/catalog/cosmos-cosmic-adventure_37/
 [2]: https://cmake.org/
