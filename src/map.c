@@ -300,3 +300,7 @@ void write_tile_row_to_tilemap(uint16 map_tile_cell,
     map_write_tile_cell(map_tile_cell3, x + 2, y);
     map_write_tile_cell(map_tile_cell4, x + 3, y);
 }
+
+Tile *map_get_bg_tile(uint16 tile_num) {
+    return &map_bg_tiles[tile_num];
+}

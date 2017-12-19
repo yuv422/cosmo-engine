@@ -5,6 +5,7 @@
 
 #include <SDL_events.h>
 #include <sound/sfx.h>
+#include <SDL_timer.h>
 #include "input.h"
 #include "map.h"
 #include "game.h"
@@ -31,7 +32,7 @@ void wait_for_time_or_key(int delay_in_game_cycles)
 
 void cosmo_wait(int delay)
 {
-    //FIXME
+    SDL_Delay((Uint32)(8 * delay));
 }
 
 input_state_enum handle_key_down(SDL_KeyboardEvent event)
@@ -136,4 +137,16 @@ input_state_enum read_input()
     up_key_pressed = sdl_up_key_pressed;
 
     return CONTINUE;
+}
+
+uint8 poll_for_key_press()
+{
+    SDL_Event event;
+
+    while(SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_KEYUP)
+            return true;
+    }
+    return false;
 }

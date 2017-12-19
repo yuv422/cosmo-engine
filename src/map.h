@@ -5,6 +5,8 @@
 #ifndef COSMO_ENGINE_MAP_H
 #define COSMO_ENGINE_MAP_H
 
+#include "tile.h"
+
 #define MAP_WINDOW_WIDTH 38
 #define MAP_WINDOW_HEIGHT 18
 
@@ -29,5 +31,7 @@ void load_level(int level_number);
 void map_load_tiles();
 
 void map_display();
+
+Tile *map_get_bg_tile(uint16 tile_num);
 
 #endif //COSMO_ENGINE_MAP_H
