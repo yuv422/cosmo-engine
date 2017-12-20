@@ -9,6 +9,7 @@
 #include "input.h"
 #include "video.h"
 #include "map.h"
+#include "font.h"
 
 //Data
 uint8 show_one_moment_screen_flag = 0;
@@ -17,9 +18,10 @@ uint8 byte_2E21C = 0;
 
 void wait_for_input(int spinner_x, int spinner_y)
 {
+    video_update();
     //FIXME wait for all keys up here.
-    cosmo_wait(1000);
-    
+    cosmo_wait(500);
+
     uint16 spinner_idx = 0;
     while(!poll_for_key_press())
     {
@@ -31,6 +33,19 @@ void wait_for_input(int spinner_x, int spinner_y)
         else
             spinner_idx++;
         cosmo_wait(5);
+    }
+}
+
+void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
+{
+    int len = strlen(text);
+    for(int i=0; i < len; i++)
+    {
+        unsigned char c = (unsigned char)text[i];
+        if(c < 123)
+        {
+            display_char(x_pos + i, y_pos, c);
+        }
     }
 }
 
@@ -59,9 +74,9 @@ void power_up_module_dialog()
         play_sfx(0x1e);
 //        ax = byte_2C611;
         int si = create_text_dialog_box(2, 5, 0x16, "", "");
-//        display_dialog_text(si, 3, " Power Up modules");
-//        display_dialog_text(si, 4, " increase Cosmo's");
-//        display_dialog_text(si, 5, unk_2C636);
+        display_dialog_text(si, 3, " Power Up modules");
+        display_dialog_text(si, 4, " increase Cosmo's");
+        display_dialog_text(si, 5, " health.         \xfe\x30\x32\x38\x30\x30\x32\0");
         cosmo_wait(0x3c);
         wait_for_input(si + 8, 5);
     }

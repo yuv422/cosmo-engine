@@ -27,3 +27,23 @@ void display_number(int x_pos, int y_pos, uint32 number)
     }
 }
 
+void display_char(int x_pos, int y_pos, char c)
+{
+    if(c >= 32 && c < 91)
+    {
+        video_draw_tile(&font_tiles[c-48+26], x_pos * 8, y_pos * 8);
+    }
+    else
+    {
+        video_draw_tile(&font_tiles[c-97+69], x_pos * 8, y_pos * 8);
+    }
+}
+
+void display_text(int x_pos, int y_pos, const char *text)
+{
+    int len = strlen(text);
+    for(int i=0; i < len; i++)
+    {
+        display_char(x_pos + i, y_pos, text[i]);
+    }
+}
