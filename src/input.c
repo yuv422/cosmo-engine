@@ -139,13 +139,24 @@ input_state_enum read_input()
     return CONTINUE;
 }
 
+void reset_player_control_inputs()
+{
+    up_key_pressed = 0;
+    sdl_up_key_pressed = 0;
+    down_key_pressed = 0;
+    left_key_pressed = 0;
+    right_key_pressed = 0;
+    bomb_key_pressed = 0;
+    jump_key_pressed = 0;
+}
+
 uint8 poll_for_key_press()
 {
     SDL_Event event;
 
     while(SDL_PollEvent(&event))
     {
-        if (event.type == SDL_KEYUP)
+        if (event.type == SDL_KEYDOWN)
             return true;
     }
     return false;
