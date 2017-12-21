@@ -14,11 +14,14 @@
 
 void display_fullscreen_image(uint8 image_number);
 void fade_to_black_speed_3();
+void fade_in_from_black_with_delay_3();
 
 bool video_init();
 void video_shutdown();
 
 void video_update();
+
+void video_fill_screen_with_black();
 
 void video_draw_tile(Tile *tile, uint16 x, uint16 y);
 void video_draw_tile_solid_white(Tile *tile, uint16 x, uint16 y);

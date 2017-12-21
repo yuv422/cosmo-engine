@@ -144,8 +144,3 @@ void update_palette_anim()
 
     return;
 }
-
-void update_palette_related_delay_3()
-{
-    //TODO
-}

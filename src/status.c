@@ -63,6 +63,7 @@ void display_num_stars_collected()
 
 void status_panel_init()
 {
+    video_fill_screen_with_black();
     status_display();
     add_to_score_update_on_display(0, 9, 0x16);
     update_health_bar_display();

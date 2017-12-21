@@ -126,7 +126,7 @@ void now_entering_level_n_dialog(uint16 level_number)
 {
     if(game_play_mode == 0)
     {
-        uint16 x = create_text_dialog_box(7, 3, 0x18, "\xfc""003  Now entering level", "");
+        uint16 x = create_text_dialog_box(7, 3, 0x18, "\xfc""003  Now entering level  ", "");
         cosmo_wait(0x14);
         play_sfx(0x40);
         if(level_number != 10)
@@ -137,6 +137,7 @@ void now_entering_level_n_dialog(uint16 level_number)
         {
             display_number(x + 0x15, 8, level_numbers_tbl[level_number]);
         }
+        video_update();
     }
 }
 
@@ -160,7 +161,14 @@ void power_up_module_dialog()
 
 void display_end_of_level_score_dialog(const char *header_text, const char *footer_text)
 {
-    //TODO
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+    uint16 x = create_text_dialog_box(6, 4, 0x1e, header_text, footer_text);
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x1b, 8);
+//  FIXME  display_score_from_level();
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
 }
 
 void display_short_ingame_dialog(uint16 dialog_number) {

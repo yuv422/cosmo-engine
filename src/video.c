@@ -6,6 +6,7 @@
 #include "video.h"
 #include "palette.h"
 #include "tile.h"
+#include "input.h"
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -20,7 +21,7 @@ void display_fullscreen_image(uint8 image_number)
 
 void fade_to_black_speed_3()
 {
-
+    fade_to_black(3);
 }
 
 bool video_init()
@@ -245,5 +246,39 @@ void video_update_palette(int palette_index, SDL_Color new_color)
 
 void fade_to_black(uint16 wait_time)
 {
+    for(int i=0;i < 16; i++)
+    {
+        cosmo_wait(wait_time);
+        set_palette_color(i, 0);
+        video_update();
+    }
+}
 
+void fade_in_from_black(uint16 wait_time)
+{
+    int j=0;
+    for(int i=0;i < 16; i++)
+    {
+        if(i == 8)
+        {
+            j = 8;
+        }
+        set_palette_color(i, i);
+        video_update();
+        cosmo_wait(wait_time);
+    }
+}
+
+void fade_in_from_black_with_delay_3()
+{
+    fade_in_from_black(3);
+}
+
+void video_fill_screen_with_black() {
+    SDL_Rect rect;
+    rect.x=0;
+    rect.y=0;
+    rect.w=surface->w;
+    rect.h=surface->h;
+    SDL_FillRect(surface, &rect, 0);
 }

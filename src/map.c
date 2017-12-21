@@ -137,7 +137,7 @@ void load_level(int level_number)
                 //update_ega_mem_ptr(0);
                 //set_display_page(0);
 /* Low-level instruction of type call    )(00020FDDsub_20FDD)       ; video memory copy maybe */
-                update_palette_related_delay_3();
+                fade_in_from_black_with_delay_3();
                 now_entering_level_n_dialog(level_number);
                 wait_for_time_or_key(0x96);
                 fade_to_black_speed_3();
@@ -169,8 +169,7 @@ void load_level(int level_number)
 //        load_tileattr_mni("TILEATTR.MNI", REGISTER_32);
 //    }
 
-    update_palette_related_delay_3();
-    return;
+    fade_in_from_black_with_delay_3();
 }
 
 void load_level_data(int level_number)

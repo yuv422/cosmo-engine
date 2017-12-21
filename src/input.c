@@ -27,7 +27,18 @@ uint8 byte_2E17C; //modifies the left, right and jump key presses
 
 void wait_for_time_or_key(int delay_in_game_cycles)
 {
-    //TODO
+    for(int i=0;i < delay_in_game_cycles; i++)
+    {
+        SDL_Event event;
+        while(SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_KEYDOWN)
+            {
+                return;
+            }
+        }
+        cosmo_wait(1);
+    }
 }
 
 void cosmo_wait(int delay)
