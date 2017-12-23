@@ -3115,7 +3115,7 @@ void actor_wt_short_dialog(ActorData *actor)
         {
             if(actor->y >= player_y_pos - 4)
             {
-                display_short_ingame_dialog(actor->data_1);
+                end_game_dialog(actor->data_1);
                 actor->data_2 = 1;
             }
         }

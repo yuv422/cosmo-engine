@@ -25,7 +25,9 @@ void power_up_module_dialog();
 
 void display_end_of_level_score_dialog(const char *header_text, const char *footer_text);
 
-void display_short_ingame_dialog(uint16 dialog_number);
+void end_game_dialog(uint16 dialog_number);
+
+void monster_attack_hint_dialog();
 
 uint16 create_text_dialog_box(uint16 y_offset, uint16 height, uint16 width, const char *top_message, const char *bottom_message);
 

@@ -1119,8 +1119,29 @@ void player_load_tiles()
     printf("Loading %d, player tile info records.\n", num_tile_info_records);
 }
 
+void display_player_sprite_mode_6(char frame_num, int x_pos, int y_pos)
+{
+    TileInfo *info = &player_sprites[0].frames[frame_num];
+    Tile *tile = &player_tiles[info->tile_num];
+
+    for(int y=0;y < info->height;y++)
+    {
+        for (int x = 0; x < info->width; x++)
+        {
+            video_draw_tile(tile, (x_pos + x) * 8, (y_pos + y - (info->height - 1)) * 8);
+            tile++;
+        }
+    }
+}
+
 void display_player_sprite(char frame_num, int x_pos, int y_pos, int tile_display_func_index)
 {
+    if(tile_display_func_index == 6)
+    {
+        display_player_sprite_mode_6(frame_num, x_pos, y_pos);
+        return;
+    }
+
     if(player_push_frame_num == 0xff || teleporter_state_maybe || (player_invincibility_counter & 1) || word_2E1F8)
     {
         return;

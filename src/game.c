@@ -186,6 +186,12 @@ void game_loop()
         {
             display_actor_sprite_maybe(0x10a, 0, 18, 4, 6); //DEMO sign.
         }
+
+        if (show_monster_attack_hint == 1)
+        {
+            show_monster_attack_hint = 2;
+            monster_attack_hint_dialog();
+        }
         video_update();
 
         if (finished_level_flag_maybe)

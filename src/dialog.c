@@ -4,6 +4,7 @@
 
 
 #include <sound/sfx.h>
+#include <SDL_events.h>
 #include "game.h"
 #include "dialog.h"
 #include "input.h"
@@ -54,8 +55,40 @@ uint16 dialog_text_extract_num(const char *text)
     return (uint16)strtol(buf, NULL, 10);
 }
 
+typedef enum {
+    FAST_FORWARD,
+    EXIT,
+    NO_INPUT
+} HintDialogInput;
+
+HintDialogInput hint_dialog_get_input(HintDialogInput input)
+{
+    SDL_Event event;
+    while(SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_KEYDOWN)
+        {
+            if(event.key.keysym.sym == SDLK_SPACE)
+            {
+                return FAST_FORWARD;
+            }
+            else
+            {
+                return EXIT;
+            }
+        }
+        if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE)
+        {
+            return NO_INPUT;
+        }
+    }
+
+    return input;
+}
+
 void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
 {
+    HintDialogInput input = NO_INPUT;
     uint16 typewriter_keys_count = 0;
     uint16 typewriter_delay_counter = 0;
     int len = strlen(text);
@@ -63,13 +96,32 @@ void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
     for(int i=0; i < len; i++)
     {
         unsigned char c = (unsigned char)text[i];
+        if(c == '\n')
+        {
+            x = 0;
+            y_pos++;
+            continue;
+        }
+
         if(c < 123)
         {
             if (typewriter_delay_counter > 0)
             {
-                for(; typewriter_keys_count > 0; typewriter_keys_count--)
+                input = hint_dialog_get_input(input);
+
+                if(input == FAST_FORWARD)
                 {
-                    cosmo_wait(3);
+                    cosmo_wait(1);
+                }
+                else
+                {
+                    if(input == NO_INPUT)
+                    {
+                        for(; typewriter_keys_count > 0; typewriter_keys_count--)
+                        {
+                            cosmo_wait(3);
+                        }
+                    }
                 }
 
                 typewriter_keys_count = typewriter_delay_counter;
@@ -79,7 +131,7 @@ void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
                 }
             }
             display_char(x_pos + x, y_pos, c);
-            video_update();
+            x++;
         }
         if(c >= 0xfb && c < 0xff)
         {
@@ -99,7 +151,8 @@ void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
             }
             i += 3;
         }
-        x++;
+        video_update();
+
     }
 }
 
@@ -116,6 +169,23 @@ void you_havent_found_any_bombs_dialog() {
     }
 }
 
+void monster_attack_hint_dialog()
+{
+    if(game_play_mode == PLAY_GAME)
+    {
+        play_sfx(0x1e);
+        uint16 si = create_text_dialog_box(2, 5, 0x16, "REMINDER:  Jump on", "defend yourself.  ");
+        display_dialog_text(si, 4, " top of creatures to");
+        cosmo_wait(0x3c);
+        wait_for_input(si + 0x13, 5);
+        si = create_text_dialog_box(2, 13, 0x14, "Like this...", "Press ANY key.");
+        display_dialog_text(si + 5, 9, "   \xfd""036");
+        display_dialog_text(si + 5, 11, "   \xfe""118000");
+        cosmo_wait(0x3c);
+        wait_for_input(si + 0x11, 13);
+    }
+}
+
 game_play_mode_enum main_menu() {
     set_initial_game_state();
     return PLAY_GAME;
@@ -126,7 +196,7 @@ void now_entering_level_n_dialog(uint16 level_number)
 {
     if(game_play_mode == 0)
     {
-        uint16 x = create_text_dialog_box(7, 3, 0x18, "\xfc""003  Now entering level  ", "");
+        uint16 x = create_text_dialog_box(7, 3, 0x18, "\xfc""003  Now entering level", "");
         cosmo_wait(0x14);
         play_sfx(0x40);
         if(level_number != 10)
@@ -142,7 +212,118 @@ void now_entering_level_n_dialog(uint16 level_number)
 }
 
 void ingame_hint_dialogs(uint16 hint_number) {
-    //TODO
+    cosmo_wait(0x1e);
+    uint16 x;
+    if(hint_number != 0 && hint_number < 15)
+    {
+        x = create_text_dialog_box(2, 9, 0x1c, "COSMIC HINT!", "Press any key to exit.");
+        display_dialog_text(x, 8, " Press SPACE to hurry or");
+    }
+
+    switch (hint_number)
+    {
+        case 0:
+            x = create_text_dialog_box(2, 11, 0x1c, "COSMIC HINT!", "Press any key to exit.");
+            display_dialog_text(x, 10, " Press SPACE to hurry or");
+            display_dialog_text(x, 5, "\xfc""003 These hint globes will\n"
+                                               " help you along your\n"
+                                               " journey.  Press the up\n"
+                                               " key to reread them");
+
+            wait_for_input(x + 0x19, 11);
+            break;
+
+        case 1:
+            display_dialog_text(x, 5, "\xfc""003 Bump head into switch\n above!");
+            break;
+
+        case 2:
+            display_dialog_text(x, 5, "\xfc""003 The ice in this cave is\n very, very slippery.");
+            break;
+
+        case 3:
+            display_dialog_text(x, 5, "\xfc""003 Use this shield for\n temporary invincibility.");
+            break;
+
+        case 4:
+            display_dialog_text(x, 5, "\xfc""003 You found a secret\n area!!!  Good job!");
+            break;
+
+        case 5:
+            display_dialog_text(x, 5, "\xfc""003 In high places look up\n to find bonus objects.");
+            break;
+
+        case 6:
+            display_dialog_text(x, 5, "\xfc""003      Out of Order...");
+            break;
+
+        case 7:
+            display_dialog_text(x, 5, "\xfc""003 This might be a good\n time to save your game!");
+            break;
+
+        case 8:
+            display_dialog_text(x, 5, "\xfc""003 Press your up key to\n use the transporter.");
+            break;
+
+        case 9:
+            display_dialog_text(x, 5, "\xfc""003  (1) FOR...");
+            break;
+
+        case 10:
+            display_dialog_text(x, 5, "\xfc""003  (2) EXTRA...");
+            break;
+
+        case 11:
+            display_dialog_text(x, 5, "\xfc""003  (3) POINTS,...");
+            break;
+
+        case 12:
+            display_dialog_text(x, 5, "\xfc""003  (4) DESTROY...");
+            break;
+
+        case 13:
+            display_dialog_text(x, 5, "\xfc""003  (5) HINT...");
+            break;
+
+        case 14:
+            display_dialog_text(x, 5, "\xfc""003  (6) GLOBES!!!");
+            break;
+
+        case 15:
+            x = create_text_dialog_box(2, 11, 0x1c, "COSMIC HINT!", "Press any key to exit.");
+            display_dialog_text(x + 0x16, 8, "\xfe""083000");
+            display_dialog_text(x, 10, " Press SPACE to hurry or");
+            display_dialog_text(x, 5, "\xfc""003  The Clam Plants won't\n  hurt you if their\n  mouths are closed.");
+            wait_for_input(x + 0x19, 11);
+            break;
+
+        case 16:
+            x = create_text_dialog_box(2, 10, 0x1c, "COSMIC HINT!", "Press any key to exit.");
+            display_dialog_text(x, 9, " Press SPACE to hurry or");
+            display_dialog_text(x + 0x17, 7, "\xfe""001002\n  Collect the STARS to\n  advance to BONUS\n  STAGES.");
+            wait_for_input(x + 0x19, 10);
+            break;
+
+        case 17:
+            x = create_text_dialog_box(2, 10, 0x1c, "COSMIC HINT!", "Press any key to exit.");
+            display_dialog_text(x, 9, " Press SPACE to hurry or");
+            display_dialog_text(x, 5, "\xfc""003  Some creatures require\n  more than one pounce\n  to defeat!");
+            wait_for_input(x + 0x19, 10);
+            break;
+
+        case 18:
+            x = create_text_dialog_box(2, 9, 0x1e, "COSMIC HINT!", "Press any key to exit.");
+            display_dialog_text(x + 0x19, 8, "\xfd""032");
+            display_dialog_text(x, 8, "  Press SPACE to hurry or");
+            display_dialog_text(x, 5, "\xfc""003 Cosmo can climb wall's\n with his suction hands.");
+            wait_for_input(x + 0x1b, 9);
+            break;
+    }
+
+    if(hint_number != 0 && hint_number < 15)
+    {
+        wait_for_input(x + 0x19, 9);
+    }
 }
 
 void power_up_module_dialog()
@@ -171,7 +352,7 @@ void display_end_of_level_score_dialog(const char *header_text, const char *foot
     video_fill_screen_with_black();
 }
 
-void display_short_ingame_dialog(uint16 dialog_number) {
+void end_game_dialog(uint16 dialog_number) {
     //TODO
 }
 
@@ -203,6 +384,7 @@ uint16 draw_dialog_frame(uint16 x_pos, uint16 y_pos, uint16 height, uint16 width
     if(display_text)
     {
         display_dialog_text(0x14 - (strlen(top_text)/2), y_pos + 1, top_text);
+        display_dialog_text(0x14 - (strlen(bottom_text)/2), y_pos + height - 2, bottom_text);
     }
 
     video_update();
