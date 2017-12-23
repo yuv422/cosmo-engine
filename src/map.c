@@ -21,6 +21,7 @@
 #include "effects.h"
 #include "status.h"
 #include "platforms.h"
+#include "fullscreen_image.h"
 
 #define MAX_MAP_TILES 32768
 //Data
@@ -134,9 +135,7 @@ void load_level(int level_number)
             case 13:
             case 16:
             case 17:
-                //update_ega_mem_ptr(0);
-                //set_display_page(0);
-/* Low-level instruction of type call    )(00020FDDsub_20FDD)       ; video memory copy maybe */
+                video_fill_screen_with_black();
                 fade_in_from_black_with_delay_3();
                 now_entering_level_n_dialog(level_number);
                 wait_for_time_or_key(0x96);
@@ -152,10 +151,7 @@ void load_level(int level_number)
     player_reset_push_variables();
     actor_toss_clear_all();
     status_panel_init();
-//    update_ega_mem_ptr(ega_page_index_maybe);
-//    ax = (ega_page_index_maybe ? -1 : 0) + 1;
-//    ega_page_index_maybe = ax;
-//    set_display_page(ax);
+
     write_savegame_file('T');
     load_music(music_index);
 

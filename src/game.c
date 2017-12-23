@@ -21,6 +21,7 @@
 #include "effects.h"
 #include "font.h"
 #include "platforms.h"
+#include "fullscreen_image.h"
 
 #define COSMO_INTERVAL 100
 
@@ -42,6 +43,9 @@ void end_sequence();
 
 void game_init()
 {
+    display_fullscreen_image(0);
+    wait_for_time_or_key(0xc8);
+
     status_load_tiles();
     tile_attr_load();
     player_load_tiles();

@@ -14,11 +14,6 @@ SDL_Texture *texture;
 SDL_Surface *surface;
 SDL_Surface *windowSurface;
 
-void display_fullscreen_image(uint8 image_number)
-{
-
-}
-
 void fade_to_black_speed_3()
 {
     fade_to_black(3);
@@ -281,4 +276,8 @@ void video_fill_screen_with_black() {
     rect.w=surface->w;
     rect.h=surface->h;
     SDL_FillRect(surface, &rect, 0);
+}
+
+void video_draw_fullscreen_image(uint8 *pixels) {
+    memcpy(surface->pixels, pixels, 320 * 200);
 }
