@@ -1282,19 +1282,22 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
             {
                 screen_x = (x_pos + x + 1) * 8;
                 screen_y = (y_pos - info->height + y + 1) * 8;
+                video_draw_tile(tile, screen_x, screen_y);
             }
-
-            if(screen_x >= 8 && screen_x <= 304 && //FIXME need a better way of making sure we draw in the borders.
-                    screen_y >= 8 && screen_y < 152 &&
-                    (!(tile_attr & TILE_ATTR_IN_FRONT) || tile_display_func_index != 0))
+            else
             {
-                if (tile_display_func_index == 2)
+                if(screen_x >= 8 && screen_x <= 304 && //FIXME need a better way of making sure we draw in the borders.
+                   screen_y >= 8 && screen_y < 152 &&
+                   (!(tile_attr & TILE_ATTR_IN_FRONT) || tile_display_func_index != 0))
                 {
-                    video_draw_tile_solid_white(tile, screen_x, screen_y);
-                }
-                else
-                {
-                    video_draw_tile(tile, screen_x, screen_y);
+                    if (tile_display_func_index == 2)
+                    {
+                        video_draw_tile_solid_white(tile, screen_x, screen_y);
+                    }
+                    else
+                    {
+                        video_draw_tile(tile, screen_x, screen_y);
+                    }
                 }
             }
             tile++;

@@ -345,6 +345,98 @@ void ordering_info_dialog()
     wait_for_input(x + 0x21, 0x13);
 }
 
+void foreign_orders_dialog()
+{
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+    uint16 si = create_text_dialog_box(1, 0x13, 0x26, "FOREIGN CUSTOMERS", "Press ANY key.");
+    si += 2;
+    display_dialog_text(si, 3, "        -----------------");
+    display_dialog_text(si, 5, " The following screens list our");
+    display_dialog_text(si, 6, "   dealers outside the United");
+    display_dialog_text(si, 7, " States, for Australia, Germany,");
+    display_dialog_text(si, 8, " Canada and the United Kingdom.");
+    display_dialog_text(si, 10, "   These are official Apogee");
+    display_dialog_text(si, 11, "    dealers with the latest");
+    display_dialog_text(si, 12, "\xfe""153000       games and updates.    ""\xfe""153001");
+    display_dialog_text(si, 14, " If your country is not listed,");
+    display_dialog_text(si, 15, "  you may order directly from");
+    display_dialog_text(si, 0x10, "Apogee by phone: (214) 278-5655.");
+    fade_in_from_black(1);
+    wait_for_input(si + 0x21, 0x12);
+    fade_to_black(1);
+    video_fill_screen_with_black();
+
+    si = create_text_dialog_box(1, 0x13, 0x26, "AUSTRALIAN CUSTOMERS", "Press ANY key.");
+    si += 3;
+    display_dialog_text(si, 4, "PRICE: $45 + $5 shipping.");
+    display_dialog_text(si, 6, "BudgetWare");
+    display_dialog_text(si, 7, "P.O. Box 496");
+    display_dialog_text(si, 8, "Newtown, NSW  2042        \xfe""113000");
+    display_dialog_text(si, 10, "Phone:      (02) 519-4233");
+    display_dialog_text(si, 11, "Toll free:  (008) 022-064");
+    display_dialog_text(si, 12, "Fax:        (02) 516-4236");
+    display_dialog_text(si, 13, "CompuServe: 71520,1475");
+    display_dialog_text(si, 15, "Use MasterCard, Visa, Bankcard,");
+    display_dialog_text(si, 0x10, "cheques.");
+    fade_in_from_black(1);
+    wait_for_input(si + 0x20, 0x12);
+    fade_to_black(1);
+    video_fill_screen_with_black();
+
+    si = create_text_dialog_box(1, 0x14, 0x26, "CANADIAN CUSTOMERS", "Press ANY key.");
+    si += 3;
+    display_dialog_text(si, 4, "PRICE: $42 Canadian.       \xfe""146000");
+    display_dialog_text(si, 6, "Distant Markets");
+    display_dialog_text(si, 7, "Box 1149");
+    display_dialog_text(si, 8, "194 - 3803 Calgary Trail S.");
+    display_dialog_text(si, 9, "Edmondton, Alb.  T6J 5M8");
+    display_dialog_text(si, 10, "CANADA");
+    display_dialog_text(si, 12, "Orders:    1-800-661-7383");
+    display_dialog_text(si, 13, "Inquiries: (403) 436-3009");
+    display_dialog_text(si, 14, "Fax:       (403) 435-0928  \xfe""086002");
+    display_dialog_text(si, 0x10, "Use MasterCard, Visa or");
+    display_dialog_text(si, 0x11, "money orders.");
+    fade_in_from_black(1);
+    wait_for_input(si + 0x20, 0x13);
+    fade_to_black(1);
+    video_fill_screen_with_black();
+
+    si = create_text_dialog_box(1, 0x14, 0x26, "GERMAN CUSTOMERS", "Press ANY key.");
+    si += 3;
+    display_dialog_text(si, 4, "Price: 49,-- DM plus 10,-- DM");
+    display_dialog_text(si, 5, "Total: 59,-- DM (Deutsche Mark)");
+    display_dialog_text(si, 7, "CDV-Software");
+    display_dialog_text(si, 8, "Ettlingerstr. 5");
+    display_dialog_text(si, 9, "7500 Karlsruhe 1  GERMANY");
+    display_dialog_text(si, 11, "Phone: 0721-22295");
+    display_dialog_text(si, 12, "Fax:   0721-21314            \xfe""127004");
+    display_dialog_text(si, 13, "Compuserve: 1000022,274");
+    display_dialog_text(si, 15, "Use Visa, MasterCard, EuroCard,");
+    display_dialog_text(si, 0x10, "American Express, cheque, money");
+    display_dialog_text(si, 0x11, "order, or C.O.D.");
+    fade_in_from_black(1);
+    wait_for_input(si + 0x20, 0x13);
+    fade_to_black(1);
+    video_fill_screen_with_black();
+
+    si = create_text_dialog_box(1, 0x14, 0x26, "UNITED KINGDOM CUSTOMERS", "Press ANY key.");
+    si += 3;
+    display_dialog_text(si, 4, "Price: /29 + VAT + 2 P&P     \xfe""085000");
+    display_dialog_text(si, 6, "Precision Software Applications");
+    display_dialog_text(si, 7, "Unit 3, Valley Court Offices");
+    display_dialog_text(si, 8, "Lower Rd");
+    display_dialog_text(si, 9, "Croydon, Near Royston");
+    display_dialog_text(si, 10, "Herts. SG8 0HF, United Kingdom");
+    display_dialog_text(si, 12, "Phone: +44 (0) 223 208 288");
+    display_dialog_text(si, 13, "FAX:   +44 (0) 223 208 089");
+    display_dialog_text(si, 15, "Credit cards, Access, cheques,");
+    display_dialog_text(si, 0x10, "postal & Bankers orders.");
+    display_dialog_text(si, 0x11, "Make cheques payable to PSA.");
+    fade_in_from_black(1);
+    wait_for_input(si + 0x20, 0x13);
+}
+
 void main_menu_dialog()
 {
     uint16 si = create_text_dialog_box(2, 0x15, 0x14, "MAIN MENU", "");
@@ -411,6 +503,10 @@ game_play_mode_enum main_menu() {
 
                     case SDLK_o :
                         ordering_info_dialog();
+                        break;
+
+                    case SDLK_f :
+                        foreign_orders_dialog();
                         break;
 
                     case SDLK_a :
