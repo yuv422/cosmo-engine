@@ -36,8 +36,8 @@ int is_standing_slipry_slope_right_flg = 0;
 uint8 health = 0;
 uint8 num_health_bars = 0;
 
-int num_bombs = 0;
-int has_had_bomb_flag = 0;
+uint16 num_bombs = 0;
+uint16 has_had_bomb_flag = 0;
 
 int teleporter_state_maybe = 0;
 int player_is_teleporting_flag = 0;

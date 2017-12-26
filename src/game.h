@@ -12,7 +12,8 @@
 typedef enum {
     PLAY_GAME=0,
     PLAY_DEMO=1,
-    RECORD_DEMO=2
+    RECORD_DEMO=2,
+    QUIT_GAME=3
 } game_play_mode_enum;
 
 extern game_play_mode_enum game_play_mode;
@@ -21,6 +22,7 @@ extern uint8 finished_game_flag_maybe;
 extern uint16 num_stars_collected;
 extern uint8 knows_about_powerups_flag;
 extern uint32 score;
+extern uint8 cheat_mode_flag;
 
 unsigned char *load_file(const char *filename, unsigned char *buf, uint32 buf_size);
 unsigned char *load_file_in_new_buf(const char *filename, uint32 *file_size);

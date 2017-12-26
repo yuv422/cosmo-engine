@@ -36,6 +36,7 @@ uint8 cheats_used_flag;
 uint8 knows_about_powerups_flag;
 uint8 finished_game_flag_maybe = 0;
 uint8 finished_level_flag_maybe;
+uint8 cheat_mode_flag = 0;
 
 void game_wait();
 void select_next_level();

@@ -24,6 +24,11 @@ uint8 file_read1(File *file);
 uint16 file_read2(File *file);
 uint32 file_read4(File *file);
 uint32 file_read_to_buffer(File *file, unsigned char *buf, uint32 num_bytes);
+
+void file_write1(uint8 byte, File *file);
+void file_write2(uint16 word, File *file);
+void file_write4(uint32 double_word, File *file);
+
 void file_close(File *file);
 
 #endif //COSMO_ENGINE_FILE_H

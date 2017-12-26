@@ -29,8 +29,8 @@ extern int is_standing_slipry_slope_right_flg;
 extern uint8 health;
 extern uint8 num_health_bars;
 
-extern int num_bombs;
-extern int has_had_bomb_flag;
+extern uint16 num_bombs;
+extern uint16 has_had_bomb_flag;
 
 extern int teleporter_state_maybe;
 extern int player_is_teleporting_flag;

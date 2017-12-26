@@ -113,3 +113,8 @@ void music_init()
 {
     adlib_init(AUDIO_SAMPLE_RATE);
 }
+
+void stop_music()
+{
+    Mix_HookMusic(NULL, NULL);
+}

@@ -10,6 +10,8 @@
 #include "video.h"
 #include "status.h"
 
+int cleanup_and_exit();
+
 int main(int argc, char *argv[]) {
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
         printf("argh!!");
@@ -18,14 +20,30 @@ int main(int argc, char *argv[]) {
     video_init();
     audio_init();
     game_init();
+
+    video_fill_screen_with_black();
+
+    a_game_by_dialog();
+
     //do while here
     game_play_mode = main_menu();
-    load_level(current_level);
+    while(game_play_mode != QUIT_GAME)
+    {
+        load_level(current_level);
 
-    game_loop();
+        game_loop();
 
+        game_play_mode = main_menu();
+    }
+
+    return cleanup_and_exit();
+}
+
+int cleanup_and_exit()
+{
     video_shutdown();
     audio_shutdown();
     SDL_Quit();
+
     return 0;
 }

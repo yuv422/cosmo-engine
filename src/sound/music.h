@@ -13,5 +13,7 @@
 void music_init();
 void music_related_229C7();
 void load_music(uint16 new_music_index);
+void stop_music();
+
 
 #endif //COSMO_ENGINE_MUSIC_H

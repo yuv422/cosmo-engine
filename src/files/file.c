@@ -111,6 +111,40 @@ uint32 file_read_to_buffer(File *file, unsigned char *buf, uint32 num_bytes) {
     return num_bytes;
 }
 
+void file_write1(uint8 byte, File *file)
+{
+    fputc(byte,file->fp);
+
+    file->pos++;
+
+    if(file->pos > file->size)
+        file->size = file->pos;
+}
+
+void file_write2(uint16 word, File *file)
+{
+    fputc((uint8)(word & 0xff), file->fp);
+    fputc((uint8)((word >> 8) & 0xff), file->fp);
+
+    file->pos += 2;
+
+    if(file->pos > file->size)
+        file->size = file->pos;
+}
+
+void file_write4(uint32 double_word, File *file)
+{
+    fputc((uint8)(double_word & 0xff), file->fp);
+    fputc((uint8)((double_word >> 8) & 0xff), file->fp);
+    fputc((uint8)((double_word >> 16) & 0xff), file->fp);
+    fputc((uint8)((double_word >> 24) & 0xff), file->fp);
+
+    file->pos += 4;
+
+    if(file->pos > file->size)
+        file->size = file->pos;
+}
+
 void file_close(File *file) {
     if(file->fp)
     {

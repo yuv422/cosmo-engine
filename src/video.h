@@ -31,5 +31,6 @@ void video_draw_fullscreen_image(uint8 *pixels);
 void video_update_palette(int palette_index, SDL_Color new_color);
 
 void fade_to_black(uint16 wait_time);
+void fade_in_from_black(uint16 wait_time);
 
 #endif //COSMO_ENGINE_VIDEO_H

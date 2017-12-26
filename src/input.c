@@ -11,6 +11,7 @@
 #include "game.h"
 #include "player.h"
 #include "status.h"
+#include "dialog.h"
 
 uint8 bomb_key_pressed = 0;
 uint8 jump_key_pressed = 0;
@@ -27,12 +28,13 @@ uint8 byte_2E17C; //modifies the left, right and jump key presses
 
 void wait_for_time_or_key(int delay_in_game_cycles)
 {
+    reset_player_control_inputs();
     for(int i=0;i < delay_in_game_cycles; i++)
     {
         SDL_Event event;
         while(SDL_PollEvent(&event))
         {
-            if (event.type == SDL_KEYDOWN)
+            if (event.type == SDL_KEYDOWN && !event.key.repeat)
             {
                 return;
             }
@@ -80,6 +82,14 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
         case SDLK_i :
             printf("player info x_pos =%d; y_pos = %d;\n", player_x_pos, player_y_pos);
             break;
+        case SDLK_F1 :
+            switch(help_menu_dialog())
+            {
+                case 0 : break;
+                case 1 : break;
+                case 2 : return QUIT;
+                default : break;
+            }
         default : break;
     }
     up_key_pressed = sdl_up_key_pressed;
@@ -161,14 +171,14 @@ void reset_player_control_inputs()
     jump_key_pressed = 0;
 }
 
-uint8 poll_for_key_press()
+SDL_Keycode poll_for_key_press()
 {
     SDL_Event event;
 
     while(SDL_PollEvent(&event))
     {
-        if (event.type == SDL_KEYDOWN)
-            return true;
+        if (event.type == SDL_KEYDOWN && !event.key.repeat)
+            return event.key.keysym.sym;
     }
-    return false;
+    return SDLK_UNKNOWN;
 }
