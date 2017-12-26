@@ -214,7 +214,7 @@ void apogee_bbs_dialog()
     fade_to_black_speed_3();
     video_fill_screen_with_black();
     uint16 x = create_text_dialog_box(1, 0x16, 0x26, "THE OFFICIAL APOGEE BBS", "Press ANY key.");
-    x =+ 3;
+    x += 3;
     display_dialog_text(x, 3, "    -----------------------");
     display_dialog_text(x, 5, "The SOFTWARE CREATIONS BBS is");
     display_dialog_text(x, 6, " the home BBS for the latest");
@@ -844,7 +844,8 @@ void game_redefine()
 
 void missing_savegame_dialog()
 {
-    //FIXME
+    uint16 x = create_text_dialog_box(5, 4, 0x14, "Can't find that", "game to restore! ");
+    wait_for_input(x + 0x11, 7);
 }
 
 void hall_of_fame_dialog()
