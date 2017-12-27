@@ -16,6 +16,7 @@
 #include "actor.h"
 #include "save.h"
 #include "fullscreen_image.h"
+#include "cartoon.h"
 
 //Data
 uint8 show_one_moment_screen_flag = 0;
@@ -23,6 +24,7 @@ uint8 byte_28BE3 = 0;
 uint8 byte_2E21C = 0;
 
 int cleanup_and_exit();
+uint16 restore_savegame_dialog();
 
 SDL_Keycode wait_for_input(int spinner_x, int spinner_y)
 {
@@ -44,11 +46,6 @@ SDL_Keycode wait_for_input(int spinner_x, int spinner_y)
         keycode = poll_for_key_press();
     }
     return keycode;
-}
-
-void display_cartoon_sequence(uint16 frame_num, uint16 x_pos, uint16 y_pos)
-{
-    //FIXME this should probably be in its own file.
 }
 
 uint16 dialog_text_extract_num(const char *text)
@@ -455,6 +452,99 @@ void main_menu_dialog()
     display_dialog_text(si, 0x14, " Q)uit Game");
 }
 
+void story_dialog()
+{
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+    uint16 x = create_text_dialog_box(1, 0x17, 0x26, "STORY", "Press ANY key.");
+    display_dialog_text(x + 1, 8, "\xfb""000");
+    display_dialog_text(x + 1, 0x14, "\xfb""002");
+    display_dialog_text(x + 0x10, 5, "Tomorrow is Cosmo's");
+    display_dialog_text(x + 0x10, 7, "birthday, and his");
+    display_dialog_text(x + 0x10, 9, "parents are taking");
+    display_dialog_text(x + 0x10, 11, "him to the one place");
+    display_dialog_text(x + 0x10, 13, "in the Milky Way");
+    display_dialog_text(x + 0x10, 15, "galaxy that all kids");
+    display_dialog_text(x + 0x10, 0x11, "would love to go to:");
+    display_dialog_text(x + 0x10, 0x13, "   Disney World!");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x16);
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+
+    x = create_text_dialog_box(1, 0x17, 0x26, "STORY", "Press ANY key.");
+    display_dialog_text(x + 3, 12, "\xfb""003");
+    display_dialog_text(x + 0x19, 12, "\xfb""004");
+    display_dialog_text(x + 3, 5, "Suddenly a blazing comet zooms");
+    display_dialog_text(x + 4, 7, "toward their ship--leaving no");
+    display_dialog_text(x + 0x10, 10, "time");
+    display_dialog_text(x + 0x11, 12, "to");
+    display_dialog_text(x + 10, 15, "change course...");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x16);
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+
+    x = create_text_dialog_box(1, 0x17, 0x26, "STORY", "Press ANY key.");
+    display_dialog_text(x + 1 + 1, 7, "\xfb""005");
+    display_dialog_text(x + 0x19, 0x14, "\xfb""006");
+    display_dialog_text(x + 15, 7, "The comet slams into");
+    display_dialog_text(x + 1, 10, "the ship and forces Cosmo's");
+    display_dialog_text(x + 1, 13, "dad to make an");
+    display_dialog_text(x + 1, 15, "emergency landing");
+    display_dialog_text(x + 1, 0x11, "on an uncharted");
+    display_dialog_text(x + 1, 0x13, "planet.");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x16);
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+
+    x = create_text_dialog_box(1, 0x17, 0x26, "STORY", "Press ANY key.");
+    display_dialog_text(x + 0x11, 9, "\xfb""007");
+    display_dialog_text(x + 1, 0x14, "\xfb""008");
+    display_dialog_text(x + 1 + 1, 5, "While Cosmo's");
+    display_dialog_text(x + 1 + 1, 7, "dad repairs");
+    display_dialog_text(x + 1 + 1, 9, "the ship,");
+    display_dialog_text(x + 11, 15, "Cosmo heads off to");
+    display_dialog_text(x + 11, 0x11, "explore and have");
+    display_dialog_text(x + 11, 0x13, "some fun.");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x16);
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+
+    x = create_text_dialog_box(1, 0x17, 0x26, "STORY", "Press ANY key.");
+    display_dialog_text(x + 3, 15, "\xfb""009");
+    display_dialog_text(x + 6, 7, "Returning an hour later,");
+    display_dialog_text(x + 0x11, 11, "Cosmo cannot find");
+    display_dialog_text(x + 0x11, 13, "his Mom or Dad.");
+    display_dialog_text(x + 0x11, 15, "Instead, he finds");
+    display_dialog_text(x + 8, 0x12, "strange foot prints...");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x16);
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+
+    x = create_text_dialog_box(1, 0x17, 0x26, "STORY", "Press ANY key.");
+    display_dialog_text(x + 0x15, 0x13, "\xfb""010");
+    display_dialog_text(x + 1 + 1, 5, "...oh no!  Has his");
+    display_dialog_text(x + 1 + 1, 7, "family been taken");
+    display_dialog_text(x + 1 + 1, 9, "away by a hungry");
+    display_dialog_text(x + 1 + 1, 11, "alien creature to");
+    display_dialog_text(x + 1 + 1, 13, "be eaten?  Cosmo");
+    display_dialog_text(x + 1 + 1, 15, "must rescue his");
+    display_dialog_text(x + 1 + 1, 0x11, "parents before");
+    display_dialog_text(x + 1 + 1, 0x13, "it's too late...!");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x16);
+}
+
+void missing_savegame_dialog()
+{
+    uint16 x = create_text_dialog_box(5, 4, 0x14, "Can't find that", "game to restore! ");
+    wait_for_input(x + 0x11, 7);
+}
+
 game_play_mode_enum main_menu() {
     set_initial_game_state();
     show_one_moment_screen_flag = 0;
@@ -474,6 +564,7 @@ game_play_mode_enum main_menu() {
                 }
             }
 
+            uint16 restore_status = 0;
             for(int return_to_title=0;!return_to_title;)
             {
                 main_menu_dialog();
@@ -493,6 +584,24 @@ game_play_mode_enum main_menu() {
                     case SDLK_SPACE :
                         stop_music();
                         return PLAY_GAME;
+
+                    case SDLK_r :
+                        restore_status = restore_savegame_dialog();
+                        if(restore_status == 1)
+                        {
+                            stop_music();
+                            return PLAY_GAME;
+                        }
+
+                        if(restore_status == 0)
+                        {
+                            missing_savegame_dialog();
+                        }
+                        break;
+
+                    case SDLK_s :
+                        story_dialog();
+                        break;
 
                     case SDLK_F11 :
                         if (cheat_mode_flag)
@@ -696,6 +805,11 @@ void power_up_module_dialog()
     }
 }
 
+void display_score_from_level()
+{
+    //FIXME
+}
+
 void display_end_of_level_score_dialog(const char *header_text, const char *footer_text)
 {
     fade_to_black_speed_3();
@@ -703,7 +817,7 @@ void display_end_of_level_score_dialog(const char *header_text, const char *foot
     uint16 x = create_text_dialog_box(6, 4, 0x1e, header_text, footer_text);
     fade_in_from_black_with_delay_3();
     wait_for_input(x + 0x1b, 8);
-//  FIXME  display_score_from_level();
+    display_score_from_level();
     fade_to_black_speed_3();
     video_fill_screen_with_black();
 }
@@ -842,12 +956,6 @@ void game_redefine()
     //FIXME
 }
 
-void missing_savegame_dialog()
-{
-    uint16 x = create_text_dialog_box(5, 4, 0x14, "Can't find that", "game to restore! ");
-    wait_for_input(x + 0x11, 7);
-}
-
 void hall_of_fame_dialog()
 {
     //FIXME
@@ -855,7 +963,47 @@ void hall_of_fame_dialog()
 
 void cosmic_hints_dialog(uint16 y_pos)
 {
-    //FIXME
+    uint16 y = y_pos - 1;
+    uint16 x = create_text_dialog_box(y_pos, 0x12, 0x26, "Cosmic Hints", "Press ANY key.");
+    display_dialog_text(x, y + 4, " * Usually jumping in the paths of");
+    display_dialog_text(x, y + 5, "   bonus objects will lead you in");
+    display_dialog_text(x, y + 6, "   the right direction.");
+    display_dialog_text(x, y + 8, " * There are many secret bonuses in");
+    display_dialog_text(x, y + 9, "   this game, such as bombing 15 of");
+    display_dialog_text(x, y + 10, "   the Eye Plants.  (Registered");
+    display_dialog_text(x, y + 11, "   players will get the full list.)");
+    display_dialog_text(x, y + 13, " * When clinging to a wall, tap the");
+    display_dialog_text(x, y + 14, "   jump key to let go and fall.  To");
+    display_dialog_text(x, y + 15, "   re-cling to the wall, push");
+    display_dialog_text(x, y + 0x10, "   yourself into the wall again.");
+    wait_for_input(x + 0x23, y + 0x11);
+    x = create_text_dialog_box(y_pos, 0x12, 0x26, "Key Definition Screen", "");
+    display_dialog_text(x, y + 4, "                     Look");
+    display_dialog_text(x, y + 5, "                      UP");
+    display_dialog_text(x, y + 7, "              Walk            Walk");
+    display_dialog_text(x, y + 8, "  Jump  Drop  LEFT            RIGHT");
+    display_dialog_text(x, y + 9, "   UP   BOMB");
+    display_dialog_text(x, y + 10, "                     \xfd""028");
+    display_dialog_text(x, y + 11, "                     Look");
+    display_dialog_text(x, y + 12, "                     DOWN");
+    display_dialog_text(x, y + 13, "              \xfd""001                 ""\xfd""023");
+    display_dialog_text(x, y + 14, "  \xfd""030      ""\xfd""037""\xfe""024000");
+    display_dialog_text(x, y + 0x11, "                     \xfd""029");
+    //FIXME need to display mapped keys here.
+//    display_dialog_text(x + 0x18, y + 7, al * ax + 0xc44);
+//    display_dialog_text(x + 0x18, y + 14, al * ax + "NULL");
+//    display_dialog_text(x + 14, y + 14, al * ax + 0xc44);
+//    display_dialog_text(x + 0x1e, y + 14, al * ax + 0xc44);
+//    display_dialog_text(x + 1 + 1, y + 15, al * ax + 0xc44);
+//    display_dialog_text(x + 8, y + 15, al * ax + 0xc44);
+    wait_for_input(x + 0x23, y + 0x11);
+    x = create_text_dialog_box(4, 11, 0x22, "During the game, you can...", "Press ANY key.");
+    display_dialog_text(x, 7, " Press 'P' to PAUSE GAME");
+    display_dialog_text(x, 8, " Press 'ESC' or 'Q' to QUIT game");
+    display_dialog_text(x, 9, " Press 'S' to toggle SOUND");
+    display_dialog_text(x, 10, " Press 'M' to toggle MUSIC");
+    display_dialog_text(x, 11, " Press 'F1' to show HELP");
+    wait_for_input(x + 0x1f, 13);
 }
 
 void malformed_savegame_dialog()

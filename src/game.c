@@ -22,6 +22,7 @@
 #include "font.h"
 #include "platforms.h"
 #include "fullscreen_image.h"
+#include "cartoon.h"
 
 #define COSMO_INTERVAL 100
 
@@ -52,6 +53,7 @@ void game_init()
     player_load_tiles();
     actor_load_tiles();
     map_load_tiles();
+    load_cartoon_images();
     font_load_tiles();
     load_sfx();
 }
