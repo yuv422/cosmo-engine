@@ -583,6 +583,9 @@ game_play_mode_enum main_menu() {
                     case SDLK_b :
                     case SDLK_SPACE :
                         stop_music();
+                        show_one_moment_screen_flag = 1;
+                        show_monster_attack_hint = 0;
+                        play_sfx(0x30);
                         return PLAY_GAME;
 
                     case SDLK_r :
@@ -633,6 +636,7 @@ game_play_mode_enum main_menu() {
 
                     case SDLK_t :
                         return_to_title = 1;
+                        i = 0;
                         break;
 
                     default : break;
@@ -805,9 +809,107 @@ void power_up_module_dialog()
     }
 }
 
+void display_clear_tile_to_gray(uint16 x, uint16 y)
+{
+    video_draw_tile(map_get_bg_tile(1999), x * TILE_WIDTH, y * TILE_HEIGHT);
+}
+
+static const char score_text_tbl[][17] = {
+        "    Not Bad!    ",
+        "    Way Cool    ",
+        "     Groovy     ",
+        "    Radical!    ",
+        "     Insane     ",
+        "     Gnarly     ",
+        "   Outrageous   ",
+        "   Incredible   ",
+        "    Awesome!    ",
+        "   Brilliant!   ",
+        "    Profound    ",
+        "    Towering    ",
+        "Rocket Scientist"
+};
+
 void display_score_from_level()
 {
-    //FIXME
+    stop_music();
+
+    if(num_stars_collected == 0)
+    {
+        fade_in_from_black_with_delay_3();
+        return;
+    }
+
+    fade_to_white(3);
+    video_fill_screen_with_black();
+    create_text_dialog_box(2, 0xe, 0x1e, "Super Star Bonus!!!!", "");
+
+    display_actor_sprite_maybe(1, 2, 8, 8, 6);
+
+    display_dialog_text(0xe, 7, "X 1000 =");
+
+    display_number(0x1b, 7, num_stars_collected * 1000);
+
+    cosmo_wait(0x32);
+    display_dialog_text(0xa, 0xc, "YOUR SCORE =  ");
+    display_number(0x1d, 0xc, score);
+
+    fade_in_from_black_with_delay_3();
+
+    cosmo_wait(0x64);
+
+    int star_counter = 0;
+    for(int i=num_stars_collected; i > 0; i--)
+    {
+        score += 1000;
+        cosmo_wait(0xf);
+
+        for(int j=0; j < 7; j++)
+        {
+            display_clear_tile_to_gray(0x17 + j, 0xc);
+        }
+        play_sfx(1);
+        display_number(0x1d, 0xc, score);
+
+        if (star_counter / 6 < 13)
+        {
+            star_counter++;
+        }
+
+        for(int j=0; j < 16; j++)
+        {
+            if(j < 7)
+            {
+                display_clear_tile_to_gray(0x16 + j, 7);
+            }
+
+            if((star_counter & 7) == 1)
+            {
+                display_clear_tile_to_gray(0xd + j, 0xe);
+
+            }
+        }
+
+        display_number(0x1b, 7, i * 1000);
+
+        video_update();
+
+        if((star_counter & 7) == 1)
+        {
+            uint8 score_text_idx = (uint8)(star_counter/6);
+            if(score_text_idx > 12)
+            {
+                score_text_idx = 12;
+            }
+
+            display_dialog_text(0xd, 0xe, score_text_tbl[score_text_idx]);
+        }
+
+        video_update();
+    }
+
+    cosmo_wait(0x190);
+    num_stars_collected = 0;
 }
 
 void display_end_of_level_score_dialog(const char *header_text, const char *footer_text)
@@ -899,8 +1001,8 @@ void savegame_dialog()
     if(keycode >= SDLK_1 && keycode <= SDLK_9)
     {
         display_char(x + 0x18, 11, keycode);
-        int tmp_num_bombs = num_bombs;
-        uint16 tmp_num_stars_collected = num_stars_collected;
+        uint16 tmp_num_bombs = num_bombs;
+        uint32 tmp_num_stars_collected = num_stars_collected;
         uint16 tmp_current_level = current_level;
         uint8 tmp_num_health_bars = num_health_bars;
         uint32 tmp_score = score;
@@ -911,7 +1013,6 @@ void savegame_dialog()
 
         health = tmp_health;
         num_bombs = tmp_num_bombs;
-        //FIXME is this needed? word_2E1D6 = 0;
         num_stars_collected = tmp_num_stars_collected;
         current_level = tmp_current_level;
         score = tmp_score;

@@ -37,4 +37,6 @@ void a_game_by_dialog();
 
 uint16 create_text_dialog_box(uint16 y_offset, uint16 height, uint16 width, const char *top_message, const char *bottom_message);
 
+int quit_game_dialog();
+
 #endif //COSMO_ENGINE_DIALOG_H

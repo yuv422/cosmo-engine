@@ -7,7 +7,6 @@
 #include <sound/sfx.h>
 #include <SDL_timer.h>
 #include "input.h"
-#include "map.h"
 #include "game.h"
 #include "player.h"
 #include "status.h"
@@ -78,7 +77,11 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             bomb_key_pressed = 1;
             break;
         case SDLK_q :
-            return QUIT;
+            if (quit_game_dialog())
+            {
+                return QUIT;
+            }
+            break;
         case SDLK_i :
             printf("player info x_pos =%d; y_pos = %d;\n", player_x_pos, player_y_pos);
             break;

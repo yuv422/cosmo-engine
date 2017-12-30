@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include <files/file.h>
+#include <sound/music.h>
 #include "fullscreen_image.h"
 #include "video.h"
 #include "game.h"
@@ -53,7 +54,7 @@ void display_fullscreen_image(uint8 image_number)
 
     if(image_number != 1 && image_number != 2)
     {
-        //FIXME do we need to call music_related_229C7() ?
+        stop_music();
     }
 
     fade_to_black_speed_3();

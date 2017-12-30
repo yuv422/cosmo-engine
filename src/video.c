@@ -249,6 +249,16 @@ void fade_to_black(uint16 wait_time)
     }
 }
 
+void fade_to_white(uint16 wait_time)
+{
+    for(int i=0;i < 16; i++)
+    {
+        cosmo_wait(wait_time);
+        set_palette_color(i, 15);
+        video_update();
+    }
+}
+
 void fade_in_from_black(uint16 wait_time)
 {
     int j=0;

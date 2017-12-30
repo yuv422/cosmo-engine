@@ -29,8 +29,7 @@
 //Data
 game_play_mode_enum game_play_mode = PLAY_GAME;
 uint32 score;
-uint16 word_2E1D6;
-uint16 num_stars_collected;
+uint32 num_stars_collected;
 uint16 demo_input_index;
 uint16 demo_input_length;
 uint8 cheats_used_flag;
@@ -65,7 +64,6 @@ void set_initial_game_state()
     num_health_bars = 3;
     current_level = 0;
     num_bombs = 0;
-    word_2E1D6 = 0;
     num_stars_collected = 0;
     demo_input_index = 0;
     demo_input_length = 0;
@@ -236,6 +234,7 @@ void game_wait()
 
 void select_next_level()
 {
+    uint32 tmp_num_stars_collected = num_stars_collected;
     if (game_play_mode == PLAY_GAME)
     {
         switch (current_level)
@@ -247,8 +246,9 @@ void select_next_level()
             case 18:
             case 22:
             case 26:
-                current_level++;
-                //NOTE fall through here.
+                display_end_of_level_score_dialog("Bonus Level Completed!!", "Press ANY key.");
+                current_level += 2;
+                break;
 
             case 3:
             case 7:
@@ -258,7 +258,8 @@ void select_next_level()
             case 23:
             case 27:
                 display_end_of_level_score_dialog("Bonus Level Completed!!", "Press ANY key.");
-                //NOTE fall through here.
+                current_level++;
+                break;
 
             case 0:
             case 4:
@@ -278,22 +279,25 @@ void select_next_level()
             case 21:
             case 25:
                 display_end_of_level_score_dialog("Section Completed!", "Press ANY key.");
-                if(num_stars_collected <= 0x18)
+                if(tmp_num_stars_collected <= 24)
                 {
-                    current_level++;
+                    current_level += 3;
                 }
                 else
                 {
                     fade_to_black(0);
                     display_fullscreen_image(3);
                     play_sfx(0x2d);
-                    if(num_stars_collected > 0x31)
+                    if(tmp_num_stars_collected > 49)
                     {
                         current_level++;
                     }
                     current_level++;
                     cosmo_wait(0x96);
                 }
+                break;
+
+            default: break;
         }
     }
     else //DEMO Mode

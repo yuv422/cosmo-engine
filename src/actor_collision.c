@@ -887,7 +887,6 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
         case 0: // 32: bonus star
             effect_add_sprite(0x17, 8, x_pos, y_pos, 0, 1);
             num_stars_collected++;
-            //FIXME is this required? // Low-level instruction of type adc     )(0002E1D6word_2E1D6)  ,   *0*
             actor->is_deactivated_flag_maybe = 1;
             play_sfx(1);
             player_add_score_for_actor(actorInfoIndex);
