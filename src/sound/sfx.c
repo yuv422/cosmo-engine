@@ -22,6 +22,7 @@ typedef struct Sfx {
 Sfx *sfxs;
 int num_sfx = 0;
 int currently_playing_priority=0;
+uint8 sfx_on_flag = 1;
 
 int get_num_sfx(const char *filename)
 {

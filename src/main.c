@@ -9,6 +9,7 @@
 #include "dialog.h"
 #include "video.h"
 #include "status.h"
+#include "config.h"
 
 int cleanup_and_exit();
 
@@ -41,6 +42,7 @@ int main(int argc, char *argv[]) {
 
 int cleanup_and_exit()
 {
+    write_config_file("COSMO1.CFG");
     video_shutdown();
     audio_shutdown();
     SDL_Quit();

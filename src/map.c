@@ -103,7 +103,7 @@ void load_level(int level_number)
     uint16 level_flags = file_read2(&map_file);
     file_close(&map_file);
 
-    music_related_229C7();
+    stop_music();
     rain_flag = (uint8)(level_flags & 0x20);
     uint16 backdrop_index = (uint16)(level_flags & 0x1f);
     background_x_scroll_flag = (uint8)(level_flags & 0x40);

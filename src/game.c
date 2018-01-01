@@ -2,7 +2,6 @@
 // Created by efry on 25/10/2017.
 //
 
-#include <MacTypes.h>
 #include <SDL_timer.h>
 #include <SDL_events.h>
 #include <sound/sfx.h>

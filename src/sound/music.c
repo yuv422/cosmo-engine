@@ -20,10 +20,7 @@ uint32 music_data_length;
 uint32 adlib_instruction_position = 0;
 uint32 delay_counter = 0;
 
-void music_related_229C7()
-{
-
-}
+uint8 music_on_flag = 1;
 
 //Get delay between adlib commands. Measured in audio samples.
 uint32 get_delay(uint32 instruction_num)
@@ -95,7 +92,7 @@ void load_music(uint16 new_music_index)
         return;
     }
 
-    if(music_index!= -1)
+    if(music_index != -1)
     {
         Mix_HookMusic(NULL, NULL);
         free(music_data);

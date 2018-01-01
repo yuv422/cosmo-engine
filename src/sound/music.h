@@ -8,10 +8,9 @@
 #include "defines.h"
 
 //Data
-
+extern uint8 music_on_flag;
 
 void music_init();
-void music_related_229C7();
 void load_music(uint16 new_music_index);
 void stop_music();
 
