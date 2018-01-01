@@ -1,0 +1,23 @@
+# Specify version format
+version: "{build}"
+
+# Operating system (build VM template)
+os: Visual Studio 2015
+
+# build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
+platform: 
+  - x64 
+
+configuration:
+  - Debug
+
+# clone directory
+clone_folder: C:\projects\cosmo-engine
+
+# scripts to run before build
+before_build:
+  - cmd: cd C:\projects\cosmo-engine
+  - cmd: md build
+  - cmd: cd build
+  - cmd: cmake -G "Visual Studio 14 2015 Win64" ..
+
