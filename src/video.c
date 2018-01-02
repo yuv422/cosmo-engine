@@ -100,7 +100,7 @@ void video_update()
 
 void video_draw_tile(Tile *tile, uint16 x, uint16 y)
 {
-    uint8 *pixel = &surface->pixels[x + y * SCREEN_WIDTH];
+    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
     uint8 *tile_pixel = tile->pixels;
     if(tile->type == SOLID)
     {
@@ -131,7 +131,7 @@ void video_draw_tile(Tile *tile, uint16 x, uint16 y)
 
 void video_draw_tile_solid_white(Tile *tile, uint16 x, uint16 y)
 {
-    uint8 *pixel = &surface->pixels[x + y * SCREEN_WIDTH];
+    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
     uint8 *tile_pixel = tile->pixels;
     if(tile->type == SOLID)
     {
@@ -199,7 +199,7 @@ void video_draw_tile_with_clip_rect(Tile *tile, uint16 x, uint16 y, uint16 clip_
         h -= ((y + h) - (clip_y + clip_h));
     }
 
-    uint8 *pixel = &surface->pixels[x + y * SCREEN_WIDTH];
+    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
     uint8 *tile_pixel = &tile->pixels[tx + ty * TILE_WIDTH];
         for(int i=0;i<h;i++)
         {
@@ -217,7 +217,7 @@ void video_draw_tile_with_clip_rect(Tile *tile, uint16 x, uint16 y, uint16 clip_
 
 void video_draw_tile_flipped(Tile *tile, uint16 x, uint16 y)
 {
-    uint8 *pixel = &surface->pixels[x + (y+TILE_HEIGHT-1) * SCREEN_WIDTH];
+    uint8 *pixel = (uint8 *)surface->pixels + x + (y+TILE_HEIGHT-1) * SCREEN_WIDTH;
     uint8 *tile_pixel = tile->pixels;
     for(int i=0;i<TILE_HEIGHT;i++)
     {
