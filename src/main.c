@@ -4,12 +4,14 @@
 
 #include <SDL.h>
 #include <sound/audio.h>
+#include <sound/music.h>
 #include "game.h"
 #include "map.h"
 #include "dialog.h"
 #include "video.h"
 #include "status.h"
 #include "config.h"
+#include "high_scores.h"
 
 int cleanup_and_exit();
 
@@ -33,7 +35,11 @@ int main(int argc, char *argv[]) {
         load_level(current_level);
 
         game_loop();
-
+        stop_music();
+        if(game_play_mode == PLAY_GAME)
+        {
+            show_high_scores();
+        }
         game_play_mode = main_menu();
     }
 

@@ -1170,11 +1170,37 @@ uint16 help_menu_dialog()
 
 void a_game_by_dialog()
 {
-    uint16 si = create_text_dialog_box(4, 13, 0x1a, "A game by", "Copyright (c) 1992");
-    display_dialog_text(si, 7, "     Todd J Replogle");
-    display_dialog_text(si + 11, 9, "and");
-    display_dialog_text(si, 11, "\xfd""027   Stephen A Hornback""\xfd""004");
-    display_dialog_text(si, 13, "      Version 1.20");
+    uint16 x = create_text_dialog_box(4, 13, 0x1a, "A game by", "Copyright (c) 1992");
+    display_dialog_text(x, 7, "     Todd J Replogle");
+    display_dialog_text(x + 11, 9, "and");
+    display_dialog_text(x, 11, "\xfd""027   Stephen A Hornback""\xfd""004");
+    display_dialog_text(x, 13, "      Version 1.20");
     wait_for_time_or_key(0x2bc);
     fade_to_black_speed_3();
+}
+
+void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length)
+{
+    memset(name_buffer, 0, buf_length);
+    uint16 x = create_text_dialog_box(5, 7, 0x24, "You made it into the hall of fame!", "Press ESC to quit.");
+    display_dialog_text(x, 8, "Enter your name:");
+    fade_in_from_black_with_delay_3();
+    play_sfx(0x34);
+
+    wait_for_input(x + 16, 8);
+
+    strcpy(name_buffer, "test");
+}
+
+void display_high_score_dialog()
+{
+    uint16 x = create_text_dialog_box(2, 0x11, 0x1e, "Hall of Fame", "any other key to exit.");
+
+    //FIXME show high scores here.
+
+    display_dialog_text(x + 3, 0x10, "Press 'F10' to erase or");
+
+    //FIXME conditionally fade in here.
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x1b, 0x11);
 }

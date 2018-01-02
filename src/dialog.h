@@ -39,4 +39,8 @@ uint16 create_text_dialog_box(uint16 y_offset, uint16 height, uint16 width, cons
 
 int quit_game_dialog();
 
+void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length);
+
+void display_high_score_dialog();
+
 #endif //COSMO_ENGINE_DIALOG_H

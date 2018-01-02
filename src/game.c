@@ -22,6 +22,8 @@
 #include "platforms.h"
 #include "fullscreen_image.h"
 #include "cartoon.h"
+#include "high_scores.h"
+#include "config.h"
 
 #define COSMO_INTERVAL 100
 
@@ -46,6 +48,8 @@ void game_init()
     display_fullscreen_image(0);
     wait_for_time_or_key(0xc8);
 
+    load_config_file("COSMO1.CFG");
+
     status_load_tiles();
     tile_attr_load();
     player_load_tiles();
@@ -54,6 +58,7 @@ void game_init()
     load_cartoon_images();
     font_load_tiles();
     load_sfx();
+    clear_high_score_table();
 }
 
 void set_initial_game_state()
