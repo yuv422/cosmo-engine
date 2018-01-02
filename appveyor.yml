@@ -23,7 +23,7 @@ install:
         Start-FileDownload https://libsdl.org/release/SDL2-devel-$SDL_VERSION-VC.zip
         7z x SDL2-devel-$SDL_VERSION-VC.zip -aoa -oC:\sdl_root\
       }
-      $env:SDLDIR = $SDL2DIR
+      $env:SDL2DIR = $SDL2DIR
   # SDL2_mixer
   - ps: |
       $SDL_MIXER_VERSION = "2.0.2"
@@ -32,7 +32,7 @@ install:
         Start-FileDownload https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-$SDL_MIXER_VERSION-VC.zip
         7z x SDL2_mixer-devel-$SDL_MIXER_VERSION-VC.zip -aoa -oC:\sdl_root\
       }
-      $env:SDLMIXERDIR = $SDL2MIXERDIR
+      $env:SDL2MIXERDIR = $SDL2MIXERDIR
 
 # scripts to run before build
 before_build:
