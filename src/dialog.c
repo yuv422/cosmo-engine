@@ -17,6 +17,7 @@
 #include "save.h"
 #include "fullscreen_image.h"
 #include "cartoon.h"
+#include "high_scores.h"
 
 //Data
 uint8 show_one_moment_screen_flag = 0;
@@ -1194,13 +1195,31 @@ void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length)
 
 void display_high_score_dialog()
 {
-    uint16 x = create_text_dialog_box(2, 0x11, 0x1e, "Hall of Fame", "any other key to exit.");
+    for(;;)
+    {
+        uint16 x = create_text_dialog_box(2, 0x11, 0x1e, "Hall of Fame", "any other key to exit.");
 
-    //FIXME show high scores here.
+        //FIXME show high scores here.
+        for(int i = 0; i < NUM_HIGH_SCORE_ENTRIES; i++)
+        {
+            uint16 y = i + 5;
+            HighScore high_score = get_high_score(i);
+            display_number(x + 2, y, i);
+            display_dialog_text(x + 3, y, ".");
+            display_number(x + 11, y, high_score.score);
+            display_dialog_text(x + 13, y, high_score.name);
+        }
 
-    display_dialog_text(x + 3, 0x10, "Press 'F10' to erase or");
+        display_dialog_text(x + 3, 0x10, "Press 'F10' to erase or");
 
-    //FIXME conditionally fade in here.
-    fade_in_from_black_with_delay_3();
-    wait_for_input(x + 0x1b, 0x11);
+        //FIXME conditionally fade in here.
+        fade_in_from_black_with_delay_3();
+        SDL_Keycode  keycode = wait_for_input(x + 0x1b, 0x11);
+        if (keycode != SDLK_F10)
+        {
+            break;
+        }
+
+        x = create_text_dialog_box(5, 4, 0x1c, "Are you sure you want to", "ERASE High Scores?");
+    }
 }

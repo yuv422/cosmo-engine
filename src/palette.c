@@ -112,7 +112,7 @@ void update_palette_anim()
                 set_palette_color(5, 7);
                 return;
             }
-            if (rand() % 0xffff >= 0x5dc)
+            if (cosmo_rand() >= 0x5dc)
             {
                 set_palette_color(5, 0);
                 next_pal_colour = 0;

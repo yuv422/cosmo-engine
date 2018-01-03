@@ -282,7 +282,7 @@ void handle_player_input_maybe()
         {
             tile_cell = map_get_tile_cell(player_x_pos - 1, player_y_pos - 2);
         }
-        if((tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_SLIPPERY) != 0 & (tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_CAN_GRAB_WALL) != 0)
+        if((tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_SLIPPERY) != 0 && (tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_CAN_GRAB_WALL) != 0)
         {
             if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED)
             {
@@ -1119,7 +1119,7 @@ void player_load_tiles()
     printf("Loading %d, player tile info records.\n", num_tile_info_records);
 }
 
-void display_player_sprite_mode_6(char frame_num, int x_pos, int y_pos)
+void display_player_sprite_mode_6(uint8 frame_num, int x_pos, int y_pos)
 {
     TileInfo *info = &player_sprites[0].frames[frame_num];
     Tile *tile = &player_tiles[info->tile_num];
@@ -1134,7 +1134,7 @@ void display_player_sprite_mode_6(char frame_num, int x_pos, int y_pos)
     }
 }
 
-void display_player_sprite(char frame_num, int x_pos, int y_pos, int tile_display_func_index)
+void display_player_sprite(uint8 frame_num, int x_pos, int y_pos, int tile_display_func_index)
 {
     if(tile_display_func_index == 6)
     {
@@ -1252,7 +1252,7 @@ int player_update_sprite()
             {
                 if (player_is_being_pushed_flag != 0)
                 {
-                    display_player_sprite(player_push_frame_num, player_x_pos, player_y_pos, 0);
+                    display_player_sprite((uint8)player_push_frame_num, player_x_pos, player_y_pos, 0);
                 }
                 else
                 {
