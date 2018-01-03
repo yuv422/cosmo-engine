@@ -9,7 +9,7 @@ platform:
   - x64 
 
 configuration:
-  - Debug
+  - Release
 
 # clone directory
 clone_folder: C:\projects\cosmo-engine
@@ -42,7 +42,7 @@ before_build:
   - cmd: cmake -G "Visual Studio 14 2015 Win64" ..
 
 after_build:
-  - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Debug\cosmo_engine.exe c:\sdl_root\*
+  - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Release\cosmo_engine.exe c:\sdl_root\*
 
 artifacts:
   - path: cosmo-engine.zip
