@@ -42,8 +42,8 @@ before_build:
   - cmd: cmake -G "Visual Studio 14 2015 Win64" ..
 
 after_build:
-  - cmd: 7z a cosmo-engine.zip c:\projects\cosmo-engine\build\Debug\cosmo_engine.exe c:\sdl_root\*
+  - cmd: 7z a c:\projects\cosmo-engine.zip c:\projects\cosmo-engine\build\Debug\cosmo_engine.exe c:\sdl_root\*
 
 artifacts:
-  - path: cosmo-engine.zip
+  - path: c:\projects\cosmo-engine.zip
     name: cosmo_engine
