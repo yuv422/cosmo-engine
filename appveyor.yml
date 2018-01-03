@@ -41,3 +41,7 @@ before_build:
   - cmd: cd build
   - cmd: cmake -G "Visual Studio 14 2015 Win64" ..
 
+artifacts:
+  - path: build
+    name: cosmo_engine
+    type: zip
