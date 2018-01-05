@@ -25,7 +25,7 @@ uint8 music_on_flag = 1;
 //Get delay between adlib commands. Measured in audio samples.
 uint32 get_delay(uint32 instruction_num)
 {
-    return (AUDIO_SAMPLE_RATE / MUSIC_INSTRUCTION_RATE) * (uint16)(music_data[instruction_num*ADLIB_OP_SIZE+2] + (music_data[instruction_num*ADLIB_OP_SIZE+3]<<8));
+    return (AUDIO_SAMPLE_RATE / MUSIC_INSTRUCTION_RATE) * (uint32)((uint16)music_data[instruction_num*ADLIB_OP_SIZE+2] + ((uint16)music_data[instruction_num*ADLIB_OP_SIZE+3] << 8));
 }
 
 void music_player_function(void *udata, Uint8 *stream, int len)
