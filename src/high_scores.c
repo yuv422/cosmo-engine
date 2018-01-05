@@ -32,6 +32,11 @@ HighScore get_high_score(uint8 position)
 
 void add_high_score_with_name(uint32 new_score, const char *name)
 {
+    if (new_score == 0)
+    {
+        return;
+    }
+
     for(int i = 0; i < NUM_HIGH_SCORE_ENTRIES; i++)
     {
         if(new_score >= high_scores[i].score)
@@ -67,5 +72,5 @@ void show_high_scores() {
         add_high_score_with_name(score, name);
     }
 
-    display_high_score_dialog();
+    display_high_score_dialog(true);
 }

@@ -629,6 +629,12 @@ game_play_mode_enum main_menu() {
                     case SDLK_d :
                         return PLAY_DEMO;
 
+                    case SDLK_h :
+                        fade_to_black_speed_3();
+                        video_fill_screen_with_black();
+                        display_high_score_dialog(true);
+                        break;
+
                     case SDLK_c :
                         display_fullscreen_image(2);
                         while(poll_for_key_press()==SDLK_UNKNOWN)
@@ -1058,11 +1064,6 @@ void game_redefine()
     //FIXME
 }
 
-void hall_of_fame_dialog()
-{
-    //FIXME
-}
-
 void cosmic_hints_dialog(uint16 y_pos)
 {
     uint16 y = y_pos - 1;
@@ -1151,7 +1152,7 @@ uint16 help_menu_dialog()
                 return 0;
 
             case SDLK_v:
-                hall_of_fame_dialog();
+                display_high_score_dialog(false);
                 return 0;
 
             case SDLK_q:
@@ -1193,7 +1194,7 @@ void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length)
     strcpy(name_buffer, "test");
 }
 
-void display_high_score_dialog()
+void display_high_score_dialog(bool use_fading)
 {
     for(;;)
     {
@@ -1212,8 +1213,10 @@ void display_high_score_dialog()
 
         display_dialog_text(x + 3, 0x10, "Press 'F10' to erase or");
 
-        //FIXME conditionally fade in here.
-        fade_in_from_black_with_delay_3();
+        if(use_fading)
+        {
+            fade_in_from_black_with_delay_3();
+        }
         SDL_Keycode  keycode = wait_for_input(x + 0x1b, 0x11);
         if (keycode != SDLK_F10)
         {
@@ -1221,5 +1224,16 @@ void display_high_score_dialog()
         }
 
         x = create_text_dialog_box(5, 4, 0x1c, "Are you sure you want to", "ERASE High Scores?");
+        keycode = wait_for_input(x + 0x16, 7);
+        if (keycode == SDLK_y)
+        {
+            clear_high_score_table();
+        }
+
+        if(use_fading)
+        {
+            fade_to_black_speed_3();
+            video_fill_screen_with_black();
+        }
     }
 }

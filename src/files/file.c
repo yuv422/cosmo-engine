@@ -14,6 +14,11 @@ uint32 calculate_filesize(FILE *fp) {
     return file_length;
 }
 
+uint32 file_get_current_position(File *file)
+{
+    return file ? file->pos : 0;
+}
+
 bool file_open(const char *filename, const char *mode, File *file) {
     file->fp = fopen(filename,mode);
 

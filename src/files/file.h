@@ -19,6 +19,8 @@ typedef struct {
 bool file_open(const char *filename, const char *mode, File *file); //FIXME is bool c99?
 bool file_open_at_offset(const char *filename, const char *mode, File *file, uint32 offset, uint32 size); //FIXME is bool c99?
 uint32 file_get_filesize(File *file);
+uint32 file_get_current_position(File *file);
+
 void file_seek(File *file, uint32 new_position);
 uint8 file_read1(File *file);
 uint16 file_read2(File *file);

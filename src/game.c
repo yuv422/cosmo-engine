@@ -58,7 +58,6 @@ void game_init()
     load_cartoon_images();
     font_load_tiles();
     load_sfx();
-    clear_high_score_table();
 }
 
 void set_initial_game_state()

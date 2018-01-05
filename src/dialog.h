@@ -41,6 +41,6 @@ int quit_game_dialog();
 
 void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length);
 
-void display_high_score_dialog();
+void display_high_score_dialog(bool use_fading);
 
 #endif //COSMO_ENGINE_DIALOG_H
