@@ -70,10 +70,16 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             num_bombs++;
             display_num_bombs_left();
             break;
+        case SDLK_m :
+            music_toggle_dialog();
+            break;
         case SDLK_n :
             finished_level_flag_maybe = 1; //FIXME remove. only needed for testing
             break;
         case SDLK_s :
+            sound_toggle_dialog();
+            break;
+        case SDLK_z :
             bomb_key_pressed = 1;
             break;
         case SDLK_q :

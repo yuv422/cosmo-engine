@@ -155,7 +155,6 @@ void load_level(int level_number)
     write_savegame_file('T');
     load_music(music_index);
 
-
     //I Don't think this will be needed.
 
 //    if (byte_32FEA == 0) {

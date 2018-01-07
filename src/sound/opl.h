@@ -195,7 +195,7 @@ void change_feedback(Bitu chanbase, op_type* op_pt);
 // general functions
 void adlib_init(Bit32u samplerate);
 void adlib_write(Bitu idx, Bit8u val);
-void adlib_getsample(Bit16s* sndptr, Bits numsamples);
+void adlib_getsample(Bit16s* sndptr, Bits numsamples, Bit8u is_stereo_output);
 
 Bitu adlib_reg_read(Bitu port);
 void adlib_write_index(Bitu port, Bit8u val);

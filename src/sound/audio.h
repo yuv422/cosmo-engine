@@ -4,7 +4,10 @@
 #ifndef COSMO_ENGINE_AUDIO_H
 #define COSMO_ENGINE_AUDIO_H
 
-#define AUDIO_SAMPLE_RATE 22050
+#include <defines.h>
+
+extern int audio_sample_rate;
+extern int audio_num_channels;
 
 void audio_init();
 void audio_shutdown();

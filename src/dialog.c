@@ -607,6 +607,10 @@ game_play_mode_enum main_menu() {
                         story_dialog();
                         break;
 
+                    case SDLK_g :
+                        game_redefine();
+                        break;
+
                     case SDLK_F11 :
                         if (cheat_mode_flag)
                         {
@@ -1061,7 +1065,35 @@ uint16 restore_savegame_dialog()
 
 void game_redefine()
 {
-    //FIXME
+    uint16 si = create_text_dialog_box(4, 0xb, 0x16, "Game Redefine", "Press ESC to quit.");
+    display_dialog_text(si, 7,  " K)eyboard redefine");
+    display_dialog_text(si, 8,  " J)oystick redefine");
+    display_dialog_text(si, 9,  " S)ound toggle");
+    display_dialog_text(si, 10, " T)est sound");
+    display_dialog_text(si, 11, " M)usic toggle");
+
+    SDL_Keycode key = wait_for_input(0x1d, 0xd);
+
+    switch (key)
+    {
+        //FIXME wireup functions.
+
+        case SDLK_k :
+            //FIXME keyboard_config()
+            break;
+        case SDLK_j :
+            break;
+        case SDLK_s :
+            sound_toggle_dialog();
+            break;
+        case SDLK_t :
+            break;
+        case SDLK_m :
+            music_toggle_dialog();
+            break;
+        default :
+            break;
+    }
 }
 
 void cosmic_hints_dialog(uint16 y_pos)
@@ -1236,4 +1268,40 @@ void display_high_score_dialog(bool use_fading)
             video_fill_screen_with_black();
         }
     }
+}
+
+void sound_toggle_dialog()
+{
+    uint16 x;
+    if(sfx_on_flag)
+    {
+        sfx_on_flag = 0;
+        x = create_text_dialog_box(2, 4, 0x18, "Sound Toggle", "The sound is now OFF!");
+    }
+    else
+    {
+        sfx_on_flag = 1;
+        x = create_text_dialog_box(2, 4, 0x18, "Sound Toggle", "The sound is now ON!");
+    }
+
+    wait_for_input(x + 0x15, 4);
+}
+
+void music_toggle_dialog()
+{
+    uint16 x;
+    if(music_on_flag)
+    {
+        music_on_flag = 0;
+        x = create_text_dialog_box(2, 4, 0x18, "Music Toggle", "The music is now OFF!");
+        stop_music();
+    }
+    else
+    {
+        music_on_flag = 1;
+        x = create_text_dialog_box(2, 4, 0x18, "Music Toggle", "The music is now ON!");
+        play_music();
+    }
+
+    wait_for_input(x + 0x15, 4);
 }

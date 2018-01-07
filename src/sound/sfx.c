@@ -48,10 +48,10 @@ int get_num_samples(File *file, int offset, int index, int total)
 
 Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
 {
-    int sample_length = AUDIO_SAMPLE_RATE / SFX_SAMPLE_RATE;
+    int sample_length = (audio_sample_rate / SFX_SAMPLE_RATE);
     Mix_Chunk *chunk = (Mix_Chunk *)malloc(sizeof(Mix_Chunk));
-    chunk->alen = (Uint32)(num_samples * sample_length * 2);
-    chunk->abuf = (Uint8 *)malloc(num_samples*sample_length*2);
+    chunk->alen = (Uint32)(num_samples * sample_length * audio_num_channels * 2);
+    chunk->abuf = (Uint8 *)malloc(chunk->alen);
     chunk->allocated = 0;
     chunk->volume = 128;
 
@@ -65,12 +65,16 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
         if (sample)
         {
             float freq = PC_PIT_RATE / (float)sample;
-            int half_cycle_length = (int)(AUDIO_SAMPLE_RATE / (freq * 2));
+            int half_cycle_length = (int)(audio_sample_rate / (freq * 2));
             //printf("sample %d, freq=%f, half_cycle_len = %d\n", i, freq, half_cycle_length);
             sint16 beepWaveVal = WAVE_AMPLITUDE_VALUE;
             uint16 beepHalfCycleCounter = 0;
             for (int sampleCounter = 0; sampleCounter < sample_length; sampleCounter++) {
-                wave_data[i*sample_length+sampleCounter] = beepWaveVal;
+                wave_data[(i*sample_length+sampleCounter)*audio_num_channels] = beepWaveVal;
+                if(audio_num_channels == 2)
+                {
+                    wave_data[(i*sample_length+sampleCounter)*audio_num_channels + 1] = beepWaveVal;
+                }
                 beepHalfCycleCounter++;
                 if (beepHalfCycleCounter >= half_cycle_length) { //FIXME need to smooth this square wave a bit.
                     beepHalfCycleCounter %= half_cycle_length;
@@ -80,7 +84,7 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
         }
         else
         {
-            memset(&wave_data[i*sample_length], 0, sample_length*2); //silence
+            memset(&wave_data[i*sample_length], 0, sample_length * audio_num_channels * 2); //silence
         }
     }
 

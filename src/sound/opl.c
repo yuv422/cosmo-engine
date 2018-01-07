@@ -949,7 +949,7 @@ static void OPL_INLINE clipit16(Bit32s ival, Bit16s* outval) {
 	outbufl[i] += chanval;
 #endif
 
-void adlib_getsample(Bit16s* sndptr, Bits numsamples) {
+void adlib_getsample(Bit16s* sndptr, Bits numsamples, Bit8u is_stereo_output) {
 	Bits i, endsamples;
 	op_type* cptr;
 
@@ -1453,8 +1453,19 @@ void adlib_getsample(Bit16s* sndptr, Bits numsamples) {
 		}
 #else
 		// convert to 16bit samples
-		for (i=0;i<endsamples;i++)
-			clipit16(outbufl[i],sndptr++);
+        if(is_stereo_output)
+        {
+            for (i=0;i<endsamples;i++)
+            {
+                clipit16(outbufl[i],sndptr++);
+                clipit16(outbufl[i],sndptr++);
+            }
+        }
+        else
+        {
+            for (i=0;i<endsamples;i++)
+                clipit16(outbufl[i],sndptr++);
+        }
 #endif
 
 	}
