@@ -1232,12 +1232,11 @@ void display_high_score_dialog(bool use_fading)
     {
         uint16 x = create_text_dialog_box(2, 0x11, 0x1e, "Hall of Fame", "any other key to exit.");
 
-        //FIXME show high scores here.
         for(int i = 0; i < NUM_HIGH_SCORE_ENTRIES; i++)
         {
             uint16 y = i + 5;
             HighScore high_score = get_high_score(i);
-            display_number(x + 2, y, i);
+            display_number(x + 2, y, i + 1);
             display_dialog_text(x + 3, y, ".");
             display_number(x + 11, y, high_score.score);
             display_dialog_text(x + 13, y, high_score.name);
