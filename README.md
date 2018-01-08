@@ -1,5 +1,6 @@
 Cosmo-Engine
 ============
+Windows: [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/yuv422/cosmo-engine?branch=master&svg=true)](https://ci.appveyor.com/project/yuv422/cosmo-engine)
 
 A new game engine for playing [Cosmo's Cosmic Adventure][1].
 ![Cosmo Engine](https://github.com/yuv422/cosmo-engine/raw/master/img/cosmo-engine.png "Cosmo's Cosmic Adventure")
