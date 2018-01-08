@@ -6,7 +6,7 @@ os: Visual Studio 2015
 
 # build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
 platform: 
-  - x64 
+  - x86
 
 configuration:
   - Release
@@ -39,10 +39,10 @@ before_build:
   - cmd: cd C:\projects\cosmo-engine
   - cmd: md build
   - cmd: cd build
-  - cmd: cmake -G "Visual Studio 14 2015 Win64" ..
+  - cmd: cmake -G "Visual Studio 14 2015" ..
 
 after_build:
-  - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Release\cosmo_engine.exe c:\sdl_root\*
+  - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Release\cosmo_engine.exe c:\sdl_root\SDL2_mixer-2.0.2\lib\x86\*.dll c:\sdl_root\SDL2-2.0.7\lib\x86\*.dll
 
 artifacts:
   - path: cosmo-engine.zip

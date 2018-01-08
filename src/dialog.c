@@ -1235,7 +1235,7 @@ void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length)
         {
             if(i < buf_length - 1)
             {
-                name_buffer[i] = (char)key;
+                name_buffer[i] =(char)toupper(key);
                 display_char(x + i + 16, 8, (char)key);
                 i++;
             }

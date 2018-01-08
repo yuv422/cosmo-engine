@@ -129,13 +129,16 @@ void load_sfx()
 
 void play_sfx(int sfx_number)
 {
-    sfx_number--;
-    if(Mix_Playing(0))
+    if(sfx_on_flag)
     {
-        if(sfxs[sfx_number].priority < currently_playing_priority)
-            return;
-    }
+        sfx_number--;
+        if(Mix_Playing(0))
+        {
+            if(sfxs[sfx_number].priority < currently_playing_priority)
+                return;
+        }
 
-    currently_playing_priority = sfxs[sfx_number].priority;
-    Mix_PlayChannel(0, sfxs[sfx_number].sample, 0);
+        currently_playing_priority = sfxs[sfx_number].priority;
+        Mix_PlayChannel(0, sfxs[sfx_number].sample, 0);
+    }
 }

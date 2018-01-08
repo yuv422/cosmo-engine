@@ -16,9 +16,12 @@ HighScore high_scores[NUM_HIGH_SCORE_ENTRIES];
 
 bool is_high_score(uint32 new_score)
 {
-    for(int i = 0; i < NUM_HIGH_SCORE_ENTRIES; i++) {
-        if (new_score >= high_scores[i].score) {
-            return true;
+    if(new_score != 0)
+    {
+        for(int i = 0; i < NUM_HIGH_SCORE_ENTRIES; i++) {
+            if (new_score >= high_scores[i].score) {
+                return true;
+            }
         }
     }
     return false;
