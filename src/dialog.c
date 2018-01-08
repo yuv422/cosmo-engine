@@ -27,13 +27,13 @@ uint8 byte_2E21C = 0;
 int cleanup_and_exit();
 uint16 restore_savegame_dialog();
 
-SDL_Keycode wait_for_input(int spinner_x, int spinner_y)
+SDL_Keycode wait_for_input_with_repeat(int spinner_x, int spinner_y, bool allow_key_repeat)
 {
     video_update();
     reset_player_control_inputs();
 
     uint16 spinner_idx = 0;
-    SDL_Keycode keycode = poll_for_key_press();
+    SDL_Keycode keycode = poll_for_key_press(allow_key_repeat);
     while(keycode == SDLK_UNKNOWN)
     {
         //Draw spinning cursor
@@ -44,9 +44,14 @@ SDL_Keycode wait_for_input(int spinner_x, int spinner_y)
         else
             spinner_idx++;
         cosmo_wait(5);
-        keycode = poll_for_key_press();
+        keycode = poll_for_key_press(allow_key_repeat);
     }
     return keycode;
+}
+
+SDL_Keycode wait_for_input(int spinner_x, int spinner_y)
+{
+    return wait_for_input_with_repeat(spinner_x, spinner_y, false);
 }
 
 uint16 dialog_text_extract_num(const char *text)
@@ -554,7 +559,7 @@ game_play_mode_enum main_menu() {
 
     for(int i=0;;i+=3)
     {
-        SDL_Keycode key = poll_for_key_press();
+        SDL_Keycode key = poll_for_key_press(false);
         if(key != SDLK_UNKNOWN)
         {
             if (key == SDLK_q || key == SDLK_ESCAPE)
@@ -641,7 +646,7 @@ game_play_mode_enum main_menu() {
 
                     case SDLK_c :
                         display_fullscreen_image(2);
-                        while(poll_for_key_press()==SDLK_UNKNOWN)
+                        while(poll_for_key_press(false)==SDLK_UNKNOWN)
                         {}
                         break;
 
@@ -1221,9 +1226,38 @@ void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length)
     fade_in_from_black_with_delay_3();
     play_sfx(0x34);
 
-    wait_for_input(x + 16, 8);
+    int i = 0;
+    for(; ; )
+    {
+        SDL_Keycode key = wait_for_input_with_repeat(x + i + 16, 8, true);
+        display_clear_tile_to_gray(x + i + 16, 8);
+        if((key >= SDLK_a && key <= SDLK_z) || key == SDLK_SPACE)
+        {
+            if(i < buf_length - 1)
+            {
+                name_buffer[i] = (char)key;
+                display_char(x + i + 16, 8, (char)key);
+                i++;
+            }
+        }
+        if(key == SDLK_ESCAPE)
+        {
+            i = 0;
+            break;
+        }
+        if(key == SDLK_RETURN)
+        {
+            break;
+        }
+        if(i > 0 && (key == SDLK_BACKSPACE || key == SDLK_DELETE))
+        {
+            i--;
+            name_buffer[i] = ' ';
+            display_clear_tile_to_gray(x + i + 16, 8);
+        }
+    }
 
-    strcpy(name_buffer, "test");
+    name_buffer[i] = '\0';
 }
 
 void display_high_score_dialog(bool use_fading)

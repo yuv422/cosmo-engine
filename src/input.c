@@ -180,13 +180,13 @@ void reset_player_control_inputs()
     jump_key_pressed = 0;
 }
 
-SDL_Keycode poll_for_key_press()
+SDL_Keycode poll_for_key_press(bool allow_key_repeat)
 {
     SDL_Event event;
 
     while(SDL_PollEvent(&event))
     {
-        if (event.type == SDL_KEYDOWN && !event.key.repeat)
+        if (event.type == SDL_KEYDOWN && (allow_key_repeat || !event.key.repeat))
             return event.key.keysym.sym;
     }
     return SDLK_UNKNOWN;
