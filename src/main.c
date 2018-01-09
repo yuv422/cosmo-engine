@@ -12,6 +12,7 @@
 #include "status.h"
 #include "config.h"
 #include "high_scores.h"
+#include "demo.h"
 
 int cleanup_and_exit();
 
@@ -33,6 +34,11 @@ int main(int argc, char *argv[]) {
     while(game_play_mode != QUIT_GAME)
     {
         load_level(current_level);
+
+        if(game_play_mode == PLAY_DEMO)
+        {
+            load_demo();
+        }
 
         game_loop();
         stop_music();

@@ -31,8 +31,6 @@
 game_play_mode_enum game_play_mode = PLAY_GAME;
 uint32 score;
 uint32 num_stars_collected;
-uint16 demo_input_index;
-uint16 demo_input_length;
 uint8 cheats_used_flag;
 uint8 knows_about_powerups_flag;
 uint8 finished_game_flag_maybe = 0;
@@ -68,8 +66,6 @@ void set_initial_game_state()
     current_level = 0;
     num_bombs = 0;
     num_stars_collected = 0;
-    demo_input_index = 0;
-    demo_input_length = 0;
     cheats_used_flag = 0;
     has_had_bomb_flag = 0;
     knows_about_powerups_flag = 0;

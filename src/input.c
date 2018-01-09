@@ -11,6 +11,7 @@
 #include "player.h"
 #include "status.h"
 #include "dialog.h"
+#include "demo.h"
 
 uint8 bomb_key_pressed = 0;
 uint8 jump_key_pressed = 0;
@@ -49,7 +50,17 @@ void cosmo_wait(int delay)
 
 input_state_enum handle_demo_input()
 {
+    if(poll_for_key_press(false) != SDLK_UNKNOWN)
+    {
+        return QUIT;
+    }
 
+    if(read_input_from_demo())
+    {
+        return QUIT;
+    }
+
+    return CONTINUE;
 }
 
 input_state_enum handle_key_down(SDL_KeyboardEvent event)
