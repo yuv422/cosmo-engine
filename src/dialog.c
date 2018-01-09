@@ -1218,25 +1218,28 @@ void a_game_by_dialog()
     fade_to_black_speed_3();
 }
 
-void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length)
+void collect_input_string(uint16 x, uint16 y, char *name_buffer, uint8 buf_length)
 {
-    memset(name_buffer, 0, buf_length);
-    uint16 x = create_text_dialog_box(5, 7, 0x24, "You made it into the hall of fame!", "Press ESC to quit.");
-    display_dialog_text(x, 8, "Enter your name:");
-    fade_in_from_black_with_delay_3();
-    play_sfx(0x34);
-
     int i = 0;
     for(; ; )
     {
-        SDL_Keycode key = wait_for_input_with_repeat(x + i + 16, 8, true);
-        display_clear_tile_to_gray(x + i + 16, 8);
-        if((key >= SDLK_a && key <= SDLK_z) || key == SDLK_SPACE)
+        SDL_Keycode key = wait_for_input_with_repeat(x + i, y, true);
+        display_clear_tile_to_gray(x + i, y);
+        if((key >= SDLK_a && key <= SDLK_z)
+           || (key >= SDLK_0 && key <= SDLK_9)
+           || key == SDLK_SPACE
+           || key == SDLK_MINUS
+           || key == SDLK_EQUALS
+           || key == SDLK_QUOTE
+           || key == SDLK_SEMICOLON
+           || key == SDLK_SLASH
+           || key == SDLK_PERIOD
+           || key == SDLK_COMMA)
         {
             if(i < buf_length - 1)
             {
                 name_buffer[i] =(char)toupper(key);
-                display_char(x + i + 16, 8, (char)key);
+                display_char(x + i, y, (char)key);
                 i++;
             }
         }
@@ -1253,11 +1256,44 @@ void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length)
         {
             i--;
             name_buffer[i] = ' ';
-            display_clear_tile_to_gray(x + i + 16, 8);
+            display_clear_tile_to_gray(x + i, y);
         }
     }
 
     name_buffer[i] = '\0';
+}
+
+void enter_high_score_name_dialog(char *name_buffer, uint8 buf_length) {
+    memset(name_buffer, 0, buf_length);
+    uint16 x = create_text_dialog_box(5, 7, 0x24, "You made it into the hall of fame!", "Press ESC to quit.");
+    display_dialog_text(x, 8, "Enter your name:");
+    fade_in_from_black_with_delay_3();
+    play_sfx(0x34);
+
+    collect_input_string(x + 16, 8, name_buffer, buf_length);
+}
+
+uint8 warp_level_tbl[] = {0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 2, 3};
+int warp_mode_dialog()
+{
+    char buf[3];
+    uint16 x = create_text_dialog_box(2, 4, 0x1c, "Warp Mode!", "Enter level (1-13):");
+    collect_input_string(x + 0x15, 4, buf, 3);
+    sint16 warp_level = (sint16)strtol(buf, NULL, 10);
+
+    warp_level--;
+    if(warp_level < 0 || warp_level > 12)
+    {
+        return 0;
+    }
+    else
+    {
+        current_level = (uint16)warp_level;
+        load_savegame_file('T');
+        load_level(warp_level_tbl[warp_level]);
+    }
+
+    return 1;
 }
 
 void display_high_score_dialog(bool use_fading)

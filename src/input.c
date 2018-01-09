@@ -21,7 +21,7 @@ uint8 right_key_pressed = 0;
 
 //This is needed because the game manipulates up_key_pressed as part of the hover board logic. This is the actual
 //key pressed state.
-uint8 sdl_up_key_pressed = 0;
+uint8 input_up_key_pressed = 0;
 
 uint8 byte_2E17C; //modifies the left, right and jump key presses
 
@@ -47,6 +47,11 @@ void cosmo_wait(int delay)
     SDL_Delay((Uint32)(8 * delay));
 }
 
+input_state_enum handle_demo_input()
+{
+
+}
+
 input_state_enum handle_key_down(SDL_KeyboardEvent event)
 {
     switch(event.keysym.sym)
@@ -58,7 +63,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             right_key_pressed = 1;
             break;
         case SDLK_UP :
-            sdl_up_key_pressed = 1;
+            input_up_key_pressed = 1;
             break;
         case SDLK_DOWN :
             down_key_pressed = 1;
@@ -73,8 +78,8 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
         case SDLK_m :
             music_toggle_dialog();
             break;
-        case SDLK_n :
-            finished_level_flag_maybe = 1; //FIXME remove. only needed for testing
+        case SDLK_w :
+            warp_mode_dialog(); //FIXME remove this. Only here for testing.
             break;
         case SDLK_s :
             sound_toggle_dialog();
@@ -101,7 +106,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             }
         default : break;
     }
-    up_key_pressed = sdl_up_key_pressed;
+    up_key_pressed = input_up_key_pressed;
     return CONTINUE;
 }
 
@@ -117,7 +122,7 @@ input_state_enum handle_key_up(SDL_KeyboardEvent event)
             right_key_pressed = 0;
             break;
         case SDLK_UP :
-            sdl_up_key_pressed = 0;
+            input_up_key_pressed = 0;
             break;
         case SDLK_DOWN :
             down_key_pressed = 0;
@@ -139,12 +144,17 @@ input_state_enum handle_key_up(SDL_KeyboardEvent event)
             break;
         default : break;
     }
-    up_key_pressed = sdl_up_key_pressed;
+    up_key_pressed = input_up_key_pressed;
     return CONTINUE;
 }
 
 input_state_enum read_input()
 {
+    if(game_play_mode ==  PLAY_DEMO)
+    {
+        return handle_demo_input();
+    }
+
     //FIXME
     SDL_Event event;
 
@@ -164,7 +174,7 @@ input_state_enum read_input()
         }
     }
 
-    up_key_pressed = sdl_up_key_pressed;
+    up_key_pressed = input_up_key_pressed;
 
     return CONTINUE;
 }
@@ -172,7 +182,7 @@ input_state_enum read_input()
 void reset_player_control_inputs()
 {
     up_key_pressed = 0;
-    sdl_up_key_pressed = 0;
+    input_up_key_pressed = 0;
     down_key_pressed = 0;
     left_key_pressed = 0;
     right_key_pressed = 0;

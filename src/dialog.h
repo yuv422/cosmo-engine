@@ -48,4 +48,6 @@ void game_redefine();
 void sound_toggle_dialog();
 void music_toggle_dialog();
 
+int warp_mode_dialog();
+
 #endif //COSMO_ENGINE_DIALOG_H
