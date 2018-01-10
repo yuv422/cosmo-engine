@@ -53,7 +53,7 @@ extern int word_2E1E8;
 extern int word_2E1F8;
 extern int word_2E1DE;
 extern int word_2E214;
-extern int word_32B88;
+extern int player_hoverboard_counter;
 extern int word_32EAC;
 extern int word_32EB2;
 
@@ -62,7 +62,7 @@ extern unsigned char byte_2E2E4;
 
 
 void handle_player_input_maybe();
-void player_update_from_inputs();
+void player_hoverboard_update();
 
 void sub_11062(); //resets variables
 

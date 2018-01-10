@@ -30,7 +30,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
         int ax = word_2E180 <= 3 ? 0 : 1;
 
         if (ax + y_pos - sprite_height + 1 >= player_y_pos && y_pos - sprite_height <= player_y_pos &&
-            player_x_pos + 1 + 1 >= x_pos && x_pos + sprite_width - 1 >= player_x_pos && word_32B88 == 0)
+            player_x_pos + 1 + 1 >= x_pos && x_pos + sprite_width - 1 >= player_x_pos && player_hoverboard_counter == 0)
         {
             word_2E1E8 = 1;
         }
@@ -784,7 +784,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             {
                 return 0;
             }
-            word_32B88 = 4;
+            player_hoverboard_counter = 4;
             play_sfx(3);
             player_reset_push_variables();
             byte_2E2E4 = 0;
@@ -965,7 +965,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             return 1;
 
         case 1: // 33: floor spring
-            if (actor->data_5 != 0 && actor->count_down_timer == 0 && word_32B88 == 0 &&
+            if (actor->data_5 != 0 && actor->count_down_timer == 0 && player_hoverboard_counter == 0 &&
                 (byte_2E2E4 == 0 || player_bounce_flag_maybe != 0))
             {
                 actor->count_down_timer = 2;

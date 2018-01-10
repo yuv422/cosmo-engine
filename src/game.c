@@ -91,7 +91,7 @@ void reset_game_state()
     teleporter_counter = 0;
     teleporter_state_maybe = 0;
     player_in_pneumatic_tube_flag = 0;
-    word_32B88 = 0;
+    player_hoverboard_counter = 0;
     player_is_teleporting_flag = 0;
     word_32EAC = 0;
     energy_beam_enabled_flag = 1;
@@ -151,9 +151,9 @@ void game_loop()
             } while (input_state == PAUSED);
 
             handle_player_input_maybe();
-            if (word_32B88 != 0)
+            if (player_hoverboard_counter != 0)
             {
-                player_update_from_inputs();
+                player_hoverboard_update();
             }
 
             if (word_32EB2 != 0 || player_walk_anim_index != 0)

@@ -1803,7 +1803,7 @@ void actor_wt_hint_dialog(ActorData *actor)
         {
             byte_2E21C = 1;
         }
-        if((up_key_pressed != 0 && word_32B88 == 0) || byte_2E21C == 0)
+        if((up_key_pressed != 0 && player_hoverboard_counter == 0) || byte_2E21C == 0)
         {
             play_sfx(0x1e);
             ingame_hint_dialogs(actor->data_5);
@@ -1845,7 +1845,7 @@ void actor_wt_hoverboard(ActorData *actor)
 {
     actor->frame_num = actor->frame_num + 1;
     actor->frame_num = actor->frame_num & 3;
-    if(word_32B88 != 0)
+    if(player_hoverboard_counter != 0)
     {
         actor->x = player_x_pos;
         actor->y = player_y_pos + 1;

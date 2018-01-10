@@ -66,7 +66,7 @@ int word_2E1E8;
 int word_2E1F8;
 int word_2E1DE;
 int word_2E214;
-int word_32B88;
+int player_hoverboard_counter;
 int word_32EAC;
 int word_32EB2;
 
@@ -260,7 +260,7 @@ void handle_player_input_maybe()
 
     int si = 0;
     player_is_grabbing_wall_flag = 0;
-    if(player_death_counter != 0 || teleporter_state_maybe != 0 || word_32B88 != 0 || player_walk_anim_index != 0 || word_2E1F8 != 0)
+    if(player_death_counter != 0 || teleporter_state_maybe != 0 || player_hoverboard_counter != 0 || player_walk_anim_index != 0 || word_2E1F8 != 0)
     {
         return;
     }
@@ -1554,7 +1554,7 @@ void player_decrease_health()
         else
         {
             player_death_counter = 1;
-            word_32B88 = 0;
+            player_hoverboard_counter = 0;
         }
     }
 
@@ -1571,7 +1571,7 @@ void push_player_around(int push_direction, int push_anim_duration, int push_dur
     player_push_frame_num = player_frame_num;
     player_dont_push_while_jumping_flag = dont_push_while_jumping_flag;
     player_is_being_pushed_flag = 1;
-    word_32B88 = 0;
+    player_hoverboard_counter = 0;
     player_push_check_blocking_flag = check_for_blocking_flag;
     player_bounce_flag_maybe = 0;
     player_bounce_height_counter = 0;
@@ -1579,9 +1579,9 @@ void push_player_around(int push_direction, int push_anim_duration, int push_dur
     return ;
 }
 
-void player_update_from_inputs()
+void player_hoverboard_update()
 {
-    static uint16 word_28F98 = 0;
+    static uint16 drop_bomb_state = 0;
 
     sub_11062();
     word_2E1E8 = 0;
@@ -1592,12 +1592,12 @@ void player_update_from_inputs()
         return;
     }
 
-    if (word_32B88 <= 1)
+    if (player_hoverboard_counter <= 1)
     {
         if (jump_key_pressed != 0)
         {
             player_input_jump_related_flag = 1;
-            word_32B88 = 0;
+            player_hoverboard_counter = 0;
             byte_2E2E4 = 1;
             word_2E180 = 1;
             player_bounce_flag_maybe = 0;
@@ -1611,7 +1611,7 @@ void player_update_from_inputs()
     else
     {
         up_key_pressed = 1;
-        word_32B88--;
+        player_hoverboard_counter--;
     }
 
     if (left_key_pressed != 0 && right_key_pressed == 0)
@@ -1706,23 +1706,23 @@ void player_update_from_inputs()
 
     if (bomb_key_pressed == 0)
     {
-        word_28F98 = 0;
+        drop_bomb_state = 0;
     }
-    if (bomb_key_pressed != 0 && word_28F98 == 0)
+    if (bomb_key_pressed != 0 && drop_bomb_state == 0)
     {
-        word_28F98 = 1;
+        drop_bomb_state = 1;
         player_sprite_dir_frame_offset = 14;
     }
-    if (word_28F98 == 0 || word_28F98 == 2)
+    if (drop_bomb_state == 0 || drop_bomb_state == 2)
     {
         bomb_key_pressed = 0;
     }
     else
     {
         player_sprite_dir_frame_offset = 14;
-        if (word_28F98 != 0)
+        if (drop_bomb_state != 0)
         {
-            word_28F98 = 2;
+            drop_bomb_state = 2;
             if (player_direction == 0)
             {
                 uint8 tr1 = tileattr_mni_data[map_get_tile_cell(player_x_pos - 1, player_y_pos - 2) / 8];
@@ -1790,7 +1790,7 @@ void player_update_from_inputs()
 
 void player_move_on_platform(int platform_x_left, int platform_x_right, int x_offset_tbl_index, int y_offset_tbl_index)
 {
-    if(word_32B88 != 0)
+    if(player_hoverboard_counter != 0)
     {
         return;
     }
