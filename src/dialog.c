@@ -1074,7 +1074,7 @@ void sound_test_dialog()
     uint8 tmp_sfx_flag = sfx_on_flag;
     sfx_on_flag = 1;
     uint16 x = create_text_dialog_box(2, 7, 0x22, "Test Sound", "Press ESC to quit.");
-    display_dialog_text(x, 4, " Press ^ or , to change sound #.");
+    display_dialog_text(x, 4, " Press \x18 or \x19 to change sound #.");
     display_dialog_text(x, 5, "   Press Enter to hear sound.");
 
     for(;;)

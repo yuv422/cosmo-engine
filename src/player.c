@@ -1720,7 +1720,7 @@ void player_update_from_inputs()
     else
     {
         player_sprite_dir_frame_offset = 14;
-        if (word_28F98 == 0)
+        if (word_28F98 != 0)
         {
             word_28F98 = 2;
             if (player_direction == 0)

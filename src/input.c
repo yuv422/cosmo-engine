@@ -141,7 +141,7 @@ input_state_enum handle_key_up(SDL_KeyboardEvent event)
         case SDLK_a :
             jump_key_pressed = 0;
             break;
-        case SDLK_s :
+        case SDLK_z :
             bomb_key_pressed = 0;
             break;
         case SDLK_p :
