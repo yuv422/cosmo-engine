@@ -1068,6 +1068,48 @@ uint16 restore_savegame_dialog()
     return 2;
 }
 
+void sound_test_dialog()
+{
+    uint16 cur_sfx_num = 1;
+    uint8 tmp_sfx_flag = sfx_on_flag;
+    sfx_on_flag = 1;
+    uint16 x = create_text_dialog_box(2, 7, 0x22, "Test Sound", "Press ESC to quit.");
+    display_dialog_text(x, 4, " Press ^ or , to change sound #.");
+    display_dialog_text(x, 5, "   Press Enter to hear sound.");
+
+    for(;;)
+    {
+        display_clear_tile_to_gray(x + 15, 6);
+        display_clear_tile_to_gray(x + 16, 6);
+
+        display_number(x + 16, 6, cur_sfx_num);
+        SDL_Keycode key = wait_for_input_with_repeat(x + 0x1f, 7, true);
+        switch(key)
+        {
+            case SDLK_DOWN :
+                if(cur_sfx_num > 1)
+                {
+                    cur_sfx_num--;
+                }
+                break;
+            case SDLK_UP :
+                if(cur_sfx_num < 65)
+                {
+                    cur_sfx_num++;
+                }
+                break;
+            case SDLK_RETURN :
+                play_sfx(cur_sfx_num);
+                break;
+            case SDLK_ESCAPE :
+                sfx_on_flag = tmp_sfx_flag;
+                return;
+            default :
+                break;
+        }
+    }
+}
+
 void game_redefine()
 {
     uint16 si = create_text_dialog_box(4, 0xb, 0x16, "Game Redefine", "Press ESC to quit.");
@@ -1092,6 +1134,7 @@ void game_redefine()
             sound_toggle_dialog();
             break;
         case SDLK_t :
+            sound_test_dialog();
             break;
         case SDLK_m :
             music_toggle_dialog();
@@ -1278,7 +1321,7 @@ int warp_mode_dialog()
 {
     char buf[3];
     uint16 x = create_text_dialog_box(2, 4, 0x1c, "Warp Mode!", "Enter level (1-13):");
-    collect_input_string(x + 0x15, 4, buf, 3);
+    collect_input_string(x + 0x16, 4, buf, 3);
     sint16 warp_level = (sint16)strtol(buf, NULL, 10);
 
     warp_level--;
@@ -1318,7 +1361,7 @@ void display_high_score_dialog(bool use_fading)
         {
             fade_in_from_black_with_delay_3();
         }
-        SDL_Keycode  keycode = wait_for_input(x + 0x1b, 0x11);
+        SDL_Keycode keycode = wait_for_input(x + 0x1b, 0x11);
         if (keycode != SDLK_F10)
         {
             break;

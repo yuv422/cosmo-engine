@@ -184,7 +184,7 @@ void game_loop()
 
         if (game_play_mode != PLAY_GAME)
         {
-            display_actor_sprite_maybe(0x10a, 0, 18, 4, 6); //DEMO sign.
+            display_actor_sprite_maybe(0x10a, 0, 17, 4, 6); //DEMO sign.
         }
 
         if (show_monster_attack_hint == 1)

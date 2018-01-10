@@ -97,7 +97,7 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
             for (int i = 0; i < 3; i++)
             {
-                if (tileattr_mni_data[map_get_tile_cell(x_pos, y_pos - 4) / 8] & TILE_ATTR_BLOCK_UP)
+                if (tileattr_mni_data[map_get_tile_cell(x_pos + i, y_pos - 4) / 8] & TILE_ATTR_BLOCK_UP)
                 {
                     return BLOCKED;
                 }
