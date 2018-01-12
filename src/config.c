@@ -8,15 +8,13 @@
 #include <sound/sfx.h>
 #include "config.h"
 #include "high_scores.h"
-
-SDL_Keycode cfg_up_key;
-SDL_Keycode cfg_down_key;
-SDL_Keycode cfg_left_key;
-SDL_Keycode cfg_right_key;
-SDL_Keycode cfg_jump_key;
-SDL_Keycode cfg_bomb_key;
+#include "input.h"
 
 #define MAX_SCORE_STRING_LENGTH 13
+#define NUM_SCAN_CODES 89
+
+SDL_Keycode scancode_to_keycode(uint8 scan_code);
+uint8 keycode_to_scancode(SDL_Keycode keycode);
 
 uint32 read_score(File *file)
 {
@@ -60,8 +58,12 @@ void load_config_file(const char *filename)
 
     if(file_open(filename, "rb", &file))
     {
-        //FIXME key redefine.
-        file_seek(&file, 6);
+        set_input_command_key(CMD_KEY_UP, scancode_to_keycode(file_read1(&file)));
+        set_input_command_key(CMD_KEY_DOWN, scancode_to_keycode(file_read1(&file)));
+        set_input_command_key(CMD_KEY_LEFT, scancode_to_keycode(file_read1(&file)));
+        set_input_command_key(CMD_KEY_RIGHT, scancode_to_keycode(file_read1(&file)));
+        set_input_command_key(CMD_KEY_JUMP, scancode_to_keycode(file_read1(&file)));
+        set_input_command_key(CMD_KEY_BOMB, scancode_to_keycode(file_read1(&file)));
 
         music_on_flag = file_read1(&file);
         sfx_on_flag = file_read1(&file);
@@ -78,12 +80,12 @@ void load_config_file(const char *filename)
     }
     else
     {
-        cfg_up_key = SDLK_UP;
-        cfg_down_key = SDLK_DOWN;
-        cfg_left_key = SDLK_LEFT;
-        cfg_right_key = SDLK_RIGHT;
-        cfg_jump_key = SDLK_LCTRL;
-        cfg_bomb_key = SDLK_LALT;
+        set_input_command_key(CMD_KEY_UP, SDLK_UP);
+        set_input_command_key(CMD_KEY_DOWN, SDLK_DOWN);
+        set_input_command_key(CMD_KEY_LEFT, SDLK_LEFT);
+        set_input_command_key(CMD_KEY_RIGHT, SDLK_RIGHT);
+        set_input_command_key(CMD_KEY_JUMP, SDLK_LCTRL);
+        set_input_command_key(CMD_KEY_BOMB, SDLK_LALT);
         music_on_flag = 1;
         sfx_on_flag = 1;
 
@@ -107,13 +109,12 @@ void write_config_file(const char *filename)
         return;
     }
 
-    //FIXME need to write actual dos scancodes here.
-    file_write1(0, &file);
-    file_write1(0, &file);
-    file_write1(0, &file);
-    file_write1(0, &file);
-    file_write1(0, &file);
-    file_write1(0, &file);
+    file_write1(keycode_to_scancode(get_input_command_key(CMD_KEY_UP)), &file);
+    file_write1(keycode_to_scancode(get_input_command_key(CMD_KEY_DOWN)), &file);
+    file_write1(keycode_to_scancode(get_input_command_key(CMD_KEY_LEFT)), &file);
+    file_write1(keycode_to_scancode(get_input_command_key(CMD_KEY_RIGHT)), &file);
+    file_write1(keycode_to_scancode(get_input_command_key(CMD_KEY_JUMP)), &file);
+    file_write1(keycode_to_scancode(get_input_command_key(CMD_KEY_BOMB)), &file);
     file_write1(music_on_flag, &file);
     file_write1(sfx_on_flag, &file);
 
@@ -129,4 +130,221 @@ void write_config_file(const char *filename)
         file_write1(0xa, &file);
     }
     file_close(&file);
+}
+
+const char scancode_string_tbl[NUM_SCAN_CODES][6] = {
+        "NULL",
+        "ESC",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "0",
+        "-",
+        "=",
+        "BKSP",
+        "TAB",
+        "Q",
+        "W",
+        "E",
+        "R",
+        "T",
+        "Y",
+        "U",
+        "I",
+        "O",
+        "P",
+        " ",
+        " ",
+        "ENTR",
+        "CTRL",
+        "A",
+        "S",
+        "D",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        ";",
+        "\"",
+        " ",
+        "LSHFT",
+        " ",
+        "Z",
+        "X",
+        "C",
+        "V",
+        "B",
+        "N",
+        "M",
+        ",",
+        ".",
+        "?",
+        "RSHFT",
+        "PRTSC",
+        "ALT",
+        "SPACE",
+        "CAPLK",
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8",
+        "F9",
+        "F10",
+        "NUMLK",
+        "SCRLK",
+        "HOME",
+        "\x18",
+        "PGUP",
+        "-",
+        "\x1b",
+        "5",
+        "\x1c",
+        "+",
+        "END",
+        "\x19",
+        "PGDN",
+        "INS",
+        "DEL",
+        "SYSRQ",
+        " ",
+        " ",
+        "F11",
+        "F12"
+};
+
+const SDL_Keycode scancode_to_keycode_tbl[NUM_SCAN_CODES] = {
+        SDLK_UNKNOWN,
+        SDLK_ESCAPE,
+        SDLK_1,
+        SDLK_2,
+        SDLK_3,
+        SDLK_4,
+        SDLK_5,
+        SDLK_6,
+        SDLK_7,
+        SDLK_8,
+        SDLK_9,
+        SDLK_0,
+        SDLK_MINUS,
+        SDLK_EQUALS,
+        SDLK_BACKSPACE,
+        SDLK_TAB,
+        SDLK_q,
+        SDLK_w,
+        SDLK_e,
+        SDLK_r,
+        SDLK_t,
+        SDLK_y,
+        SDLK_u,
+        SDLK_i,
+        SDLK_o,
+        SDLK_p,
+        SDLK_LEFTBRACKET,
+        SDLK_RIGHTBRACKET,
+        SDLK_RETURN,
+        SDLK_LCTRL,
+        SDLK_a,
+        SDLK_s,
+        SDLK_d,
+        SDLK_f,
+        SDLK_g,
+        SDLK_h,
+        SDLK_j,
+        SDLK_k,
+        SDLK_l,
+        SDLK_SEMICOLON,
+        SDLK_QUOTEDBL,
+        SDLK_QUOTE,
+        SDLK_UNKNOWN, // Left Shift
+        SDLK_SLASH,
+        SDLK_z,
+        SDLK_x,
+        SDLK_c,
+        SDLK_v,
+        SDLK_b,
+        SDLK_n,
+        SDLK_m,
+        SDLK_COMMA,
+        SDLK_PERIOD,
+        SDLK_QUESTION,
+        SDLK_UNKNOWN, // right shift
+        SDLK_PRINTSCREEN,
+        SDLK_LALT,
+        SDLK_SPACE,
+        SDLK_CAPSLOCK,
+        SDLK_F1,
+        SDLK_F2,
+        SDLK_F3,
+        SDLK_F4,
+        SDLK_F5,
+        SDLK_F6,
+        SDLK_F7,
+        SDLK_F8,
+        SDLK_F9,
+        SDLK_F10,
+        SDLK_NUMLOCKCLEAR,
+        SDLK_SCROLLLOCK,
+        SDLK_HOME,
+        SDLK_UP,
+        SDLK_PAGEUP,
+        SDLK_KP_MINUS,
+        SDLK_LEFT,
+        SDLK_KP_5,
+        SDLK_RIGHT,
+        SDLK_KP_PLUS,
+        SDLK_END,
+        SDLK_DOWN,
+        SDLK_PAGEDOWN,
+        SDLK_INSERT,
+        SDLK_DELETE,
+        SDLK_SYSREQ,
+        SDLK_UNKNOWN,
+        SDLK_UNKNOWN,
+        SDLK_F11,
+        SDLK_F12
+};
+
+SDL_Keycode scancode_to_keycode(uint8 scan_code)
+{
+    if(scan_code >= NUM_SCAN_CODES)
+    {
+        return SDLK_UNKNOWN;
+    }
+
+    return scancode_to_keycode_tbl[scan_code];
+}
+
+uint8 keycode_to_scancode(SDL_Keycode keycode)
+{
+    for(uint8 i = 0; i < NUM_SCAN_CODES; i++)
+    {
+        if(scancode_to_keycode_tbl[i] == keycode)
+        {
+            return i;
+        }
+    }
+
+    return 0;
+}
+
+const char *scancode_to_string(uint8 scan_code)
+{
+    if(scan_code >= NUM_SCAN_CODES)
+    {
+        scan_code = 0;
+    }
+
+    return &scancode_string_tbl[scan_code][0];
 }

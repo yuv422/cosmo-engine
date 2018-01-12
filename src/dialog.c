@@ -1170,15 +1170,16 @@ void cosmic_hints_dialog(uint16 y_pos)
     display_dialog_text(x, y + 11, "                     Look");
     display_dialog_text(x, y + 12, "                     DOWN");
     display_dialog_text(x, y + 13, "              \xfd""001                 ""\xfd""023");
-    display_dialog_text(x, y + 14, "  \xfd""030      ""\xfd""037""\xfe""024000");
+    display_dialog_text(x, y + 14, "  \xfd""030      ""\xfd""037   ""\xfe""024000");
     display_dialog_text(x, y + 0x11, "                     \xfd""029");
-    //FIXME need to display mapped keys here.
-//    display_dialog_text(x + 0x18, y + 7, al * ax + 0xc44);
-//    display_dialog_text(x + 0x18, y + 14, al * ax + "NULL");
-//    display_dialog_text(x + 14, y + 14, al * ax + 0xc44);
-//    display_dialog_text(x + 0x1e, y + 14, al * ax + 0xc44);
-//    display_dialog_text(x + 1 + 1, y + 15, al * ax + 0xc44);
-//    display_dialog_text(x + 8, y + 15, al * ax + 0xc44);
+
+    display_dialog_text(x + 0x18, y + 7, get_command_key_string(CMD_KEY_UP));
+    display_dialog_text(x + 0x18, y + 14, get_command_key_string(CMD_KEY_DOWN));
+    display_dialog_text(x + 14, y + 14, get_command_key_string(CMD_KEY_LEFT));
+    display_dialog_text(x + 0x1e, y + 14, get_command_key_string(CMD_KEY_RIGHT));
+    display_dialog_text(x + 1 + 1, y + 15, get_command_key_string(CMD_KEY_JUMP));
+    display_dialog_text(x + 8, y + 15, get_command_key_string(CMD_KEY_BOMB));
+
     wait_for_input(x + 0x23, y + 0x11);
     x = create_text_dialog_box(4, 11, 0x22, "During the game, you can...", "Press ANY key.");
     display_dialog_text(x, 7, " Press 'P' to PAUSE GAME");

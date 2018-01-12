@@ -4,15 +4,12 @@
 #ifndef COSMO_ENGINE_CONFIG_H
 #define COSMO_ENGINE_CONFIG_H
 
-//Data
-extern SDL_Keycode cfg_up_key;
-extern SDL_Keycode cfg_down_key;
-extern SDL_Keycode cfg_left_key;
-extern SDL_Keycode cfg_right_key;
-extern SDL_Keycode cfg_jump_key;
-extern SDL_Keycode cfg_bomb_key;
+#include "defines.h"
 
 void load_config_file(const char *filename);
 void write_config_file(const char *filename);
+
+uint8 keycode_to_scancode(SDL_Keycode keycode);
+const char *scancode_to_string(uint8 scan_code);
 
 #endif //COSMO_ENGINE_CONFIG_H

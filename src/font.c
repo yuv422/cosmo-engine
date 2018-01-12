@@ -29,7 +29,7 @@ void display_number(int x_pos, int y_pos, uint32 number)
 
 void display_char(int x_pos, int y_pos, char c)
 {
-    if(c == 0x18 || c == 0x19) //FIXME hack to get arrow key font to render.
+    if(c == 0x18 || c == 0x19 || c == 0x1b || c == 0x1c) //FIXME hack to get arrow key font to render.
     {
         video_draw_tile(&font_tiles[c-25 + 3], x_pos * 8, y_pos * 8);
         return;

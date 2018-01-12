@@ -15,6 +15,17 @@ typedef enum
     CONTINUE
 } input_state_enum;
 
+typedef enum
+{
+    CMD_KEY_UP,
+    CMD_KEY_DOWN,
+    CMD_KEY_LEFT,
+    CMD_KEY_RIGHT,
+    CMD_KEY_JUMP,
+    CMD_KEY_BOMB,
+    CMD_KEY_OTHER
+} InputCommand;
+
 extern uint8 bomb_key_pressed;
 extern uint8 jump_key_pressed;
 extern uint8 up_key_pressed;
@@ -29,5 +40,9 @@ input_state_enum read_input();
 void reset_player_control_inputs();
 SDL_Keycode poll_for_key_press(bool allow_key_repeat);
 void cosmo_wait(int delay);
+
+void set_input_command_key(InputCommand command, SDL_Keycode keycode);
+SDL_Keycode get_input_command_key(InputCommand command);
+const char *get_command_key_string(InputCommand command);
 
 #endif //COSMO_ENGINE_INPUT_H
