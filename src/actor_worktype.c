@@ -3767,7 +3767,7 @@ void activate_switch_maybe(int actorInfoIndex, ActorData *switch_actor)
         ActorData *actor = get_actor(di);
         if (actor->actorInfoIndex != actorInfoIndex)
         {
-            break;
+            continue;
         }
 
         if (switch_actor->data_1 != 2)

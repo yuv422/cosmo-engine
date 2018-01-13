@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <assert.h>
+#include <sound/sfx.h>
 #include "high_scores.h"
 #include "defines.h"
 #include "game.h"
@@ -75,5 +76,6 @@ void show_high_scores() {
         add_high_score_with_name(score, name);
     }
 
+    play_sfx(0x33);
     display_high_score_dialog(true);
 }

@@ -941,7 +941,24 @@ void display_end_of_level_score_dialog(const char *header_text, const char *foot
 }
 
 void end_game_dialog(uint16 dialog_number) {
-    //TODO
+    if(dialog_number == 0xa6)
+    {
+        finished_game_flag_maybe = 1;
+        return;
+    }
+    if(dialog_number == 0xa4 || dialog_number == 0xa5)
+    {
+        uint16 x = create_text_dialog_box(2, 8, 0x1c, "", "Press any key to exit.");
+        if(dialog_number == 0xa4)
+        {
+            display_dialog_text(x, 4, "\xfc""003 What's happening?  Is\n Cosmo falling to his\n Doom?");
+        }
+        else
+        {
+            display_dialog_text(x, 4, "\xfc""003 Is there no end to this\n pit?  And what danger\n awaits below?!");
+        }
+        wait_for_input(x + 0x19, 8);
+    }
 }
 
 uint16 draw_dialog_frame(uint16 x_pos, uint16 y_pos, uint16 height, uint16 width, const char *top_text, const char *bottom_text, uint8 display_text)
@@ -1477,4 +1494,42 @@ void music_toggle_dialog()
     }
 
     wait_for_input(x + 0x15, 4);
+}
+
+void end_sequence()
+{
+    cosmo_wait(5);
+    fade_to_black_speed_3();
+    display_fullscreen_image(4);
+    wait_for_input(0x27, 0x18);
+    fade_to_white(4);
+    video_fill_screen_with_black();
+    
+    uint16 x = create_text_dialog_box(1, 0x18, 0x26, "", "Press ANY key.");
+    
+    display_dialog_text(x + 4, 13, "\xfb""016");
+    display_dialog_text(x + 0x1c, 0x16, "\xfb""017");
+    fade_in_from_black_with_delay_3();
+    display_dialog_text(x + 14, 4, "\xfc""003Are Cosmo's cosmic ");
+    display_dialog_text(x + 14, 5, "\xfc""003adventuring days ");
+    display_dialog_text(x + 14, 6, "\xfc""003finally over?    ");
+    display_dialog_text(x + 14, 8, "\xfc""003Will Cosmo's parents ");
+    display_dialog_text(x + 14, 9, "\xfc""003be lightly seasoned ");
+    display_dialog_text(x + 14, 10, "\xfc""003and devoured before ");
+    display_dialog_text(x + 14, 11, "\xfc""003he can save them?      ");
+    display_dialog_text(x + 1, 15, "\xfc""003Find the stunning ");
+    display_dialog_text(x + 1, 0x10, "\xfc""003answers in the next two ");
+    display_dialog_text(x + 1, 0x11, "\xfc""003NEW, shocking, amazing, ");
+    display_dialog_text(x + 1, 0x12, "\xfc""003horrifying, wacky and ");
+    display_dialog_text(x + 1, 0x13, "\xfc""003exciting episodes of...         ");
+    display_dialog_text(x + 1, 0x15, "\xfc""003COSMO'S COSMIC ADVENTURE!");
+    wait_for_input(x + 0x23, 0x17);
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+    x = create_text_dialog_box(6, 4, 0x18, "Thank you", " for playing!");
+    fade_in_from_black_with_delay_3();
+    cosmo_wait(0x64);
+    wait_for_input(x + 0x15, 8);
+    ordering_info_dialog();
+    display_score_from_level();
 }

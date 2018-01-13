@@ -322,11 +322,6 @@ void select_next_level()
     }
 }
 
-void end_sequence()
-{
-    //FIXME where should this logic live?
-}
-
 //Protected
 
 unsigned char *load_file(const char *filename, unsigned char *buf, uint32 buf_size)

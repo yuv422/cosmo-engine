@@ -205,7 +205,7 @@ input_state_enum read_input()
         return handle_demo_input();
     }
 
-    //FIXME
+    //FIXME handle cheats.
     SDL_Event event;
 
     while(SDL_PollEvent(&event))

@@ -50,4 +50,6 @@ void music_toggle_dialog();
 
 int warp_mode_dialog();
 
+void end_sequence();
+
 #endif //COSMO_ENGINE_DIALOG_H
