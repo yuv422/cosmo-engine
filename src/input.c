@@ -142,6 +142,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
                     sound_toggle_dialog();
                     break;
                 case SDLK_q :
+                case SDLK_ESCAPE :
                     if (quit_game_dialog())
                     {
                         return QUIT;

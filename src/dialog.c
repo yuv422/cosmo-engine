@@ -1110,6 +1110,67 @@ void sound_test_dialog()
     }
 }
 
+void enter_new_key(uint16 x, const char *text, InputCommand command)
+{
+    display_dialog_text(x + 4, 12, text);
+    display_dialog_text(x + 4, 13, "Enter new key:");
+    SDL_Keycode keycode = wait_for_input(x + 0x12, 13);
+    if(keycode != SDLK_ESCAPE)
+    {
+        set_input_command_key(command, keycode);
+    }
+}
+
+void keyboard_config()
+{
+    uint16 x = create_text_dialog_box(3, 15, 0x1b, "Keyboard Config.", "Press ESC to quit.");
+
+    for(;;)
+    {
+        display_dialog_text(x, 6, " #1) Up key is:");
+        display_dialog_text(x + 0x13, 6, get_command_key_string(CMD_KEY_UP));
+        display_dialog_text(x, 7, " #2) Down key is:");
+        display_dialog_text(x + 0x13, 7, get_command_key_string(CMD_KEY_DOWN));
+        display_dialog_text(x, 8, " #3) Left key is:");
+        display_dialog_text(x + 0x13, 8, get_command_key_string(CMD_KEY_LEFT));
+        display_dialog_text(x, 9, " #4) Right key is:");
+        display_dialog_text(x + 0x13, 9, get_command_key_string(CMD_KEY_RIGHT));
+        display_dialog_text(x, 10, " #5) Jump key is:");
+        display_dialog_text(x + 0x13, 10, get_command_key_string(CMD_KEY_JUMP));
+        display_dialog_text(x, 11, " #6) Bomb key is:");
+        display_dialog_text(x + 0x13, 11, get_command_key_string(CMD_KEY_BOMB));
+
+        display_dialog_text(x, 15, "Select key # to change or");
+
+        SDL_Keycode keycode = wait_for_input(x + 0x15, 16);
+        switch (keycode)
+        {
+            case SDLK_ESCAPE : return;
+            case SDLK_1 :
+                enter_new_key(x, "Modifying UP.", CMD_KEY_UP);
+                break;
+            case SDLK_2 :
+                enter_new_key(x, "Modifying DOWN.", CMD_KEY_DOWN);
+                break;
+            case SDLK_3 :
+                enter_new_key(x, "Modifying LEFT.", CMD_KEY_LEFT);
+                break;
+            case SDLK_4 :
+                enter_new_key(x, "Modifying RIGHT.", CMD_KEY_RIGHT);
+                break;
+            case SDLK_5 :
+                enter_new_key(x, "Modifying JUMP.", CMD_KEY_JUMP);
+                break;
+            case SDLK_6 :
+                enter_new_key(x, "Modifying BOMB.", CMD_KEY_BOMB);
+                break;
+            default : break;
+        }
+
+        draw_dialog_frame(7, 3, 15, 0x1b, "Keyboard Config.", "Press ESC to quit.", 1);
+    }
+}
+
 void game_redefine()
 {
     uint16 si = create_text_dialog_box(4, 0xb, 0x16, "Game Redefine", "Press ESC to quit.");
@@ -1123,12 +1184,11 @@ void game_redefine()
 
     switch (key)
     {
-        //FIXME wireup functions.
-
         case SDLK_k :
-            //FIXME keyboard_config()
+            keyboard_config();
             break;
         case SDLK_j :
+            //FIXME joystick_config() Do we even need this dialog?
             break;
         case SDLK_s :
             sound_toggle_dialog();
