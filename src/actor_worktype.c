@@ -3,6 +3,7 @@
 //
 
 #include <stdlib.h>
+#include <sound/music.h>
 #include "actor_worktype.h"
 #include "player.h"
 #include "effects.h"
@@ -16,9 +17,363 @@
 #include "actor_collision.h"
 #include "util.h"
 
+static const sint16 word_28ECA[] = {2, 2, 1, 0, -1, -2, -2, -2, -2, -1, 0, 1, 2, 2};
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
-    //TODO
+    actor_tile_display_func_index = 1;
+    if(word_2E21E == 0)
+    {
+        word_2E21E = 1;
+        actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+        stop_music();
+        load_music(2);
+    }
+    
+    if (actor->has_moved_right_flag > 0) //goto loc_1546E; //follow=000155eb
+    {
+// node 0001546e-0001553a #insn=11 use={} def={} in={} out={} pred={ 15411} FALLTHROUGH follow=00015beb
+        loc_1546E:
+        actor->has_moved_right_flag = actor->has_moved_right_flag - 1;
+        if(actor->has_moved_right_flag < 0x28)
+        {
+            actor->y = actor->y - 1;
+        }
+
+        actor->can_fall_down_flag = 0;
+        actor->falling_counter = 0;
+        if(actor->has_moved_right_flag == 1 || actor->y == 0 || is_sprite_on_screen(0x66, 0, actor->x, actor->y) == 0 && actor->has_moved_right_flag < 0x1e)
+        {
+            loc_154BB:
+            finished_level_flag_maybe = 1;
+            player_add_to_score(0x186a0);
+        }
+
+        if(actor->has_moved_right_flag < 0x28 && actor->has_moved_right_flag != 0)
+        {
+            if(actor->has_moved_right_flag % 3 == 0)
+            {
+                effect_add_sprite(0x61, 6, actor->x, actor->y, 8, 1);
+
+                effect_add_sprite(0x61, 6, actor->x + 3, actor->y, 2, 1);
+                play_sfx(0x38);
+            }
+        }
+
+        if((actor->has_moved_right_flag & 1) == 0)
+        {
+            display_actor_sprite_maybe(0x66, 0, actor->x, actor->y, 0);
+            display_actor_sprite_maybe(0x66, 5, actor->x, actor->y - 4, 0);
+        }
+        else
+        {
+            display_actor_sprite_maybe(0x66, 0, actor->x, actor->y, 2);
+            display_actor_sprite_maybe(0x66, 5, actor->x, actor->y - 4, 2);
+
+            if(actor->has_moved_right_flag > 0x27)
+            {
+                effect_add_sprite(0x61, 6, actor->x, actor->y, 8, 1);
+
+                effect_add_sprite(0x61, 6, actor->x + 3, actor->y, 2, 1);
+            }
+        }
+        return;
+    }
+
+// node 000155eb-000155f3 #insn=3 use={} def={bx} in={ax} out={ax, bx} pred={ 15411} CONDJUMP target=000155f8 follow=000156b6
+//    loc_155EB:
+    
+    if (actor->data_5 == 12) //goto loc_155F8;
+    {
+// node 000155f8-000156a5 #insn=5 use={} def={} in={} out={} pred={ 155EB} FALLTHROUGH follow=00015beb
+//        loc_155F8:
+        if(sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + 1) == 0)
+        {
+
+            actor->y = actor->y + 1;
+            if((actor->y & 1) == 0)
+            {
+
+                display_actor_sprite_maybe(0x66, 0, actor->x, actor->y, 0);
+
+                display_actor_sprite_maybe(0x66, 5, actor->x, actor->y - 4, 0);
+            }
+            else
+            {
+                display_actor_sprite_maybe(0x66, 0, actor->x, actor->y, 2);
+
+                display_actor_sprite_maybe(0x66, 5, actor->x, actor->y - 4, 2);
+            }
+        }
+
+        if(sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + 1) != NOT_BLOCKED)
+        {
+            actor->has_moved_right_flag = 0x50;
+        }
+        return;
+    }
+
+    if(actor->has_moved_left_flag != 0)
+    {
+        int frame_num = actor->data_5 <= 3 ? 1 : 5;
+
+        actor->has_moved_left_flag = actor->has_moved_left_flag - 1;
+        if((actor->has_moved_left_flag & 1) == 0)
+        {
+            display_actor_sprite_maybe(0x66, 0, actor->x, actor->y, 0);
+            display_actor_sprite_maybe(0x66, frame_num, actor->x, actor->y - 4, 0);
+        }
+        else
+        {
+            display_actor_sprite_maybe(0x66, 0, actor->x, actor->y, 2);
+            display_actor_sprite_maybe(0x66, frame_num, actor->x, actor->y - 4, 2);
+        }
+    }
+    
+    if (actor->data_1 != 0) //goto loc_1576C; //follow=00015750
+    {
+// node 0001576c-00015774 #insn=3 use={} def={bx} in={ax} out={ax, bx} pred={ 156B6} CONDJUMP target=00015790 follow=0001577b
+        loc_1576C:
+
+        if (actor->data_1 != 1) //goto loc_15790;
+        {
+// node 00015790-00015798 #insn=3 use={} def={bx} in={ax} out={ax, bx} pred={ 1576C} CONDJUMP target=0001579d follow=00015976
+            loc_15790:
+
+            if (actor->data_1 == 2) //goto loc_1579D;
+            {
+                // node 0001579d-00015823 #insn=14 use={} def={ax, dx, bx} in={} out={} pred={ 15790} CONDJUMP target=00015847 follow=00015825
+
+                if(sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + word_28ECA[actor->data_3 % 14]) != NOT_BLOCKED)
+                {
+                    if(word_28ECA[actor->data_3 % 14] == 2)
+                    {
+                        actor->y = actor->y - 2;
+                    }
+                }
+
+                if (sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + word_28ECA[actor->data_3 % 14]) == NOT_BLOCKED || word_28ECA[actor->data_3 % 14] != 1)// goto loc_15847;
+                {
+                    actor->y += word_28ECA[actor->data_3 % 14];
+                }
+                else
+                {
+                    // node 0001583e-00015845 #insn=2 use={} def={bx} in={} out={} pred={ 15825} JUMP target=00015864
+                    actor->y = actor->y - 1;
+                }
+
+                //loc_15864
+                // node 00015864-0001588e #insn=10 use={} def={} in={} out={} pred={ 1583E 15847} FALLTHROUGH follow=00015b2f
+                loc_15864:
+
+                actor->data_3 = actor->data_3 + 1;
+                if(actor->data_3 % 14 == 1)
+                {
+                    play_sfx(0x38);
+                }
+
+                actor->data_2 = actor->data_2 + 1;
+                if(actor->data_2 > 0x1e && actor->data_2 < 0xc9)
+                {
+                    if(actor->data_4 == 0)
+                    {
+                        if(sprite_blocking_check(2, 0x66, 0, actor->x - 1, actor->y) != NOT_BLOCKED)
+                        {
+                            actor->data_4 = 1;
+                            play_sfx(0x25);
+
+                            effect_add_sprite(0x61, 6, actor->x, actor->y - 2, 5, 1);
+                        }
+                        else
+                        {
+                            actor->x = actor->x - 1;
+                        }
+                    }
+                    else
+                    {
+                        if(sprite_blocking_check(3, 0x66, 0, actor->x + 1, actor->y) == NOT_BLOCKED)
+                        {
+                            actor->x = actor->x + 1;
+                        }
+                        else
+                        {
+                            actor->data_4 = 0;
+                            play_sfx(0x25);
+
+                            effect_add_sprite(0x61, 6, actor->x + 3, actor->y - 2, 5, 1);
+                        }
+                    }
+                }
+                else
+                {
+
+                    if(actor->data_2 > 0xc7)
+                    {
+                        actor->data_1 = 3;
+                        actor->data_2 = 0;
+                        actor->data_3 = 8;
+                    }
+                }
+            }
+            else
+            {
+                // node 00015976-0001597e #insn=3 use={} def={bx} in={ax} out={ax, bx} pred={ 15790} CONDJUMP target=00015983 follow=00015af8
+
+                if (actor->data_1 == 3) //goto loc_15983;
+                {
+                    //loc_15983;
+                    // node 00015983-0001598c #insn=3 use={bx} def={} in={ax, bx} out={ax, bx} pred={ 15976} CONDJUMP target=0001599a follow=0001598e
+                    loc_15983:
+                    actor->data_2 = actor->data_2 + 1;
+                    if (actor->data_3 >= 6) //goto loc_1599A;
+                    {
+                        // node 0001599a-000159a2 #insn=3 use={} def={bx} in={} out={bx} pred={ 15983} CONDJUMP target=000159a7 follow=00015a51
+                        loc_1599A:
+
+                        if (actor->data_2 < 0x66) //goto loc_159A7;
+                        {
+                            // node 000159a7-000159c6 #insn=3 use={} def={} in={} out={} pred={ 1599A} FALLTHROUGH follow=00015b2f
+                            loc_159A7:
+                            actor->can_fall_down_flag = 1;
+                            if(sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + 1) == 0)
+                            {
+                                if(actor->x + 1 <= player_x_pos)
+                                {
+                                    if(actor->x + 3 < player_x_pos)
+                                    {
+                                        if(sprite_blocking_check(3, 0x66, 0, actor->x + 1, actor->y) == NOT_BLOCKED)
+                                        {
+                                            actor->x = actor->x + 1;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if(sprite_blocking_check(2, 0x66, 0, actor->x - 1, actor->y) == NOT_BLOCKED)
+                                    {
+                                        actor->x = actor->x - 1;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                actor->data_3 = 0;
+                                actor->can_fall_down_flag = 0;
+                                actor->falling_counter = 0;
+                                play_sfx(0x32);
+
+                                effect_add_sprite(0x61, 6, actor->x, actor->y, 8, 1);
+                                effect_add_sprite(0x61, 6, actor->x + 3, actor->y, 2, 1);
+                            }
+                        }
+                        else
+                        {
+                            //follow=00015a51
+                            // node 00015a51-00015a6d #insn=3 use={} def={ax, bx} in={} out={} pred={ 1599A} CONDJUMP target=00015a8b follow=00015a6f
+                            loc_15A51:
+
+                            if (sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + 1) != 0 || sprite_blocking_check(1, 0x66, 0, actor->x, actor->y) != 0) //goto loc_15A8B;
+                            {
+                                // node 00015a8b-00015aed #insn=13 use={} def={ax, bx} in={} out={ax} pred={ 15A51 15A6F} JUMP target=00015b2f
+                                loc_15A8B:
+
+                                actor->data_1 = 4;
+                                actor->data_2 = 0;
+                                actor->data_3 = 0;
+                                actor->can_fall_down_flag = 0;
+                                actor->falling_counter = 0;
+                                play_sfx(0x25);
+
+                                effect_add_sprite(0x61, 6, actor->x, actor->y, 8, 1);
+
+                                effect_add_sprite(0x61, 6, actor->x + 3, actor->y, 2, 1);
+                            }
+                            else
+                            {
+                                actor->y = actor->y + 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //follow=0001598e
+                        // node 0001598e-00015997 #insn=3 use={bx} def={} in={ax, bx} out={ax} pred={ 15983} JUMP target=00015b2f
+                        actor->data_3 = actor->data_3 + 1;
+                        actor->y = actor->y - 2;
+                    }
+                }
+                else
+                {
+                    if(actor->data_1 == 4)
+                    {
+                        actor->can_fall_down_flag = 0;
+                        actor->falling_counter = 0;
+                        actor->y = actor->y - 1;
+                        actor->data_2 = actor->data_2 + 1;
+                        if(actor->data_2 == 6)
+                        {
+                            actor->data_1 = 2;
+                            actor->data_3 = 0;
+                            actor->data_2 = 0;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            //follow=0001577b
+            // node 0001577b-0001577b #insn=1 use={} def={} in={} out={} pred={ 1576C} FALLTHROUGH follow=00015b2f
+            if(actor->data_2 == 0)
+            {
+                actor->data_1 = 2;
+            }
+            else
+            {
+                actor->data_2 = actor->data_2 - 1;
+            }
+        }
+    }
+    else
+    {
+        // node 00015750-0001575e #insn=3 use={} def={} in={} out={} pred={ 156B6} FALLTHROUGH follow=00015b2f
+        actor->y = actor->y - 2;
+        actor->data_2 = actor->data_2 + 1;
+        if(actor->data_2 == 6)
+        {
+            actor->data_1 = 1;
+        }
+    }
+
+    //FIXME 00015b2f HERE.
+// node 00015b2f-00015bae #insn=10 use={} def={} in={} out={} pred={ 15750 1577B 15864 1598E 159A7 15A8B 15AEF 15AF8} FALLTHROUGH follow=00015beb
+    loc_15B2F:
+    
+    if(actor->has_moved_left_flag != 0)
+    {
+        return;
+    }
+    display_actor_sprite_maybe(0x66, 0, actor->x, actor->y, 0);
+    
+    if(actor->data_5 < 4)
+    {
+        display_actor_sprite_maybe(0x66, 1, actor->x, actor->y - 4, 0);
+        return;
+    }
+    
+    if(actor->x + 1 > player_x_pos)
+    {
+        display_actor_sprite_maybe(0x66, 2, actor->x + 1, actor->y - 4, 0);
+        return;
+    }
+    
+    if(actor->x + 1 + 1 >= player_x_pos)
+    {
+        display_actor_sprite_maybe(0x66, 3, actor->x + 1, actor->y - 4, 0);
+    }
+    else
+    {
+        display_actor_sprite_maybe(0x66, 4, actor->x + 1, actor->y - 4, 0);
+    }
 }
 
 void actor_wt_159_unknown(ActorData *actor)
