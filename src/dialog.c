@@ -26,6 +26,7 @@ uint8 byte_2E21C = 0;
 
 int cleanup_and_exit();
 uint16 restore_savegame_dialog();
+void cosmic_hints_dialog(uint16 y_pos);
 
 SDL_Keycode wait_for_input_with_repeat(int spinner_x, int spinner_y, bool allow_key_repeat)
 {
@@ -551,6 +552,117 @@ void missing_savegame_dialog()
     wait_for_input(x + 0x11, 7);
 }
 
+void instructions_page1()
+{
+    uint16 x = create_text_dialog_box(0, 0x18, 0x26, "Instructions  Page One of Five", "Press PgDn for next.  ESC to Exit.");
+    display_dialog_text(x, 4, " OBJECT OF GAME:");
+    display_dialog_text(x, 6, " On a strange and dangerous planet,");
+    display_dialog_text(x, 8, " Cosmo must find and rescue his");
+    display_dialog_text(x, 10, " parents.");
+    display_dialog_text(x, 13, " Cosmo, having seen big scary alien");
+    display_dialog_text(x, 15, " footprints, believes his parents");
+    display_dialog_text(x, 17, " have been captured and taken away");
+    display_dialog_text(x, 19, " to be eaten!");
+}
+
+void instructions_page2()
+{
+    uint16 x = create_text_dialog_box(0, 0x18, 0x26, "Instructions  Page Two of Five", "Press PgUp or PgDn.  Esc to Exit.");
+    display_dialog_text(x, 4, " Cosmo has a very special ability:");
+    display_dialog_text(x, 6, " He can use his suction hands to");
+    display_dialog_text(x, 8, " climb up walls.");
+    display_dialog_text(x, 11, " Warning:  Some surfaces, such as");
+    display_dialog_text(x, 13, " ice, might be too slippery for");
+    display_dialog_text(x, 15, " Cosmo to cling on firmly.");
+    display_dialog_text(x, 20, "\xfd""011                                 \xfd""034");
+}
+
+void instructions_page3()
+{
+    uint16 x = create_text_dialog_box(0, 0x18, 0x26, "Instructions  Page Three of Five", "Press PgUp or PgDn.  Esc to Exit.");
+    display_dialog_text(x, 4, " Cosmo can jump onto attacking");
+    display_dialog_text(x, 6, " creatures without being harmed.");
+    display_dialog_text(x, 8, " This is also Cosmo's way of");
+    display_dialog_text(x, 10, " defending himself.");
+    display_dialog_text(x, 13, " Cosmo can also find and use bombs.");
+    display_dialog_text(x+5, 18, "   \xfd""036");
+    display_dialog_text(x+5, 20, "         \xfd""024          \xfd""037");
+    display_dialog_text(x+5, 20, "   \xfe""118000         \xfe""057000         \xfe""024000");
+}
+
+void instructions_page4()
+{
+    uint16 x = create_text_dialog_box(0, 0x18, 0x26, "Instructions  Page Four of Five", "Press PgUp or PgDn.  Esc to Exit.");
+    display_dialog_text(x, 5, " Use the up and down arrow keys to");
+    display_dialog_text(x, 7, " make Cosmo look up and down,");
+    display_dialog_text(x, 9, " enabling him to see areas that");
+    display_dialog_text(x, 11, " might be off the screen.");
+    display_dialog_text(x + 4, 18, "   \xfd""028                  \xfd""029");
+    display_dialog_text(x, 19, "      Up Key           Down Key");
+}
+
+void instructions_page5()
+{
+    uint16 x = create_text_dialog_box(0, 0x18, 0x26, "Instructions  Page Five of Five", "Press PgUp.  Esc to Exit.");
+    display_dialog_text(x, 5, " In Cosmo's Cosmic Adventure, it's");
+    display_dialog_text(x, 7, " up to you to discover the use of");
+    display_dialog_text(x, 9, " all the neat and strange objects");
+    display_dialog_text(x, 11, " you'll encounter on your journey.");
+    display_dialog_text(x, 13, " Secret Hint Globes will help");
+    display_dialog_text(x, 15, " you along the way.");
+    display_dialog_text(x, 18, "                 \xfe""125000");
+    display_dialog_text(x, 20, "              \xfd""027   \xfe""125002");
+}
+
+void instructions_dialog()
+{
+    fade_in_from_black_with_delay_3();
+    video_fill_screen_with_black();
+
+    for(uint8 page_num = 1; page_num < 6; )
+    {
+        fade_to_black(1);
+
+        switch(page_num)
+        {
+            case 1: instructions_page1(); break;
+            case 2: instructions_page2(); break;
+            case 3: instructions_page3(); break;
+            case 4: instructions_page4(); break;
+            case 5: instructions_page5(); break;
+            default: break;
+        }
+
+        fade_in_from_black(1);
+
+        SDL_Keycode keycode = wait_for_input(0x25, 0x16);
+        while(page_num == 1 && (keycode == SDLK_PAGEUP || keycode == SDLK_UP))
+        {
+            keycode = wait_for_input(0x25, 0x16);
+        }
+
+        if(keycode == SDLK_ESCAPE)
+        {
+            return;
+        }
+
+        if(keycode == SDLK_PAGEUP || keycode == SDLK_UP)
+        {
+            if(page_num > 1)
+            {
+                page_num--;
+            }
+        }
+        else
+        {
+            page_num++;
+        }
+    }
+
+    video_fill_screen_with_black();
+    cosmic_hints_dialog(3);
+}
+
 game_play_mode_enum main_menu() {
     set_initial_game_state();
     show_one_moment_screen_flag = 0;
@@ -606,6 +718,10 @@ game_play_mode_enum main_menu() {
                         {
                             missing_savegame_dialog();
                         }
+                        break;
+
+                    case SDLK_i :
+                        instructions_dialog();
                         break;
 
                     case SDLK_s :

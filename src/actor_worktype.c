@@ -17,7 +17,7 @@
 #include "actor_collision.h"
 #include "util.h"
 
-static const sint16 word_28ECA[] = {2, 2, 1, 0, -1, -2, -2, -2, -2, -1, 0, 1, 2, 2};
+static const sint16 purple_boss_y_offset_tbl[] = {2, 2, 1, 0, -1, -2, -2, -2, -2, -1, 0, 1, 2, 2};
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
     actor_tile_display_func_index = 1;
@@ -121,17 +121,17 @@ void actor_wt_133_boss_purple_15411(ActorData *actor)
         {
             if (actor->data_1 == 2)
             {
-                if(sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + word_28ECA[actor->data_3 % 14]) != NOT_BLOCKED)
+                if(sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + purple_boss_y_offset_tbl[actor->data_3 % 14]) != NOT_BLOCKED)
                 {
-                    if(word_28ECA[actor->data_3 % 14] == 2)
+                    if(purple_boss_y_offset_tbl[actor->data_3 % 14] == 2)
                     {
                         actor->y = actor->y - 2;
                     }
                 }
 
-                if (sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + word_28ECA[actor->data_3 % 14]) == NOT_BLOCKED || word_28ECA[actor->data_3 % 14] != 1)
+                if (sprite_blocking_check(1, 0x66, 0, actor->x, actor->y + purple_boss_y_offset_tbl[actor->data_3 % 14]) == NOT_BLOCKED || purple_boss_y_offset_tbl[actor->data_3 % 14] != 1)
                 {
-                    actor->y += word_28ECA[actor->data_3 % 14];
+                    actor->y += purple_boss_y_offset_tbl[actor->data_3 % 14];
                 }
                 else
                 {
