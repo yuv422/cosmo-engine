@@ -39,7 +39,7 @@ void actor_wt_133_boss_purple_15411(ActorData *actor)
 
         actor->can_fall_down_flag = 0;
         actor->falling_counter = 0;
-        if(actor->has_moved_right_flag == 1 || actor->y == 0 || is_sprite_on_screen(0x66, 0, actor->x, actor->y) == 0 && actor->has_moved_right_flag < 0x1e)
+        if(actor->has_moved_right_flag == 1 || actor->y == 0 || (is_sprite_on_screen(0x66, 0, actor->x, actor->y) == 0 && actor->has_moved_right_flag < 0x1e))
         {
             finished_level_flag_maybe = 1;
             player_add_to_score(0x186a0);
