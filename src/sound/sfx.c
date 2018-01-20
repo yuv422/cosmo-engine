@@ -60,8 +60,8 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
     sint16 *wave_data = (sint16 *)chunk->abuf;
 
     sint16 beepWaveVal = WAVE_AMPLITUDE_VALUE;
-    sint16 velocity = -4;
-    sint16 desiredAmplitude = -WAVE_AMPLITUDE_VALUE;
+//    sint16 velocity = -4;
+//    sint16 desiredAmplitude = -WAVE_AMPLITUDE_VALUE;
     for(int i=0; i < num_samples; i++)
     {
         uint16 sample = file_read2(file);
@@ -77,26 +77,27 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
                 {
                     wave_data[(i*sample_length+sampleCounter)*audio_num_channels + 1] = beepWaveVal;
                 }
-                beepWaveVal += velocity;
-                if((velocity < 0 && beepWaveVal < desiredAmplitude) || (velocity > 0 && beepWaveVal > desiredAmplitude))
-                {
-                    beepWaveVal = desiredAmplitude;
-                    velocity = 0;
-                }
-                velocity *= 2;
+//                beepWaveVal += velocity;
+//                if((velocity < 0 && beepWaveVal < desiredAmplitude) || (velocity > 0 && beepWaveVal > desiredAmplitude))
+//                {
+//                    beepWaveVal = desiredAmplitude;
+//                    velocity = 0;
+//                }
+//                velocity *= 2;
 
                 beepHalfCycleCounter++;
                 if (beepHalfCycleCounter >= half_cycle_length) { //FIXME need to smooth this square wave a bit.
                     beepHalfCycleCounter %= half_cycle_length;
-                    desiredAmplitude = -desiredAmplitude;
-                    if(desiredAmplitude < 0)
-                    {
-                        velocity = -4;
-                    }
-                    else
-                    {
-                        velocity = 4;
-                    }
+                    beepWaveVal = -beepWaveVal;
+//                    desiredAmplitude = -desiredAmplitude;
+//                    if(desiredAmplitude < 0)
+//                    {
+//                        velocity = -4;
+//                    }
+//                    else
+//                    {
+//                        velocity = 4;
+//                    }
                 }
             }
         }
