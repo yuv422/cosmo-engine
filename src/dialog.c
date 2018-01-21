@@ -32,6 +32,7 @@ SDL_Keycode wait_for_input_with_repeat(int spinner_x, int spinner_y, bool allow_
 {
     video_update();
     reset_player_control_inputs();
+    flush_input();
 
     uint16 spinner_idx = 0;
     SDL_Keycode keycode = poll_for_key_press(allow_key_repeat);
@@ -668,6 +669,7 @@ game_play_mode_enum main_menu() {
     show_one_moment_screen_flag = 0;
     load_music(0x12);
     display_fullscreen_image(1);
+    flush_input();
 
     for(int i=0;;i+=3)
     {
@@ -814,6 +816,7 @@ void now_entering_level_n_dialog(uint16 level_number)
 
 void ingame_hint_dialogs(uint16 hint_number) {
     cosmo_wait(0x1e);
+    flush_input();
     uint16 x;
     if(hint_number != 0 && hint_number < 15)
     {
@@ -937,6 +940,7 @@ void power_up_module_dialog()
         display_dialog_text(si, 4, " increase Cosmo's");
         display_dialog_text(si, 5, " health.         \xfe""028002");
         cosmo_wait(0x3c);
+        flush_input();
         wait_for_input(si + 8, 5);
     }
 }
@@ -1057,6 +1061,8 @@ void display_end_of_level_score_dialog(const char *header_text, const char *foot
 }
 
 void end_game_dialog(uint16 dialog_number) {
+    flush_input();
+    reset_player_control_inputs();
     if(dialog_number == 0xa6)
     {
         finished_game_flag_maybe = 1;

@@ -300,3 +300,9 @@ const char *get_command_key_string(InputCommand command)
 
     return scancode_to_string(0);
 }
+
+void flush_input()
+{
+    SDL_PumpEvents();
+    SDL_FlushEvents(SDL_KEYDOWN, SDL_KEYUP);
+}

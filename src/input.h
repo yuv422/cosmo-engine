@@ -45,4 +45,6 @@ void set_input_command_key(InputCommand command, SDL_Keycode keycode);
 SDL_Keycode get_input_command_key(InputCommand command);
 const char *get_command_key_string(InputCommand command);
 
+void flush_input();
+
 #endif //COSMO_ENGINE_INPUT_H
