@@ -1242,8 +1242,10 @@ void display_actor_sprite_flipped(TileInfo *info, int x_pos, int y_pos)
         {
             uint16 screen_x = (x_pos - mapwindow_x_offset + x + 1) * 8;
             uint16 screen_y = (y_pos - info->height + 1 - mapwindow_y_offset + (info->height-y-1) + 1) * 8;
+            uint16 tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos+x,y_pos - info->height + 1 + (info->height-y-1))/8];
             if(screen_x >= 8 && screen_x <= 304 && //FIXME need a better way of making sure we draw in the borders.
-               screen_y >= 8 && screen_y < 152)
+               screen_y >= 8 && screen_y < 152 &&
+               !(tile_attr & TILE_ATTR_IN_FRONT))
             {
                 video_draw_tile_flipped(tile, screen_x, screen_y);
             }
@@ -1288,7 +1290,7 @@ void display_actor_sprite_maybe(int actorInfoIndex, int frame_num, int x_pos, in
             {
                 if(screen_x >= 8 && screen_x <= 304 && //FIXME need a better way of making sure we draw in the borders.
                    screen_y >= 8 && screen_y < 152 &&
-                   (!(tile_attr & TILE_ATTR_IN_FRONT) || tile_display_func_index != 0))
+                   (!(tile_attr & TILE_ATTR_IN_FRONT) || tile_display_func_index == 5 || tile_display_func_index == 6))
                 {
                     if (tile_display_func_index == 2)
                     {

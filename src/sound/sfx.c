@@ -62,6 +62,7 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
     sint16 beepWaveVal = WAVE_AMPLITUDE_VALUE;
 //    sint16 velocity = -4;
 //    sint16 desiredAmplitude = -WAVE_AMPLITUDE_VALUE;
+    uint16 beepHalfCycleCounter = 0;
     for(int i=0; i < num_samples; i++)
     {
         uint16 sample = file_read2(file);
@@ -70,7 +71,6 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
             float freq = PC_PIT_RATE / (float)sample;
             int half_cycle_length = (int)(audio_sample_rate / (freq * 2));
             //printf("sample %d, freq=%f, half_cycle_len = %d\n", i, freq, half_cycle_length);
-            uint16 beepHalfCycleCounter = 0;
             for (int sampleCounter = 0; sampleCounter < sample_length; sampleCounter++) {
                 wave_data[(i*sample_length+sampleCounter)*audio_num_channels] = beepWaveVal;
                 if(audio_num_channels == 2)
@@ -86,8 +86,8 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
 //                velocity *= 2;
 
                 beepHalfCycleCounter++;
-                if (beepHalfCycleCounter >= half_cycle_length) { //FIXME need to smooth this square wave a bit.
-                    beepHalfCycleCounter %= half_cycle_length;
+                if (beepHalfCycleCounter >= half_cycle_length) {
+                    beepHalfCycleCounter = half_cycle_length != 0 ? (uint16)(beepHalfCycleCounter % half_cycle_length) : (uint16)0;
                     beepWaveVal = -beepWaveVal;
 //                    desiredAmplitude = -desiredAmplitude;
 //                    if(desiredAmplitude < 0)
