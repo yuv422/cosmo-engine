@@ -200,8 +200,8 @@ void load_level_data(int level_number)
     total_num_actors = 0;
     num_moving_platforms = 0;
     num_mud_fountains = 0;
-    num_brightness_objs = 0;
-    word_2E4CE = 1;
+    clear_brightness_objs();
+    brightness_effect_enabled_flag = 1;
     obj_switch_151_flag = 0;
 
     for(int i=0;i< actor_data_size_in_words/3;i++)

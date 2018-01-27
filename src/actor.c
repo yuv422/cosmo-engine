@@ -40,10 +40,9 @@ uint16 word_2E1E2 = 0;
 
 uint16 num_moving_platforms = 0;
 
-uint16 num_brightness_objs = 0;
-uint16 word_2E4CE = 0;
+uint16 brightness_effect_enabled_flag = 0;
 uint16 obj_switch_151_flag = 0;
-Brightness brightness_tbl[0xc8];
+
 
 uint8 move_platform_flag = 0;
 uint16 actor_tile_display_func_index = 0;
@@ -552,7 +551,7 @@ int actor_init(int actor_num, int image_index, int x_pos, int y_pos)
 
         case 120:
             actor_init_struct(actor_num, 0x3c, x_pos, y_pos, 0, 0, 0, 0, actor_wt_switch_multi_use, 0, 0, 0, 0, 0x78);
-            word_2E4CE = 0;
+            brightness_effect_enabled_flag = 0;
             obj_switch_151_flag = 1;
             break;
 
@@ -1201,13 +1200,7 @@ void load_actor(int actor_num, int actorType, int x_pos, int y_pos)
             case 6:
             case 7:
             case 8:
-                if (num_brightness_objs != 0xc7)
-                {
-                    brightness_tbl[num_brightness_objs].type = actorType - 6;
-                    brightness_tbl[num_brightness_objs].x = x_pos;
-                    brightness_tbl[num_brightness_objs].y = y_pos;
-                    num_brightness_objs++;
-                }
+                add_brightness_obj(actorType - 6, x_pos, y_pos);
                 break;
             default: break;
         }

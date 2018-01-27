@@ -182,6 +182,25 @@ void video_draw_tile_mode3(Tile *tile, uint16 x, uint16 y)
     }
 }
 
+void video_draw_highlight_effect(uint16 x, uint16 y, uint8 type)
+{
+    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
+    for(int i=0;i<TILE_HEIGHT;i++)
+    {
+        for(int j=0;j<TILE_WIDTH;j++)
+        {
+            if((type == 0 && i + j >= 7) ||
+               type == 1 ||
+               (type == 2 && i >= j))
+            {
+                *pixel |= 8; //set intensity bit
+            }
+            pixel++;
+        }
+        pixel += SCREEN_WIDTH - TILE_WIDTH;
+    }
+}
+
 void video_draw_tile_with_clip_rect(Tile *tile, uint16 x, uint16 y, uint16 clip_x, uint16 clip_y, uint16 clip_w, uint16 clip_h)
 {
     uint16 tx = 0;

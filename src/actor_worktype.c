@@ -3236,7 +3236,7 @@ void actor_wt_security_robot(ActorData *actor)
     {
         return;
     }
-    if(word_2E4CE != 0)
+    if(brightness_effect_enabled_flag != 0)
     {
         if(sub_1106F() % 0x32 > 0x30)
         {
@@ -4142,7 +4142,7 @@ void actor_wt_switch_multi_use(ActorData *actor)
                     break;
 
                 case 120:
-                    word_2E4CE = 1;
+                    brightness_effect_enabled_flag = 1;
                     break;
 
                 case 121:

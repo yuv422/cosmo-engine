@@ -5,6 +5,8 @@
 #define COSMO_ENGINE_EFFECTS_H
 
 
+#include "defines.h"
+
 void struct6_add_sprite(int x_pos, int y_pos);
 int struct6_1B4FC(int actorInfoIndex, int frame_num, int x_pos, int y_pos);
 void struct6_update_sprites();
@@ -23,5 +25,10 @@ void explode_effect_clear_sprites();
 void exploding_balls_effect(int x_pos, int y_pos);
 
 void update_rain_effect();
+
+void add_brightness_obj(uint8 type, int x_pos, int y_pos);
+
+void update_brightness_objs();
+void clear_brightness_objs();
 
 #endif //COSMO_ENGINE_EFFECTS_H

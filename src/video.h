@@ -28,6 +28,8 @@ void video_draw_tile_mode3(Tile *tile, uint16 x, uint16 y);
 void video_draw_tile_with_clip_rect(Tile *tile, uint16 x, uint16 y, uint16 clip_x, uint16 clip_y, uint16 clip_w, uint16 clip_h);
 void video_draw_tile_flipped(Tile *tile, uint16 x, uint16 y);
 
+void video_draw_highlight_effect(uint16 x, uint16 y, uint8 type);
+
 void video_draw_fullscreen_image(uint8 *pixels);
 void video_update_palette(int palette_index, SDL_Color new_color);
 

@@ -182,6 +182,8 @@ void game_loop()
 
         effect_update_sprites();
 
+        update_brightness_objs();
+
         if (game_play_mode != PLAY_GAME)
         {
             display_actor_sprite_maybe(0x10a, 0, 17, 4, 6); //DEMO sign.

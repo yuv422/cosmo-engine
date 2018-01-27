@@ -11,10 +11,12 @@
 #include "sound/sfx.h"
 #include "tile.h"
 #include "actor_toss.h"
+#include "video.h"
 
 #define MAX_EFFECT_SPRITES 10
 #define MAX_EXPLODE_EFFECT_SPRITES 16
 #define MAX_STRUCT6_SPRITES 7
+#define MAX_BRIGHTNESS_OBJS 0xc7
 
 typedef struct effect_sprite
 {
@@ -45,6 +47,15 @@ typedef struct struc_6
     int y;
 } struc_6;
 
+typedef struct
+{
+    int type;
+    int x;
+    int y;
+} Brightness;
+
+uint16 num_brightness_objs = 0;
+Brightness brightness_tbl[MAX_BRIGHTNESS_OBJS + 1];
 
 effect_sprite static_effect_sprites[MAX_EFFECT_SPRITES];
 uint16 effect_frame_num_tbl[MAX_EFFECT_SPRITES];
@@ -491,5 +502,50 @@ void struct6_clear_sprites()
     {
         struc6_sprites[i].counter = 0;
     }
+}
+
+void update_brightness_objs()
+{
+    if(brightness_effect_enabled_flag == 0)
+        return;
+
+    for(int i=0;i<num_brightness_objs;i++)
+    {
+        Brightness *brightness = &brightness_tbl[i];
+        if(brightness->x >= mapwindow_x_offset && brightness->x < mapwindow_x_offset + MAP_WINDOW_WIDTH &&
+           brightness->y >= mapwindow_y_offset && brightness->y < mapwindow_y_offset + MAP_WINDOW_HEIGHT)
+        {
+            video_draw_highlight_effect((brightness->x - mapwindow_x_offset + 1) * TILE_WIDTH, (brightness->y - mapwindow_y_offset + 1) * TILE_HEIGHT, brightness->type);
+
+            uint16 tile_attr = tileattr_mni_data[map_get_tile_cell(brightness->x,brightness->y + 1)/8];
+            for(int j = 1; !(tile_attr & TILE_ATTR_BLOCK_DOWN);)
+            {
+                if(brightness->x >= mapwindow_x_offset && brightness->x < mapwindow_x_offset + MAP_WINDOW_WIDTH &&
+                   brightness->y + j >= mapwindow_y_offset && brightness->y + j < mapwindow_y_offset + MAP_WINDOW_HEIGHT)
+                {
+                    video_draw_highlight_effect((brightness->x - mapwindow_x_offset + 1) * TILE_WIDTH,
+                                                (brightness->y + j - mapwindow_y_offset + 1) * TILE_HEIGHT, 1);
+                }
+                j++;
+                tile_attr = tileattr_mni_data[map_get_tile_cell(brightness->x,brightness->y + j)/8];
+            }
+        }
+    }
+}
+
+void add_brightness_obj(uint8 type, int x_pos, int y_pos)
+{
+    if (num_brightness_objs != MAX_BRIGHTNESS_OBJS)
+    {
+        brightness_tbl[num_brightness_objs].type = type;
+        brightness_tbl[num_brightness_objs].x = x_pos;
+        brightness_tbl[num_brightness_objs].y = y_pos;
+        num_brightness_objs++;
+    }
+}
+
+void clear_brightness_objs()
+{
+    num_brightness_objs = 0;
 }
 

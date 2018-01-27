@@ -29,13 +29,6 @@ typedef struct ActorData
     void (*update_function)(struct ActorData *);
 } ActorData;
 
-typedef struct
-{
-    int type;
-    int x;
-    int y;
-} Brightness;
-
 //Data
 extern int total_num_actors;
 extern uint16 word_2E17E;
@@ -61,8 +54,7 @@ extern uint16 word_2E1E4;
 
 extern uint16 word_2E1E2;
 
-extern uint16 num_brightness_objs;
-extern uint16 word_2E4CE;
+extern uint16 brightness_effect_enabled_flag;
 extern uint16 obj_switch_151_flag;
 
 
