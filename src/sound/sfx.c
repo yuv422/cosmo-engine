@@ -103,7 +103,7 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
         }
         else
         {
-            memset(&wave_data[i*sample_length], 0, sample_length * audio_num_channels * 2); //silence
+            memset(&wave_data[i*sample_length*audio_num_channels], 0, sample_length * audio_num_channels * 2); //silence
         }
     }
 
