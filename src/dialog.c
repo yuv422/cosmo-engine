@@ -27,6 +27,7 @@ uint8 byte_2E21C = 0;
 int cleanup_and_exit();
 uint16 restore_savegame_dialog();
 void cosmic_hints_dialog(uint16 y_pos);
+void display_clear_tile_to_gray(uint16 x, uint16 y);
 
 SDL_Keycode wait_for_input_with_repeat(int spinner_x, int spinner_y, bool allow_key_repeat)
 {
@@ -48,6 +49,7 @@ SDL_Keycode wait_for_input_with_repeat(int spinner_x, int spinner_y, bool allow_
         cosmo_wait(5);
         keycode = poll_for_key_press(allow_key_repeat);
     }
+    display_clear_tile_to_gray(spinner_x, spinner_y);
     return keycode;
 }
 
