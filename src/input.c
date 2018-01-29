@@ -216,11 +216,12 @@ input_state_enum read_input()
         }
         else if (event.type == SDL_KEYDOWN)
         {
-            return handle_key_down(event.key);
+            if(handle_key_down(event.key) == QUIT)
+                return QUIT;
         }
         else if (event.type == SDL_KEYUP)
         {
-            return handle_key_up(event.key);
+            handle_key_up(event.key);
         }
     }
 
