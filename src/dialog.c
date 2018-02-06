@@ -690,93 +690,102 @@ game_play_mode_enum main_menu() {
             for(int return_to_title=0;!return_to_title;)
             {
                 main_menu_dialog();
-                key = wait_for_input(0x1c, 0x15);
-                switch(key)
-                {
-                    case SDLK_ESCAPE :
-                    case SDLK_q :
-                        if(quit_game_dialog())
-                        {
-                            return QUIT_GAME;
-                        }
-                        break;
+                bool key_handled = true;
+                do {
+                    key = wait_for_input(0x1c, 0x15);
+                    switch(key)
+                    {
+                        case SDLK_ESCAPE :
+                        case SDLK_q :
+                            if(quit_game_dialog())
+                            {
+                                return QUIT_GAME;
+                            }
+                            return_to_title = 1;
+                            i = 0;
+                            break;
 
-                    case SDLK_RETURN :
-                    case SDLK_b :
-                    case SDLK_SPACE :
-                        stop_music();
-                        show_one_moment_screen_flag = 1;
-                        show_monster_attack_hint = 0;
-                        play_sfx(0x30);
-                        return PLAY_GAME;
-
-                    case SDLK_r :
-                        restore_status = restore_savegame_dialog();
-                        if(restore_status == 1)
-                        {
+                        case SDLK_RETURN :
+                        case SDLK_RETURN2 :
+                        case SDLK_KP_ENTER :
+                        case SDLK_b :
+                        case SDLK_SPACE :
                             stop_music();
+                            show_one_moment_screen_flag = 1;
+                            show_monster_attack_hint = 0;
+                            play_sfx(0x30);
                             return PLAY_GAME;
-                        }
 
-                        if(restore_status == 0)
-                        {
-                            missing_savegame_dialog();
-                        }
-                        break;
+                        case SDLK_r :
+                            restore_status = restore_savegame_dialog();
+                            if(restore_status == 1)
+                            {
+                                stop_music();
+                                return PLAY_GAME;
+                            }
 
-                    case SDLK_i :
-                        instructions_dialog();
-                        break;
+                            if(restore_status == 0)
+                            {
+                                missing_savegame_dialog();
+                            }
+                            break;
 
-                    case SDLK_s :
-                        story_dialog();
-                        break;
+                        case SDLK_i :
+                            instructions_dialog();
+                            break;
 
-                    case SDLK_g :
-                        game_redefine();
-                        break;
+                        case SDLK_s :
+                            story_dialog();
+                            break;
 
-                    case SDLK_F11 :
-                        if (cheat_mode_flag)
-                        {
-                            return RECORD_DEMO;
-                        }
-                        break;
+                        case SDLK_g :
+                            game_redefine();
+                            break;
 
-                    case SDLK_o :
-                        ordering_info_dialog();
-                        break;
+                        case SDLK_F11 :
+                            if (cheat_mode_flag)
+                            {
+                                return RECORD_DEMO;
+                            }
+                            break;
 
-                    case SDLK_f :
-                        foreign_orders_dialog();
-                        break;
+                        case SDLK_o :
+                            ordering_info_dialog();
+                            break;
 
-                    case SDLK_a :
-                        apogee_bbs_dialog();
-                        break;
+                        case SDLK_f :
+                            foreign_orders_dialog();
+                            break;
 
-                    case SDLK_d :
-                        return PLAY_DEMO;
+                        case SDLK_a :
+                            apogee_bbs_dialog();
+                            break;
 
-                    case SDLK_h :
-                        fade_to_black_speed_3();
-                        video_fill_screen_with_black();
-                        display_high_score_dialog(true);
-                        break;
+                        case SDLK_d :
+                            return PLAY_DEMO;
 
-                    case SDLK_c :
-                        display_fullscreen_image(2);
-                        while(poll_for_key_press(false)==SDLK_UNKNOWN)
-                        {}
-                        break;
+                        case SDLK_h :
+                            fade_to_black_speed_3();
+                            video_fill_screen_with_black();
+                            display_high_score_dialog(true);
+                            break;
 
-                    case SDLK_t :
-                        return_to_title = 1;
-                        i = 0;
-                        break;
+                        case SDLK_c :
+                            display_fullscreen_image(2);
+                            while(poll_for_key_press(false)==SDLK_UNKNOWN)
+                            {}
+                            break;
 
-                    default : break;
-                }
+                        case SDLK_t :
+                            return_to_title = 1;
+                            i = 0;
+                            break;
+
+                        default :
+                            key_handled = false;
+                            break;
+                    }
+                } while(!key_handled && !return_to_title);
 
                 display_fullscreen_image(1);
             }
@@ -804,7 +813,7 @@ void now_entering_level_n_dialog(uint16 level_number)
         uint16 x = create_text_dialog_box(7, 3, 0x18, "\xfc""003  Now entering level", "");
         cosmo_wait(0x14);
         play_sfx(0x40);
-        if(level_number != 10)
+        if(level_numbers_tbl[level_number] != 10)
         {
             display_number(x + 0x14, 8, level_numbers_tbl[level_number]);
         }
@@ -1150,7 +1159,7 @@ void savegame_dialog()
     display_dialog_text(x, 13, " NOTE: Game is saved at");
     display_dialog_text(x, 14, " BEGINNING of level.");
     SDL_Keycode keycode = wait_for_input(x + 0x18, 11);
-    if(keycode == SDLK_ESCAPE || keycode == SDLK_SPACE || keycode == SDLK_RETURN)
+    if(keycode == SDLK_ESCAPE || keycode == SDLK_SPACE || is_return_key(keycode))
     {
         return;
     }
@@ -1189,7 +1198,7 @@ uint16 restore_savegame_dialog()
     uint16 x = create_text_dialog_box(11, 7, 0x1c, "Restore a game.", "Press ESC to quit.");
     display_dialog_text(x, 14, " What game number (1-9)?");
     SDL_Keycode character = wait_for_input(x + 0x18, 14);
-    if(character != SDLK_ESCAPE && character != SDLK_SPACE && character != SDLK_RETURN)
+    if(character != SDLK_ESCAPE && character != SDLK_SPACE && !is_return_key(character))
     {
         if(character >= SDLK_1 && character <= SDLK_9)
         {
@@ -1240,6 +1249,8 @@ void sound_test_dialog()
                 }
                 break;
             case SDLK_RETURN :
+            case SDLK_RETURN2 :
+            case SDLK_KP_ENTER :
                 play_sfx(cur_sfx_num);
                 break;
             case SDLK_ESCAPE :
@@ -1493,7 +1504,7 @@ void collect_input_string(uint16 x, uint16 y, char *name_buffer, uint8 buf_lengt
             i = 0;
             break;
         }
-        if(key == SDLK_RETURN)
+        if(is_return_key(key))
         {
             break;
         }

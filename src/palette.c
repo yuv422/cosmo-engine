@@ -41,7 +41,7 @@ void set_palette_on_surface(SDL_Surface *surface)
 
 void set_palette_color(char pal_reg, char color)
 {
-    video_update_palette(pal_reg, palette[color]);
+    video_update_palette(pal_reg, palette[color > 15 ? 0 : color]); //FIXME need to handle 64 possible colours.
 }
 
 unsigned char palette_anim_type_1_tbl[] =

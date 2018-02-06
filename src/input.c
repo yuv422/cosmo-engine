@@ -307,3 +307,8 @@ void flush_input()
     SDL_PumpEvents();
     SDL_FlushEvents(SDL_KEYDOWN, SDL_KEYUP);
 }
+
+bool is_return_key(SDL_Keycode key)
+{
+    return (key == SDLK_RETURN || key == SDLK_KP_ENTER || key == SDLK_RETURN2);
+}
