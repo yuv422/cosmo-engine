@@ -13,7 +13,7 @@ extern uint8 palette_anim_type;
 extern int palette_index;
 extern int palette_2E1EE;
 
-void set_palette_color(char pal_reg, char color);
+void set_palette_color(char pal_reg, uint8 color);
 void update_palette_anim();
 
 void set_palette_on_surface(SDL_Surface *surface);
