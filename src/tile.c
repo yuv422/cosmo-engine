@@ -96,12 +96,12 @@ Tile *load_tiles(const char *filename, TileType type, uint16 *num_tiles_loaded) 
 
     for(int i=0;i<num_tiles;i++)
     {
-        file_read_to_buffer(&file, planarData, tile_size);
-        load_tile(planarData, type, &tiles[i]);
         if(i != 0 && i % (0xffff / tile_size) == 0)
         {
-            file_seek(&file, file.pos + (0xffff % tile_size));
+            file_seek(&file, file.pos + (0xffff % tile_size)); //skip the last (unused) bytes from the block.
         }
+        file_read_to_buffer(&file, planarData, tile_size);
+        load_tile(planarData, type, &tiles[i]);
     }
 
     *num_tiles_loaded = num_tiles;

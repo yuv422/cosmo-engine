@@ -12,6 +12,8 @@
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 200
 
+#define SCALE_FACTOR 2
+
 void fade_to_black_speed_3();
 void fade_in_from_black_with_delay_3();
 

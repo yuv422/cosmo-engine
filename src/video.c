@@ -21,7 +21,7 @@ void fade_to_black_speed_3()
 
 bool video_init()
 {
-    window = SDL_CreateWindow("Cosmo Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*2, SCREEN_HEIGHT*2, 0);
+    window = SDL_CreateWindow("Cosmo Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*SCALE_FACTOR, SCREEN_HEIGHT*SCALE_FACTOR, 0);
     if(window == NULL)
     {
         printf("Error: creating SDL Window. %s\n", SDL_GetError());
