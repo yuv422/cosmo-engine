@@ -20,6 +20,9 @@ void fade_in_from_black_with_delay_3();
 bool video_init();
 void video_shutdown();
 
+void set_text_mode();
+void set_game_mode();
+
 void video_update();
 
 void video_fill_screen_with_black();
@@ -38,5 +41,7 @@ void video_update_palette(int palette_index, SDL_Color new_color);
 void fade_to_black(uint16 wait_time);
 void fade_to_white(uint16 wait_time);
 void fade_in_from_black(uint16 wait_time);
+
+void video_draw_text(uint8 character, int fg, int bg, int x, int y);
 
 #endif //COSMO_ENGINE_VIDEO_H

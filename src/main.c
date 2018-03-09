@@ -13,6 +13,7 @@
 #include "config.h"
 #include "high_scores.h"
 #include "demo.h"
+#include "b800.h"
 
 int cleanup_and_exit();
 
@@ -48,6 +49,8 @@ int main(int argc, char *argv[]) {
         }
         game_play_mode = main_menu();
     }
+
+    display_b800_screen("COSMO1.MNI");
 
     return cleanup_and_exit();
 }

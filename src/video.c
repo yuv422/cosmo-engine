@@ -7,16 +7,56 @@
 #include "palette.h"
 #include "tile.h"
 #include "input.h"
+#include "b800_font.h"
+
+typedef struct VideoSurface {
+    SDL_Texture *texture;
+    SDL_Surface *surface;
+    SDL_Surface *windowSurface;
+} VideoSurface;
 
 SDL_Window *window;
 SDL_Renderer *renderer;
-SDL_Texture *texture;
-SDL_Surface *surface;
-SDL_Surface *windowSurface;
+
+VideoSurface game_surface;
+VideoSurface text_surface;
+
+bool is_game_mode = true;
+
+void video_fill_surface_with_black(SDL_Surface *surface);
 
 void fade_to_black_speed_3()
 {
     fade_to_black(3);
+}
+
+bool init_surface(VideoSurface *surface, int width, int height)
+{
+    surface->texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+    if(surface->texture == NULL)
+    {
+        printf("Error: creating texture. %s\n", SDL_GetError());
+        return false;
+    }
+
+    surface->surface = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+    if(surface->surface == NULL)
+    {
+        printf("Error: creating indexed surface. %s\n", SDL_GetError());
+        return false;
+    }
+
+    surface->windowSurface = SDL_CreateRGBSurface(0,
+                                         surface->surface->w, surface->surface->h,
+                                         32, 0, 0, 0, 0);
+    if(surface->windowSurface == NULL)
+    {
+        printf("Error: creating window surface. %s\n", SDL_GetError());
+        return false;
+    }
+
+    is_game_mode = true;
+    return true;
 }
 
 bool video_init()
@@ -28,6 +68,8 @@ bool video_init()
         return false;
     }
 
+    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
     if(renderer == NULL)
     {
@@ -35,32 +77,15 @@ bool video_init()
         return false;
     }
 
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
-    if(texture == NULL)
-    {
-        printf("Error: creating texture. %s\n", SDL_GetError());
-        return false;
-    }
+    init_surface(&game_surface, SCREEN_WIDTH, SCREEN_HEIGHT);
+    set_palette_on_surface(game_surface.surface);
 
-    surface = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 8, 0, 0, 0, 0);
-    if(surface == NULL)
-    {
-        printf("Error: creating indexed surface. %s\n", SDL_GetError());
-        return false;
-    }
+    init_surface(&text_surface, SCREEN_WIDTH*2, SCREEN_HEIGHT*2);
+    set_palette_on_surface(text_surface.surface);
+    video_fill_surface_with_black(text_surface.surface);
 
-    set_palette_on_surface(surface);
+    set_game_mode();
 
-    windowSurface = SDL_CreateRGBSurface(0,
-                           surface->w, surface->h,
-                           32, 0, 0, 0, 0);
-    if(windowSurface == NULL)
-    {
-        printf("Error: creating window surface. %s\n", SDL_GetError());
-        return false;
-    }
-
-    SDL_RenderSetLogicalSize( renderer, SCREEN_WIDTH, SCREEN_HEIGHT );
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
     SDL_RenderClear( renderer );
     SDL_RenderPresent( renderer);
@@ -74,22 +99,39 @@ void video_shutdown()
     SDL_DestroyWindow(window);
 }
 
+void set_text_mode()
+{
+    if(!is_game_mode)
+        return;
+    SDL_RenderSetLogicalSize( renderer, text_surface.surface->w, text_surface.surface->h );
+    is_game_mode = false;
+}
+
+void set_game_mode()
+{
+    if(is_game_mode)
+        return;
+    SDL_RenderSetLogicalSize( renderer, game_surface.surface->w, game_surface.surface->h );
+    is_game_mode = true;
+}
+
 void video_update()
 {
-    SDL_BlitSurface(surface, NULL, windowSurface, NULL);
+    VideoSurface *s = is_game_mode ? &game_surface : &text_surface;
+    SDL_BlitSurface(s->surface, NULL, s->windowSurface, NULL);
 
     void *pixels;
     int pitch;
-    SDL_LockTexture(texture, NULL, &pixels, &pitch);
-    SDL_ConvertPixels(windowSurface->w, windowSurface->h,
-                      windowSurface->format->format,
-                      windowSurface->pixels, windowSurface->pitch,
+    SDL_LockTexture(s->texture, NULL, &pixels, &pitch);
+    SDL_ConvertPixels(s->windowSurface->w, s->windowSurface->h,
+                      s->windowSurface->format->format,
+                      s->windowSurface->pixels, s->windowSurface->pitch,
                       SDL_PIXELFORMAT_RGBA8888,
                       pixels, pitch);
-    SDL_UnlockTexture(texture);
+    SDL_UnlockTexture(s->texture);
 
     /* Make the modified texture visible by rendering it */
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderCopy(renderer, s->texture, NULL, NULL);
 
     /*
      * Update the screen with any rendering performed since the
@@ -100,7 +142,7 @@ void video_update()
 
 void video_draw_tile(Tile *tile, uint16 x, uint16 y)
 {
-    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
+    uint8 *pixel = (uint8 *)game_surface.surface->pixels + x + y * SCREEN_WIDTH;
     uint8 *tile_pixel = tile->pixels;
     if(tile->type == SOLID)
     {
@@ -131,7 +173,7 @@ void video_draw_tile(Tile *tile, uint16 x, uint16 y)
 
 void video_draw_tile_solid_white(Tile *tile, uint16 x, uint16 y)
 {
-    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
+    uint8 *pixel = (uint8 *)game_surface.surface->pixels + x + y * SCREEN_WIDTH;
     uint8 *tile_pixel = tile->pixels;
     if(tile->type == SOLID)
     {
@@ -162,7 +204,7 @@ void video_draw_tile_solid_white(Tile *tile, uint16 x, uint16 y)
 
 void video_draw_tile_mode3(Tile *tile, uint16 x, uint16 y)
 {
-    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
+    uint8 *pixel = (uint8 *)game_surface.surface->pixels + x + y * SCREEN_WIDTH;
     uint8 *tile_pixel = tile->pixels;
     if(tile->type == TRANSPARENT)
     {
@@ -184,7 +226,7 @@ void video_draw_tile_mode3(Tile *tile, uint16 x, uint16 y)
 
 void video_draw_highlight_effect(uint16 x, uint16 y, uint8 type)
 {
-    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
+    uint8 *pixel = (uint8 *)game_surface.surface->pixels + x + y * SCREEN_WIDTH;
     for(int i=0;i<TILE_HEIGHT;i++)
     {
         for(int j=0;j<TILE_WIDTH;j++)
@@ -240,7 +282,7 @@ void video_draw_tile_with_clip_rect(Tile *tile, uint16 x, uint16 y, uint16 clip_
         h -= ((y + h) - (clip_y + clip_h));
     }
 
-    uint8 *pixel = (uint8 *)surface->pixels + x + y * SCREEN_WIDTH;
+    uint8 *pixel = (uint8 *)game_surface.surface->pixels + x + y * SCREEN_WIDTH;
     uint8 *tile_pixel = &tile->pixels[tx + ty * TILE_WIDTH];
         for(int i=0;i<h;i++)
         {
@@ -258,7 +300,7 @@ void video_draw_tile_with_clip_rect(Tile *tile, uint16 x, uint16 y, uint16 clip_
 
 void video_draw_tile_flipped(Tile *tile, uint16 x, uint16 y)
 {
-    uint8 *pixel = (uint8 *)surface->pixels + x + (y+TILE_HEIGHT-1) * SCREEN_WIDTH;
+    uint8 *pixel = (uint8 *)game_surface.surface->pixels + x + (y+TILE_HEIGHT-1) * SCREEN_WIDTH;
     uint8 *tile_pixel = tile->pixels;
     for(int i=0;i<TILE_HEIGHT;i++)
     {
@@ -277,7 +319,7 @@ void video_draw_tile_flipped(Tile *tile, uint16 x, uint16 y)
 
 void video_update_palette(int palette_index, SDL_Color new_color)
 {
-    SDL_SetPaletteColors(surface->format->palette, &new_color, palette_index, 1);
+    SDL_SetPaletteColors(game_surface.surface->format->palette, &new_color, palette_index, 1);
 }
 
 void fade_to_black(uint16 wait_time)
@@ -320,7 +362,8 @@ void fade_in_from_black_with_delay_3()
     fade_in_from_black(3);
 }
 
-void video_fill_screen_with_black() {
+void video_fill_surface_with_black(SDL_Surface *surface)
+{
     SDL_Rect rect;
     rect.x=0;
     rect.y=0;
@@ -329,6 +372,27 @@ void video_fill_screen_with_black() {
     SDL_FillRect(surface, &rect, 0);
 }
 
+void video_fill_screen_with_black() {
+    video_fill_surface_with_black(game_surface.surface);
+}
+
 void video_draw_fullscreen_image(uint8 *pixels) {
-    memcpy(surface->pixels, pixels, 320 * 200);
+    memcpy(game_surface.surface->pixels, pixels, 320 * 200);
+}
+
+void video_draw_text(uint8 character, int fg, int bg, int x, int y)
+{
+    uint8 *pixel = (uint8 *)text_surface.surface->pixels + x*B800_FONT_WIDTH + y*B800_FONT_HEIGHT*text_surface.surface->w;
+
+    int count=0;
+    for(int i=0;i<B800_FONT_HEIGHT;i++)
+    {
+        for (int j = 0; j < B800_FONT_WIDTH; j++)
+        {
+            int p = (int10_font_16[character * B800_FONT_HEIGHT + (count / 8)] >> (7 - (count % 8))) & 1;
+            pixel[j] = p ? (uint8) fg : (uint8) bg;
+            count++;
+        }
+        pixel += text_surface.surface->w;
+    }
 }

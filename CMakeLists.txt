@@ -25,7 +25,7 @@ set(SOURCE_FILES
         src/font.c src/font.h src/sound/sfx.c src/sound/sfx.h src/sound/audio.c src/sound/audio.h
         src/platforms.c src/platforms.h src/sound/opl.c src/sound/opl.h src/fullscreen_image.c src/fullscreen_image.h
         src/cartoon.c src/cartoon.h src/b800_font.h src/config.c src/config.h src/high_scores.c src/high_scores.h
-        src/demo.c src/demo.h)
+        src/demo.c src/demo.h src/b800.c src/b800.h)
 
 include_directories(src)
 
