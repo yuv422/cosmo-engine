@@ -8,6 +8,7 @@
 #define TEXT_SCREEN_WIDTH 80
 #define TEXT_SCREEN_HEIGHT 25
 
+void display_exit_text();
 void display_b800_screen(const char *filename);
 
 #endif //COSMO_ENGINE_B800_H

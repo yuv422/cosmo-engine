@@ -49,7 +49,73 @@ uint16 map_get_tile_cell(int x, int y) {
     return map_data[x + y * map_width_in_tiles];
 }
 
-const char level_filename_tbl[][13] = {
+const char level_filename_ep1_tbl[][13] = {
+        "A1.MNI",
+        "A2.MNI",
+        "BONUS1.MNI",
+        "BONUS2.MNI",
+        "A3.MNI",
+        "A4.MNI",
+        "BONUS1.MNI",
+        "BONUS2.MNI",
+        "A5.MNI",
+        "A6.MNI",
+        "BONUS1.MNI",
+        "BONUS2.MNI",
+        "A7.MNI",
+        "A8.MNI",
+        "BONUS1.MNI",
+        "BONUS2.MNI",
+        "A9.MNI",
+        "A10.MNI",
+        "BONUS1.MNI",
+        "BONUS2.MNI",
+        "A11.MNI",
+        "A12.MNI",
+        "BONUS1.MNI",
+        "BONUS2.MNI",
+        "A13.MNI",
+        "A14.MNI",
+        "BONUS1.MNI",
+        "BONUS2.MNI",
+        "A15.MNI",
+        "A16.MNI"
+};
+
+const char level_filename_ep2_tbl[][13] = {
+        "B1.MNI",
+        "B2.MNI",
+        "BONUS3.MNI",
+        "BONUS4.MNI",
+        "B3.MNI",
+        "B4.MNI",
+        "BONUS3.MNI",
+        "BONUS4.MNI",
+        "B5.MNI",
+        "B6.MNI",
+        "BONUS3.MNI",
+        "BONUS4.MNI",
+        "B7.MNI",
+        "B8.MNI",
+        "BONUS3.MNI",
+        "BONUS4.MNI",
+        "B9.MNI",
+        "B10.MNI",
+        "BONUS3.MNI",
+        "BONUS4.MNI",
+        "B11.MNI",
+        "B12.MNI",
+        "BONUS3.MNI",
+        "BONUS4.MNI",
+        "B13.MNI",
+        "B14.MNI",
+        "BONUS3.MNI",
+        "BONUS4.MNI",
+        "B15.MNI",
+        "B16.MNI"
+};
+
+const char level_filename_ep3_tbl[][13] = {
         "A1.MNI",
         "A2.MNI",
         "BONUS1.MNI",
@@ -84,6 +150,18 @@ const char level_filename_tbl[][13] = {
 
 void load_level_data(int level_number);
 
+const char *get_level_filename(int level_number)
+{
+    switch(get_episode_number())
+    {
+        case 1 : return level_filename_ep1_tbl[level_number];
+        case 2 : return level_filename_ep2_tbl[level_number];
+        case 3 : return level_filename_ep3_tbl[level_number];
+        default : break;
+    }
+    return NULL;
+}
+
 void load_level(int level_number)
 {
     if (level_number != 0 || show_one_moment_screen_flag == 0) {
@@ -94,9 +172,9 @@ void load_level(int level_number)
     }
 
     File map_file;
-    if(!open_file(level_filename_tbl[level_number], &map_file))
+    if(!open_file(get_level_filename(level_number), &map_file))
     {
-        printf("Error: loading level data. %s\n", level_filename_tbl[level_number]);
+        printf("Error: loading level data. %s\n", get_level_filename(level_number));
         return;
     }
 
@@ -171,9 +249,9 @@ void load_level_data(int level_number)
 {
     byte_28BE3 = 0;
     File map_file;
-    if(!open_file(level_filename_tbl[level_number], &map_file))
+    if(!open_file(get_level_filename(level_number), &map_file))
     {
-        printf("Error: loading level data. %s\n", level_filename_tbl[level_number]);
+        printf("Error: loading level data. %s\n", get_level_filename(level_number));
         return;
     }
 

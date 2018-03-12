@@ -9,6 +9,7 @@
 #include "config.h"
 #include "high_scores.h"
 #include "input.h"
+#include "game.h"
 
 #define MAX_SCORE_STRING_LENGTH 13
 #define NUM_SCAN_CODES 89
@@ -51,12 +52,25 @@ void read_score_name(File *file, char *buf, uint16 buf_size)
     }
 }
 
-void load_config_file(const char *filename)
+const char *get_config_filename()
+{
+    switch(get_episode_number())
+    {
+        case 1 : return "COSMO1.CFG";
+        case 2 : return "COSMO2.CFG";
+        case 3 : return "COSMO3.CFG";
+        default : break;
+    }
+
+    return NULL;
+}
+
+void load_config_file()
 {
     File file;
     clear_high_score_table();
 
-    if(file_open(filename, "rb", &file))
+    if(file_open(get_config_filename(), "rb", &file))
     {
         set_input_command_key(CMD_KEY_UP, scancode_to_keycode(file_read1(&file)));
         set_input_command_key(CMD_KEY_DOWN, scancode_to_keycode(file_read1(&file)));
@@ -101,10 +115,10 @@ void load_config_file(const char *filename)
     }
 }
 
-void write_config_file(const char *filename)
+void write_config_file()
 {
     File file;
-    if(!file_open(filename, "wb", &file))
+    if(!file_open(get_config_filename(), "wb", &file))
     {
         return;
     }

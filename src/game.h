@@ -33,4 +33,6 @@ void game_loop();
 void set_initial_game_state();
 void reset_game_state();
 
+uint8 get_episode_number();
+
 #endif //COSMO_ENGINE_GAME_H

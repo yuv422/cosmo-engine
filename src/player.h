@@ -50,7 +50,7 @@ extern int word_28F7E;
 extern int word_28F94;
 extern int word_2E180;
 extern int word_2E1E8;
-extern int word_2E1F8;
+extern int hide_player_sprite;
 extern int word_2E1DE;
 extern int word_2E214;
 extern int player_hoverboard_counter;

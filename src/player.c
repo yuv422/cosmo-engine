@@ -63,7 +63,7 @@ int word_28F7E;
 int word_28F94;
 int word_2E180;
 int word_2E1E8;
-int word_2E1F8;
+int hide_player_sprite;
 int word_2E1DE;
 int word_2E214;
 int player_hoverboard_counter;
@@ -260,7 +260,7 @@ void handle_player_input_maybe()
 
     int si = 0;
     player_is_grabbing_wall_flag = 0;
-    if(player_death_counter != 0 || teleporter_state_maybe != 0 || player_hoverboard_counter != 0 || player_walk_anim_index != 0 || word_2E1F8 != 0)
+    if(player_death_counter != 0 || teleporter_state_maybe != 0 || player_hoverboard_counter != 0 || player_walk_anim_index != 0 || hide_player_sprite != 0)
     {
         return;
     }
@@ -1142,7 +1142,7 @@ void display_player_sprite(uint8 frame_num, int x_pos, int y_pos, int tile_displ
         return;
     }
 
-    if(player_push_frame_num == 0xff || teleporter_state_maybe || (player_invincibility_counter & 1) || word_2E1F8)
+    if(player_push_frame_num == 0xff || teleporter_state_maybe || (player_invincibility_counter & 1) || hide_player_sprite)
     {
         return;
     }
@@ -1532,7 +1532,7 @@ void player_add_score_for_actor(int actorInfoIndex)
 
 void player_decrease_health()
 {
-    if(player_death_counter == 0 && god_mode_flag == 0 && word_2E1F8 == 0 && teleporter_state_maybe == 0 && byte_32EB8 == 0 && player_in_pneumatic_tube_flag == 0 && player_invincibility_counter == 0)
+    if(player_death_counter == 0 && god_mode_flag == 0 && hide_player_sprite == 0 && teleporter_state_maybe == 0 && byte_32EB8 == 0 && player_in_pneumatic_tube_flag == 0 && player_invincibility_counter == 0)
     {
         player_hanging_on_wall_direction = 0;
         if(word_28BEA == 0)

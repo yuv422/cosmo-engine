@@ -9,7 +9,7 @@
 #include "video.h"
 #include "game.h"
 
-static const char filename_tbl[][13] = {
+static const char filename_ep1_tbl[][13] = {
         "PRETITLE.MNI",
         "TITLE1.MNI",
         "CREDIT.MNI",
@@ -17,8 +17,36 @@ static const char filename_tbl[][13] = {
         "END1.MNI",
         "ONEMOMNT.MNI"
 };
+static const char filename_ep2_tbl[][13] = {
+        "PRETITLE.MNI",
+        "TITLE2.MNI",
+        "CREDIT.MNI",
+        "BONUS.MNI",
+        "END2.MNI",
+        "ONEMOMNT.MNI"
+};
+static const char filename_ep3_tbl[][13] = {
+        "PRETITLE.MNI",
+        "TITLE3.MNI",
+        "CREDIT.MNI",
+        "BONUS.MNI",
+        "END3.MNI",
+        "ONEMOMNT.MNI"
+};
 
 #define NUM_PIXELS (320 * 200)
+
+const char * get_filename(uint8 image_number)
+{
+    switch(get_episode_number())
+    {
+        case 1 : return filename_ep1_tbl[image_number];
+        case 2 : return filename_ep2_tbl[image_number];
+        case 3 : return filename_ep3_tbl[image_number];
+        default : break;
+    }
+    return NULL;
+}
 
 uint8 *load_image(const char *filename)
 {
@@ -59,7 +87,7 @@ void display_fullscreen_image(uint8 image_number)
 
     fade_to_black_speed_3();
 
-    uint8 *image = load_image(filename_tbl[image_number]);
+    uint8 *image = load_image(get_filename(image_number));
     video_draw_fullscreen_image(image);
     free(image);
 

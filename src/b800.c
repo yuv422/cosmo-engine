@@ -8,6 +8,16 @@
 #include "input.h"
 #include "game.h"
 
+void display_exit_text()
+{
+    switch(get_episode_number())
+    {
+        case 1 : display_b800_screen("COSMO1.MNI");
+        case 2 : display_b800_screen("COSMO2.MNI");
+        case 3 : display_b800_screen("COSMO3.MNI");
+    }
+}
+
 void display_b800_screen(const char *filename)
 {
     uint32 length;

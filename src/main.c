@@ -50,14 +50,15 @@ int main(int argc, char *argv[]) {
         game_play_mode = main_menu();
     }
 
-    display_b800_screen("COSMO1.MNI");
+    stop_music();
+    display_exit_text();
 
     return cleanup_and_exit();
 }
 
 int cleanup_and_exit()
 {
-    write_config_file("COSMO1.CFG");
+    write_config_file();
     video_shutdown();
     audio_shutdown();
     SDL_Quit();

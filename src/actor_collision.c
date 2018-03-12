@@ -388,7 +388,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 }
                 play_sfx(6);
                 byte_2E17C = 0;
-                word_2E1F8 = 0;
+                hide_player_sprite = 0;
                 word_2E180 = 0;
 
                 actor->has_moved_left_flag = 1;
@@ -427,7 +427,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 player_bounce_height_counter = 0;
                 byte_2E2E4 = 0;
                 byte_2E17C = 1;
-                word_2E1F8 = 1;
+                hide_player_sprite = 1;
                 actor->has_moved_left_flag = 1;
                 actor->data_2 = 0;
                 actor->data_1 = 1;
@@ -831,7 +831,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 actor->frame_num = 0;
                 actor->data_5 = 0;
                 actor->data_4 = 5;
-                word_2E1F8 = 1;
+                hide_player_sprite = 1;
                 byte_2E17C = 1;
                 play_sfx(0x27);
             }
@@ -878,7 +878,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             {
                 actor->data_5 = 1;
                 byte_2E17C = 1;
-                word_2E1F8 = 1;
+                hide_player_sprite = 1;
                 actor->frame_num = 1;
                 play_sfx(0x27);
             }
@@ -1038,6 +1038,32 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             actor->data_1 = 1;
             player_decrease_health();
             return 0;
+
+        case 246:
+            if (get_episode_number() != 1) //FIXME is this ok to leave in EP1
+            {
+                hide_player_sprite = 1;
+                byte_2E17C = 1;
+                actor->data_1++;
+                if (actor->frame_num == 0)
+                {
+                    if (actor->data_1 == 3)
+                    {
+                        actor->frame_num++;
+                    }
+                }
+                else
+                {
+                    finished_level_flag_maybe = 1;
+                }
+                if (actor->data_1 > 1)
+                {
+                    player_y_pos = actor->y;
+                    byte_2E2E4 = 0;
+                }
+                return 0;
+            }
+            break;
 
         default :break;
     }

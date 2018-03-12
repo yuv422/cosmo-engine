@@ -37,16 +37,23 @@ uint8 finished_game_flag_maybe = 0;
 uint8 finished_level_flag_maybe;
 uint8 cheat_mode_flag = 0;
 
+uint8 episode_number = 1;
+
 void game_wait();
 void select_next_level();
 void end_sequence();
+
+uint8 get_episode_number()
+{
+    return episode_number;
+}
 
 void game_init()
 {
     display_fullscreen_image(0);
     wait_for_time_or_key(0xc8);
 
-    load_config_file("COSMO1.CFG");
+    load_config_file();
 
     status_load_tiles();
     tile_attr_load();
@@ -99,7 +106,7 @@ void reset_game_state()
 
     sub_11062();
 
-    word_2E1F8 = 0;
+    hide_player_sprite = 0;
     move_platform_flag = 1;
     byte_32EB8 = 0;
     palette_2E1EE = 0;
@@ -324,37 +331,62 @@ void select_next_level()
     }
 }
 
+const char *get_game_vol_filename()
+{
+    switch(get_episode_number())
+    {
+        case 1 : return "COSMO1.VOL";
+        case 2 : return "COSMO2.VOL";
+        case 3 : return "COSMO3.VOL";
+        default : break;
+    }
+
+    return NULL;
+}
+
+const char *get_game_stn_filename()
+{
+    switch(get_episode_number())
+    {
+        case 1 : return "COSMO1.STN";
+        case 2 : return "COSMO2.STN";
+        case 3 : return "COSMO3.STN";
+        default : break;
+    }
+
+    return NULL;
+}
 //Protected
 
 unsigned char *load_file(const char *filename, unsigned char *buf, uint32 buf_size)
 {
     uint32 bytes_read;
-    if(vol_file_load("COSMO1.VOL", filename, buf, buf_size, &bytes_read))
+    if(vol_file_load(get_game_vol_filename(), filename, buf, buf_size, &bytes_read))
     {
         return buf;
     }
 
-    return vol_file_load("COSMO1.STN", filename, buf, buf_size, &bytes_read);
+    return vol_file_load(get_game_stn_filename(), filename, buf, buf_size, &bytes_read);
 }
 
 unsigned char *load_file_in_new_buf(const char *filename, uint32 *file_size)
 {
     unsigned char *buf;
-    buf = vol_file_load("COSMO1.VOL", filename, NULL, 0, file_size);
+    buf = vol_file_load(get_game_vol_filename(), filename, NULL, 0, file_size);
     if(buf)
     {
         return buf;
     }
 
-    return vol_file_load("COSMO1.STN", filename, NULL, 0, file_size);
+    return vol_file_load(get_game_stn_filename(), filename, NULL, 0, file_size);
 }
 
 bool open_file(const char *filename, File *file)
 {
-    if(vol_file_open("COSMO1.VOL", filename, file))
+    if(vol_file_open(get_game_vol_filename(), filename, file))
     {
         return true;
     }
 
-    return vol_file_open("COSMO1.STN", filename, file);
+    return vol_file_open(get_game_stn_filename(), filename, file);
 }

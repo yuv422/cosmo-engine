@@ -1072,6 +1072,11 @@ void display_end_of_level_score_dialog(const char *header_text, const char *foot
 }
 
 void end_game_dialog(uint16 dialog_number) {
+    if(get_episode_number() != 1)
+    {
+        return;
+    }
+
     flush_input();
     reset_player_control_inputs();
     if(dialog_number == 0xa6)

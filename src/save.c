@@ -47,7 +47,7 @@ void write_savegame_file(char suffix)
     else
     {
         char filename[13];
-        sprintf(filename, "COSMO1.SV%c", suffix);
+        sprintf(filename, "COSMO%d.SV%c", get_episode_number(), suffix);
         File savefile;
         if(!file_open(filename, "wb", &savefile))
         {
@@ -91,7 +91,7 @@ bool load_savegame_file(char suffix)
     {
         File file;
         char filename[13];
-        sprintf(filename, "COSMO1.SV%c", suffix);
+        sprintf(filename, "COSMO%d.SV%c", get_episode_number(), suffix);
 
         if(!file_open(filename, "rb", &file))
         {
