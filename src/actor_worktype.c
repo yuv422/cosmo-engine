@@ -1481,22 +1481,21 @@ void actor_wt_dragonfly(ActorData *actor)
 
 void actor_wt_egg_head(ActorData *actor)
 {
-    if(actor->data_2 != 0)
+    if(actor->data_2 == 0)
     {
-        actor->frame_num = 2;
-        return;
-    }
-
-    if(sub_1106F() % 0x46 == 0)
-    {
-
-        if(actor->data_3 == 0)
+        if(sub_1106F() % 0x46 == 0 && actor->data_3 == 0)
         {
             actor->data_3 = 2;
         }
-        return;
+        else
+        {
+            actor->frame_num = 0;
+        }
     }
-    actor->frame_num = 0;
+    else
+    {
+        actor->frame_num = 2;
+    }
 
     if(actor->data_3 != 0)
     {
