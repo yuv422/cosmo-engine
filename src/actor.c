@@ -494,7 +494,7 @@ int actor_init(int actor_num, int image_index, int x_pos, int y_pos)
             break;
 
         case 101:
-            actor_init_struct(actor_num, 0x65, x_pos, y_pos, 0, 1, 0, 0, actor_wt_big_red_jumper_frozen, 0, 0, 0, 0, 7);
+            actor_init_struct(actor_num, 0x65, x_pos, y_pos, 0, 1, 0, 0, actor_wt_big_red_jumper, 0, 0, 0, 0, 7);
             break;
 
         case 102:

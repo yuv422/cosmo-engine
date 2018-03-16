@@ -13,7 +13,7 @@ void actor_wt_159_unknown(ActorData *actor);
 void actor_wt_acid(ActorData *actor);
 void actor_wt_alien_eating_space_plant(ActorData *actor);
 void actor_wt_angry_moon(ActorData *actor);
-void actor_wt_big_red_jumper_frozen(ActorData *actor);
+void actor_wt_big_red_jumper(ActorData *actor);
 void actor_wt_big_red_plant(ActorData *actor);
 void actor_wt_big_saw_blade(ActorData *actor);
 void actor_wt_big_yellow_spike(ActorData *actor);

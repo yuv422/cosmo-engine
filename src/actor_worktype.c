@@ -454,9 +454,213 @@ void actor_wt_angry_moon(ActorData *actor)
     return;
 }
 
-void actor_wt_big_red_jumper_frozen(ActorData *actor)
+const static sint8 red_jumper_tbl[] = {
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1,
+        0, 1, -2, 2, -2, 2, -2, 2,
+        -2, 2, -1, 2, -1, 2, -1, 2,
+        0, 2, 0, 2, 1, 1, 1, 1
+};
+
+void actor_wt_big_red_jumper(ActorData *actor)
 {
-    //TODO get logic out of other exes for this one.
+    if(actor->data_2 >= 5)
+    {
+        if(actor->data_2 != 14 || is_sprite_on_screen(0x65, 0, actor->x, actor->y) == 0)
+        {
+            if(actor->data_2 > 0x10 && actor->data_2 < 0x27)
+            {
+                if(actor->data_1 != 0 || sprite_blocking_check(2, 0x65, 0, actor->x - 1, actor->y) != NOT_BLOCKED)
+                {
+                    if(actor->data_1 == 3 && sprite_blocking_check(3, 0x65, 0, actor->x + 1, actor->y) == NOT_BLOCKED)
+                    {
+                        actor->x = actor->x + 1;
+                    }
+                }
+                else
+                {
+                    actor->x = actor->x - 1;
+                }
+            }
+        }
+        else
+        {
+            play_sfx(0x1f);
+        }
+    }
+    else
+    {
+        if(actor->x <= player_x_pos)
+        {
+            actor->data_1 = 3;
+        }
+        else
+        {
+            actor->data_1 = 0;
+        }
+    }
+    
+    if (actor->data_2 <= 0x27) //goto loc_15546;
+    {
+// node 00015546-0001561d #insn=6 use={} def={} in={} out={} pred={ 153F7} CONDJUMP target=0001566d follow=0001561f
+        //loc_15546:
+        //si = * ((actor->data_2 << 1) + word_28356);
+        sint8 si = red_jumper_tbl[actor->data_2];
+        if(si == -1)
+        {
+            if(sprite_blocking_check(0, 0x65, 0, actor->x, actor->y - 1) != 0)
+            {
+                actor->data_2 = 0x22;
+            }
+            else
+            {
+                actor->y = actor->y - 1;
+            }
+        }
+        if(si == -2)
+        {
+
+            if(sprite_blocking_check(0, 0x65, 0, actor->x, actor->y - 1) != 0)
+            {
+                actor->data_2 = 0x22;
+            }
+            else
+            {
+                actor->y = actor->y - 1;
+            }
+
+            if(sprite_blocking_check(0, 0x65, 0, actor->x, actor->y - 1) != 0)
+            {
+                actor->data_2 = 0x22;
+            }
+            else
+            {
+                actor->y = actor->y - 1;
+            }
+        }
+        if(si == 1)
+        {
+
+            if(sprite_blocking_check(1, 0x65, 0, actor->x, actor->y + 1) == 0)
+            {
+                actor->y = actor->y + 1;
+            }
+        }
+        if (si != 2) //goto loc_1566D;
+        {
+            // node 0001566d-0001568e #insn=6 use={} def={} in={} out={} pred={  15546} FALLTHROUGH follow=00015698
+            //loc_1566D:
+
+            actor->frame_num = actor->data_1 + red_jumper_tbl[actor->data_2 + 1];
+            if(actor->data_2 < 0x27)
+            {
+                actor->data_2 = actor->data_2 + 2;
+            }
+            return;
+        }
+        else
+        {
+            //0001561f
+            // node 0001561f-0001563b #insn=3 use={} def={ax, bx} in={} out={ax} pred={ 15546} CONDJUMP target=00015662 follow=0001563d
+
+            if (sprite_blocking_check(1, 0x65, 0, actor->x, actor->y - 1) != NOT_BLOCKED) //goto loc_15662;
+            {
+                // node 00015662-0001566b #insn=3 use={} def={bx} in={ax} out={ax} pred={ 1561F} JUMP target=00015698
+                //loc_15662:
+                actor->data_2 = 0;
+                //goto loc_15698;
+                return;
+            }
+            else
+            {
+                // 0001563d
+                // node 0001563d-0001565d #insn=4 use={} def={ax, bx} in={} out={ax} pred={ 1561F} CONDJUMP target=00015662 follow=0001550f
+
+                actor->y = actor->y + 1;
+                if (sprite_blocking_check(1, 0x65, 0, actor->x, actor->y - 1) != NOT_BLOCKED) //goto loc_15662;
+                {
+                    // node 00015662-0001566b #insn=3 use={} def={bx} in={ax} out={ax} pred={ 1563D} JUMP target=00015698
+                   // loc_15662:
+                    actor->data_2 = 0;
+                    //goto loc_15698;
+                    return;
+                }
+                else
+                {
+                    // 0001550f
+                    // node 0001550f-00015516 #insn=3 use={} def={bx} in={} out={} pred={ 154ED 1563D} JUMP target=0001566d
+                   // loc_1550F:
+                    actor->y = actor->y + 1;
+                 //   goto loc_1566D;
+                    // node 0001566d-0001568e #insn=6 use={} def={} in={} out={} pred={ 1550F } FALLTHROUGH follow=00015698
+                  //  loc_1566D:
+
+                    actor->frame_num = actor->data_1 + red_jumper_tbl[actor->data_2 + 1];
+                    if(actor->data_2 < 0x27)
+                    {
+                        actor->data_2 = actor->data_2 + 2;
+                    }
+                    return;
+                }
+            }
+        }
+    }
+    else
+    {
+        //﻿000154d2
+        // node 000154d2-000154eb #insn=1 use={bx} def={ax} in={bx} out={} pred={ 153F7} CONDJUMP target=00015519 follow=000154ed
+        if (sprite_blocking_check(1, 0x65, 0, actor->x, actor->y + 1) != NOT_BLOCKED) //goto loc_15519;
+        {
+            // node 00015519-00015537 #insn=5 use={} def={} in={} out={} pred={  154ED} FALLTHROUGH follow=00015698
+           // loc_15519:
+
+            actor->data_2 = 0;
+            if(is_sprite_on_screen(0x65, 0, actor->x, actor->y) != 0)
+            {
+                play_sfx(0x20);
+            }
+            return;
+        }
+        else
+        {
+            // 00154ed
+            // node 000154ed-0001550d #insn=3 use={} def={ax, bx} in={} out={} pred={ 154D2} CONDJUMP target=00015519 follow=0001550f
+
+            actor->y = actor->y + 1;
+            if (sprite_blocking_check(1, 0x65, 0, actor->x, actor->y + 1) != NOT_BLOCKED) //goto loc_15519;
+            {
+                // node 00015519-00015537 #insn=5 use={} def={} in={} out={} pred={  154ED} FALLTHROUGH follow=00015698
+              //  loc_15519:
+
+                actor->data_2 = 0;
+                if(is_sprite_on_screen(0x65, 0, actor->x, actor->y) != 0)
+                {
+                    play_sfx(0x20);
+                }
+            }
+            else
+            {
+                // 0001550f
+                // node 0001550f-00015516 #insn=3 use={} def={bx} in={} out={} pred={ 154ED } JUMP target=0001566d
+             //   loc_1550F:
+                actor->y = actor->y + 1;
+             //   goto loc_1566D;
+                // node 0001566d-0001568e #insn=6 use={} def={} in={} out={} pred={ 1550F } FALLTHROUGH follow=00015698
+             //   loc_1566D:
+
+                actor->frame_num = actor->data_1 + red_jumper_tbl[actor->data_2 + 1];
+                if(actor->data_2 < 0x27)
+                {
+                    actor->data_2 = actor->data_2 + 2;
+                }
+                return;
+            }
+        }
+    }
+
+// node 00015698-0001569a #insn=3 use={ax} def={si} in={ax} out={} pred={ 15519 15662 15662 1566D} RETURN
+   // loc_15698:
+    /* pop  */
 }
 
 const static uint8 big_red_plant_frame_num_tbl[] ={0, 2, 1, 0, 1};
