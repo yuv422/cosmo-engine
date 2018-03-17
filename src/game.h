@@ -34,5 +34,9 @@ void set_initial_game_state();
 void reset_game_state();
 
 uint8 get_episode_number();
+void set_episode_number(uint8 episode);
+
+void enable_quick_start_mode();
+bool is_quick_start();
 
 #endif //COSMO_ENGINE_GAME_H

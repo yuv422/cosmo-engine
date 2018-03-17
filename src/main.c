@@ -22,16 +22,24 @@ int main(int argc, char *argv[]) {
         printf("argh!!");
     }
 
+    load_config_from_command_line(argc, argv);
+
     video_init();
     audio_init();
     game_init();
 
     video_fill_screen_with_black();
 
-    a_game_by_dialog();
+    if(!is_quick_start())
+    {
+        a_game_by_dialog();
+        game_play_mode = main_menu();
+    }
+    else
+    {
+        game_play_mode = PLAY_GAME;
+    }
 
-    //do while here
-    game_play_mode = main_menu();
     while(game_play_mode != QUIT_GAME)
     {
         load_level(current_level);

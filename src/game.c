@@ -38,6 +38,7 @@ uint8 finished_level_flag_maybe;
 uint8 cheat_mode_flag = 0;
 
 uint8 episode_number = 1;
+bool quick_start_mode = false;
 
 void game_wait();
 void select_next_level();
@@ -48,10 +49,18 @@ uint8 get_episode_number()
     return episode_number;
 }
 
+bool is_quick_start()
+{
+    return quick_start_mode;
+}
+
 void game_init()
 {
-    display_fullscreen_image(0);
-    wait_for_time_or_key(0xc8);
+    if(!is_quick_start())
+    {
+        display_fullscreen_image(0);
+        wait_for_time_or_key(0xc8);
+    }
 
     load_config_file();
 
@@ -389,4 +398,14 @@ bool open_file(const char *filename, File *file)
     }
 
     return vol_file_open(get_game_stn_filename(), filename, file);
+}
+
+void set_episode_number(uint8 episode)
+{
+    episode_number = episode;
+}
+
+void enable_quick_start_mode()
+{
+    quick_start_mode = true;
 }

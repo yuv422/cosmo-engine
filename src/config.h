@@ -12,4 +12,6 @@ void write_config_file();
 uint8 keycode_to_scancode(SDL_Keycode keycode);
 const char *scancode_to_string(uint8 scan_code);
 
+void load_config_from_command_line(int argc, char *argv[]);
+
 #endif //COSMO_ENGINE_CONFIG_H

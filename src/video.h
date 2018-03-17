@@ -19,6 +19,7 @@ void fade_in_from_black_with_delay_3();
 
 bool video_init();
 void video_shutdown();
+void video_set_fullscreen(bool new_state);
 
 void set_text_mode();
 void set_game_mode();

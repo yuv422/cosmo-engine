@@ -10,6 +10,7 @@
 #include "high_scores.h"
 #include "input.h"
 #include "game.h"
+#include "video.h"
 
 #define MAX_SCORE_STRING_LENGTH 13
 #define NUM_SCAN_CODES 89
@@ -361,4 +362,31 @@ const char *scancode_to_string(uint8 scan_code)
     }
 
     return &scancode_string_tbl[scan_code][0];
+}
+
+void load_config_from_command_line(int argc, char **argv)
+{
+    for(int i=1;i<argc; i++)
+    {
+        if(!strcmp(argv[i], "-ep1") || !strcmp(argv[i], "1"))
+        {
+            set_episode_number(1);
+        }
+        if(!strcmp(argv[i], "-ep2") || !strcmp(argv[i], "2"))
+        {
+            set_episode_number(2);
+        }
+        if(!strcmp(argv[i], "-ep3") || !strcmp(argv[i], "3"))
+        {
+            set_episode_number(3);
+        }
+        if(!strcmp(argv[i], "-fs"))
+        {
+            video_set_fullscreen(true);
+        }
+        if(!strcmp(argv[i], "-q"))
+        {
+            enable_quick_start_mode();
+        }
+    }
 }

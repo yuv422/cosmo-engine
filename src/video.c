@@ -22,6 +22,8 @@ VideoSurface game_surface;
 VideoSurface text_surface;
 
 bool is_game_mode = true;
+bool is_fullscreen = false;
+bool video_has_initialised = false;
 
 void video_fill_surface_with_black(SDL_Surface *surface);
 
@@ -55,7 +57,6 @@ bool init_surface(VideoSurface *surface, int width, int height)
         return false;
     }
 
-    is_game_mode = true;
     return true;
 }
 
@@ -68,7 +69,10 @@ bool video_init()
         return false;
     }
 
-    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+    if(is_fullscreen)
+    {
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+    }
 
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
     if(renderer == NULL)
@@ -90,6 +94,7 @@ bool video_init()
     SDL_RenderClear( renderer );
     SDL_RenderPresent( renderer);
 
+    video_has_initialised = true;
     return true;
 }
 
@@ -395,4 +400,25 @@ void video_draw_text(uint8 character, int fg, int bg, int x, int y)
         }
         pixel += text_surface.surface->w;
     }
+}
+
+void video_set_fullscreen(bool new_state)
+{
+    if(new_state == true && !is_fullscreen)
+    {
+        is_fullscreen = true;
+        if(video_has_initialised)
+        {
+            SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+        }
+    }
+    else if(new_state == false && is_fullscreen)
+    {
+        is_fullscreen = false;
+        if(video_has_initialised)
+        {
+            SDL_SetWindowFullscreen(window, 0);
+        }
+    }
+
 }
