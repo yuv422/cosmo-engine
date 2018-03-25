@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
     }
     else
     {
+        set_initial_game_state();
         game_play_mode = PLAY_GAME;
     }
 
