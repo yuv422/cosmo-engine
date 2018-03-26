@@ -24,6 +24,7 @@ VideoSurface text_surface;
 bool is_game_mode = true;
 bool is_fullscreen = false;
 bool video_has_initialised = false;
+int video_scale_factor = DEFAULT_SCALE_FACTOR;
 
 void video_fill_surface_with_black(SDL_Surface *surface);
 
@@ -62,7 +63,7 @@ bool init_surface(VideoSurface *surface, int width, int height)
 
 bool video_init()
 {
-    window = SDL_CreateWindow("Cosmo Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*SCALE_FACTOR, SCREEN_HEIGHT*SCALE_FACTOR, 0);
+    window = SDL_CreateWindow("Cosmo Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH*video_scale_factor, SCREEN_HEIGHT*video_scale_factor, 0);
     if(window == NULL)
     {
         printf("Error: creating SDL Window. %s\n", SDL_GetError());
@@ -421,4 +422,9 @@ void video_set_fullscreen(bool new_state)
         }
     }
 
+}
+
+void video_set_scale_factor(int scale_factor)
+{
+    video_scale_factor = scale_factor;
 }

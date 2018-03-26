@@ -12,7 +12,7 @@
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 200
 
-#define SCALE_FACTOR 2
+#define DEFAULT_SCALE_FACTOR 2
 
 void fade_to_black_speed_3();
 void fade_in_from_black_with_delay_3();
@@ -20,6 +20,7 @@ void fade_in_from_black_with_delay_3();
 bool video_init();
 void video_shutdown();
 void video_set_fullscreen(bool new_state);
+void video_set_scale_factor(int scale_factor);
 
 void set_text_mode();
 void set_game_mode();

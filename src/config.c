@@ -388,5 +388,13 @@ void load_config_from_command_line(int argc, char **argv)
         {
             enable_quick_start_mode();
         }
+        if(!strncmp(argv[i], "-x", 2) && strlen(argv[i]) > 2)
+        {
+            int scale_factor = (int)strtol(&argv[i][2], NULL, 10);
+            if(scale_factor)
+            {
+                video_set_scale_factor(scale_factor);
+            }
+        }
     }
 }
