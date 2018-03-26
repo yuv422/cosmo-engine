@@ -208,7 +208,8 @@ void monster_attack_hint_dialog()
 int quit_game_dialog()
 {
     uint16 x = create_text_dialog_box(11, 4, 0x12, "Are you sure you", "want to quit? ");
-    if (wait_for_input(x + 14, 13) == SDLK_y)
+    SDL_Keycode key = wait_for_input(x + 14, 13);
+    if (key == SDLK_y || is_return_key(key))
     {
         return 1;
     }
