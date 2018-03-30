@@ -177,6 +177,26 @@ void video_draw_tile(Tile *tile, uint16 x, uint16 y)
     }
 }
 
+void video_draw_font_tile(Tile *tile, uint16 x, uint16 y, uint8 font_color)
+{
+    uint8 *pixel = (uint8 *)game_surface.surface->pixels + x + y * SCREEN_WIDTH;
+    uint8 *tile_pixel = tile->pixels;
+
+    for(int i=0;i<TILE_HEIGHT;i++)
+    {
+        for(int j=0;j<TILE_WIDTH;j++)
+        {
+            if(*tile_pixel != TRANSPARENT_COLOR)
+            {
+                *pixel = *tile_pixel == 0xf ? font_color : *tile_pixel;
+            }
+            pixel++;
+            tile_pixel++;
+        }
+        pixel += SCREEN_WIDTH - TILE_WIDTH;
+    }
+}
+
 void video_draw_tile_solid_white(Tile *tile, uint16 x, uint16 y)
 {
     uint8 *pixel = (uint8 *)game_surface.surface->pixels + x + y * SCREEN_WIDTH;

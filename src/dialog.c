@@ -23,6 +23,14 @@
 uint8 show_one_moment_screen_flag = 0;
 uint8 byte_28BE3 = 0;
 uint8 byte_2E21C = 0;
+int cur_selected_item = 0;
+
+typedef struct MenuItem {
+    uint16 x_pos;
+    uint16 y_pos;
+    const char *text;
+    SDL_Keycode action_key;
+} MenuItem;
 
 int cleanup_and_exit();
 uint16 restore_savegame_dialog();
@@ -101,7 +109,7 @@ HintDialogInput hint_dialog_get_input(HintDialogInput input)
     return input;
 }
 
-void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
+void display_dialog_text_with_color(uint16 x_pos, uint16 y_pos, const char *text, uint8 text_color)
 {
     HintDialogInput input = NO_INPUT;
     uint16 typewriter_keys_count = 0;
@@ -145,11 +153,11 @@ void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
                     play_sfx(0x2c);
                 }
                 video_update();
-                display_char(x_pos + x, y_pos, c);
+                display_char(x_pos + x, y_pos, c, text_color);
             }
             else
             {
-                display_char(x_pos + x, y_pos, c);
+                display_char(x_pos + x, y_pos, c, text_color);
             }
             x++;
         }
@@ -173,6 +181,63 @@ void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
         }
     }
     video_update();
+}
+
+void display_dialog_text(uint16 x_pos, uint16 y_pos, const char *text)
+{
+    display_dialog_text_with_color(x_pos, y_pos, text, FONT_WHITE);
+}
+
+void display_menu_items(int x_offset, MenuItem *menu_items)
+{
+    MenuItem *item = menu_items;
+    for(int i=0; item->text != NULL; item++, i++)
+    {
+        display_dialog_text_with_color(x_offset + item->x_pos, item->y_pos, item->text, i == cur_selected_item ? 2 : FONT_WHITE);
+    }
+}
+
+void menu_handle_arrow_key(SDL_Keycode key, MenuItem *items) {
+    int num_items = 0;
+    for(MenuItem *item = items; item->text != NULL; item++)
+    {
+        num_items++;
+    }
+
+    if(key == SDLK_DOWN)
+    {
+        cur_selected_item = (cur_selected_item + 1) % num_items;
+    }
+    if(key == SDLK_UP)
+    {
+        cur_selected_item = cur_selected_item - 1;
+        if(cur_selected_item < 0)
+            cur_selected_item = num_items - 1;
+    }
+
+}
+
+SDL_Keycode display_menu_items_in_dialog(int x_offset,
+                         MenuItem *menu_items,
+                         int spinner_x, int spinner_y)
+{
+    cur_selected_item = 0;
+    SDL_Keycode key;
+    do {
+        display_menu_items(x_offset, menu_items);
+        key = wait_for_input(spinner_x, spinner_y);
+        if(key == SDLK_UP || key == SDLK_DOWN)
+        {
+            menu_handle_arrow_key(key, menu_items);
+        }
+    } while(key == SDLK_UP || key == SDLK_DOWN);
+
+    if(is_return_key(key))
+    {
+        key = menu_items[cur_selected_item].action_key;
+    }
+
+    return key;
 }
 
 void you_havent_found_any_bombs_dialog() {
@@ -445,22 +510,28 @@ void foreign_orders_dialog()
     wait_for_input(si + 0x20, 0x13);
 }
 
+MenuItem main_menu_items[14] = {
+        {0, 5, " B)egin New Game", SDLK_b},
+        {0, 6, " R)estore A Game", SDLK_r},
+        {0, 7, " S)tory", SDLK_s},
+        {0, 8, " I)nstructions", SDLK_i},
+        {0, 9, " H)igh Scores", SDLK_h},
+        {0, 10, " G)ame Redefine", SDLK_g},
+        {0, 12, " O)rdering Info.", SDLK_o},
+        {0, 14, " F)oreign Orders", SDLK_f},
+        {0, 15, " A)pogee's BBS", SDLK_a},
+        {0, 0x10, " D)emo", SDLK_d},
+        {0, 0x11, " C)redits", SDLK_c},
+        {0, 0x12, " T)itle Screen", SDLK_t},
+        {0, 0x14, " Q)uit Game", SDLK_q},
+        {0, 0, NULL, 0}
+};
+
 void main_menu_dialog()
 {
-    uint16 si = create_text_dialog_box(2, 0x15, 0x14, "MAIN MENU", "");
-    display_dialog_text(si, 5, " B)egin New Game");
-    display_dialog_text(si, 6, " R)estore A Game");
-    display_dialog_text(si, 7, " S)tory");
-    display_dialog_text(si, 8, " I)nstructions");
-    display_dialog_text(si, 9, " H)igh Scores");
-    display_dialog_text(si, 10, " G)ame Redefine");
-    display_dialog_text(si, 12, " O)rdering Info.");
-    display_dialog_text(si, 14, " F)oreign Orders");
-    display_dialog_text(si, 15, " A)pogee's BBS");
-    display_dialog_text(si, 0x10, " D)emo");
-    display_dialog_text(si, 0x11, " C)redits");
-    display_dialog_text(si, 0x12, " T)itle Screen");
-    display_dialog_text(si, 0x14, " Q)uit Game");
+    cur_selected_item = 0;
+    int x = create_text_dialog_box(2, 0x15, 0x14, "MAIN MENU", "");
+    display_menu_items(x, main_menu_items);
 }
 
 void story_dialog()
@@ -693,7 +764,7 @@ game_play_mode_enum main_menu() {
                 main_menu_dialog();
                 bool key_handled = true;
                 do {
-                    key = wait_for_input(0x1c, 0x15);
+                    key = display_menu_items_in_dialog(11, main_menu_items, 0x1c, 0x15);
                     switch(key)
                     {
                         case SDLK_ESCAPE :
@@ -706,9 +777,6 @@ game_play_mode_enum main_menu() {
                             i = 0;
                             break;
 
-                        case SDLK_RETURN :
-                        case SDLK_RETURN2 :
-                        case SDLK_KP_ENTER :
                         case SDLK_b :
                         case SDLK_SPACE :
                             stop_music();
@@ -1160,11 +1228,23 @@ uint16 create_text_dialog_box(uint16 y_offset, uint16 height, uint16 width, cons
 
 void savegame_dialog()
 {
-    uint16 x = create_text_dialog_box(8, 10, 0x1c, "Save a game.", "Press ESC to quit.");
-    display_dialog_text(x, 11, " What game number (1-9)?");
-    display_dialog_text(x, 13, " NOTE: Game is saved at");
-    display_dialog_text(x, 14, " BEGINNING of level.");
-    SDL_Keycode keycode = wait_for_input(x + 0x18, 11);
+    MenuItem items[] = {
+            {1, 5, "1) -- Empty Slot --", SDLK_1},
+            {1, 6, "2) -- Empty Slot --", SDLK_2},
+            {1, 7, "3) L3 H3 B6 *50 10000000", SDLK_3},
+            {1, 8, "4) -- Empty Slot --", SDLK_4},
+            {1, 9, "5) -- Empty Slot --", SDLK_5},
+            {1, 10, "6) -- Empty Slot --", SDLK_6},
+            {1, 11, "7) -- Empty Slot --", SDLK_7},
+            {1, 12, "8) -- Empty Slot --", SDLK_8},
+            {1, 13, "9) -- Empty Slot --", SDLK_9},
+            {0, 0, NULL, 0}
+    };
+    uint16 x = create_text_dialog_box(1, 18, 28, "Save a game.", "Press ESC to quit.");
+    display_dialog_text(x, 3, " What game number (1-9)?");
+    display_dialog_text(x, 15, " NOTE: Game is saved at");
+    display_dialog_text(x, 16, " BEGINNING of level.");
+    SDL_Keycode keycode = display_menu_items_in_dialog(x, items, x + 0x18, 3); //wait_for_input(x + 0x18, 11);
     if(keycode == SDLK_ESCAPE || keycode == SDLK_SPACE || is_return_key(keycode))
     {
         return;
@@ -1172,7 +1252,7 @@ void savegame_dialog()
 
     if(keycode >= SDLK_1 && keycode <= SDLK_9)
     {
-        display_char(x + 0x18, 11, keycode);
+        display_char(x + 0x18, 3, keycode, FONT_WHITE);
         uint16 tmp_num_bombs = num_bombs;
         uint32 tmp_num_stars_collected = num_stars_collected;
         uint16 tmp_current_level = current_level;
@@ -1208,7 +1288,7 @@ uint16 restore_savegame_dialog()
     {
         if(character >= SDLK_1 && character <= SDLK_9)
         {
-            display_char(x + 0x18, 14, character);
+            display_char(x + 0x18, 14, character, FONT_WHITE);
             if(load_savegame_file(character))
             {
                 return 1;
@@ -1329,16 +1409,20 @@ void keyboard_config()
     }
 }
 
+static MenuItem game_redefine_items[] = {
+        {0, 7, " K)eyboard redefine", SDLK_k},
+        {0, 8, " J)oystick redefine", SDLK_j},
+        {0, 9, " S)ound toggle", SDLK_s},
+        {0, 10, " T)est sound", SDLK_t},
+        {0, 11, " M)usic toggle", SDLK_m},
+        {0, 0, NULL, 0}
+};
+
 void game_redefine()
 {
     uint16 si = create_text_dialog_box(4, 0xb, 0x16, "Game Redefine", "Press ESC to quit.");
-    display_dialog_text(si, 7,  " K)eyboard redefine");
-    display_dialog_text(si, 8,  " J)oystick redefine");
-    display_dialog_text(si, 9,  " S)ound toggle");
-    display_dialog_text(si, 10, " T)est sound");
-    display_dialog_text(si, 11, " M)usic toggle");
 
-    SDL_Keycode key = wait_for_input(0x1d, 0xd);
+    SDL_Keycode key = display_menu_items_in_dialog(si, game_redefine_items, 0x1d, 0xd);
 
     switch (key)
     {
@@ -1414,20 +1498,24 @@ void malformed_savegame_dialog()
     wait_for_input(x + 0x19, 4);
 }
 
+static MenuItem help_menu_items[] = {
+        {0, 5, " S)ave your game", SDLK_s},
+        {0, 6, " R)estore a game", SDLK_r},
+        {0, 7, " H)elp", SDLK_h},
+        {0, 8, " G)ame redefine", SDLK_g},
+        {0, 9, " V)iew High Scores", SDLK_v},
+        {0, 10, " Q)uit Game", SDLK_q},
+        {0, 0, NULL, 0}
+};
+
 uint16 help_menu_dialog()
 {
-    uint16 si = create_text_dialog_box(2, 12, 0x16, "HELP MENU", "Press ESC to quit.");
-    display_dialog_text(si, 5, " S)ave your game");
-    display_dialog_text(si, 6, " R)estore a game");
-    display_dialog_text(si, 7, " H)elp");
-    display_dialog_text(si, 8, " G)ame redefine");
-    display_dialog_text(si, 9, " V)iew High Scores");
-    display_dialog_text(si, 10, " Q)uit Game");
+    uint16 x_offset = create_text_dialog_box(2, 12, 0x16, "HELP MENU", "Press ESC to quit.");
 
     for(;;)
     {
         uint16 status = 0;
-        switch (wait_for_input(0x1d, 12))
+        switch (display_menu_items_in_dialog(x_offset, help_menu_items, 0x1d, 12))
         {
             case SDLK_g:
                 game_redefine();
@@ -1501,7 +1589,7 @@ void collect_input_string(uint16 x, uint16 y, char *name_buffer, uint8 buf_lengt
             if(i < buf_length - 1)
             {
                 name_buffer[i] =(char)toupper(key);
-                display_char(x + i, y, (char)key);
+                display_char(x + i, y, (char)key, FONT_WHITE);
                 i++;
             }
         }
