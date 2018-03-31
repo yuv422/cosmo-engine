@@ -1226,21 +1226,51 @@ uint16 create_text_dialog_box(uint16 y_offset, uint16 height, uint16 width, cons
     return draw_dialog_frame(dialog_x, y_offset, height, width, top_message, bottom_message, 1);
 }
 
+void savegame_load_savegame_slot_text(char *text, uint8 position)
+{
+    SaveGameData save_data;
+    SaveStatus status = load_savegame_data_from_file('1' + position, &save_data);
+    if(status == LOADED)
+    {
+        sprintf(text, "%d) L%-2d H%d B%d *%-2d %8d",
+                position+1, level_numbers_tbl[save_data.current_level], save_data.health-1, save_data.num_bombs,
+                save_data.num_stars_collected, save_data.score);
+    }
+}
+
 void savegame_dialog()
 {
+    char slot_text[][26] = { //"3) L13 H3 B6 *50 10000000\0"
+            "1) -- Empty Slot --",
+            "2) -- Empty Slot --",
+            "3) -- Empty Slot --",
+            "4) -- Empty Slot --",
+            "5) -- Empty Slot --",
+            "6) -- Empty Slot --",
+            "7) -- Empty Slot --",
+            "8) -- Empty Slot --",
+            "9) -- Empty Slot --",
+    };
+
     MenuItem items[] = {
-            {1, 5, "1) -- Empty Slot --", SDLK_1},
-            {1, 6, "2) -- Empty Slot --", SDLK_2},
-            {1, 7, "3) L3 H3 B6 *50 10000000", SDLK_3},
-            {1, 8, "4) -- Empty Slot --", SDLK_4},
-            {1, 9, "5) -- Empty Slot --", SDLK_5},
-            {1, 10, "6) -- Empty Slot --", SDLK_6},
-            {1, 11, "7) -- Empty Slot --", SDLK_7},
-            {1, 12, "8) -- Empty Slot --", SDLK_8},
-            {1, 13, "9) -- Empty Slot --", SDLK_9},
+            {1, 5, slot_text[0], SDLK_1},
+            {1, 6, slot_text[1], SDLK_2},
+            {1, 7, slot_text[2], SDLK_3},
+            {1, 8, slot_text[3], SDLK_4},
+            {1, 9, slot_text[4], SDLK_5},
+            {1, 10, slot_text[5], SDLK_6},
+            {1, 11, slot_text[6], SDLK_7},
+            {1, 12, slot_text[7], SDLK_8},
+            {1, 13, slot_text[8], SDLK_9},
             {0, 0, NULL, 0}
     };
-    uint16 x = create_text_dialog_box(1, 18, 28, "Save a game.", "Press ESC to quit.");
+
+    for(int i=0; i < 9; i++)
+    {
+        savegame_load_savegame_slot_text(slot_text[i], i);
+    }
+
+    uint16 x = create_text_dialog_box(1, 18, 29, "Save a game.", "Press ESC to quit.");
     display_dialog_text(x, 3, " What game number (1-9)?");
     display_dialog_text(x, 15, " NOTE: Game is saved at");
     display_dialog_text(x, 16, " BEGINNING of level.");
@@ -1281,14 +1311,44 @@ void savegame_dialog()
 
 uint16 restore_savegame_dialog()
 {
-    uint16 x = create_text_dialog_box(11, 7, 0x1c, "Restore a game.", "Press ESC to quit.");
-    display_dialog_text(x, 14, " What game number (1-9)?");
-    SDL_Keycode character = wait_for_input(x + 0x18, 14);
+    char slot_text[][26] = { //"3) L13 H3 B6 *50 10000000\0"
+            "1) -- Empty Slot --",
+            "2) -- Empty Slot --",
+            "3) -- Empty Slot --",
+            "4) -- Empty Slot --",
+            "5) -- Empty Slot --",
+            "6) -- Empty Slot --",
+            "7) -- Empty Slot --",
+            "8) -- Empty Slot --",
+            "9) -- Empty Slot --",
+    };
+
+    MenuItem items[] = {
+            {1, 7, slot_text[0], SDLK_1},
+            {1, 8, slot_text[1], SDLK_2},
+            {1, 9, slot_text[2], SDLK_3},
+            {1, 10, slot_text[3], SDLK_4},
+            {1, 11, slot_text[4], SDLK_5},
+            {1, 12, slot_text[5], SDLK_6},
+            {1, 13, slot_text[6], SDLK_7},
+            {1, 14, slot_text[7], SDLK_8},
+            {1, 15, slot_text[8], SDLK_9},
+            {0, 0, NULL, 0}
+    };
+
+    for(int i=0; i < 9; i++)
+    {
+        savegame_load_savegame_slot_text(slot_text[i], i);
+    }
+
+    uint16 x = create_text_dialog_box(3, 16, 29, "Restore a game.", "Press ESC to quit.");
+    display_dialog_text(x, 5, " What game number (1-9)?");
+    SDL_Keycode character = display_menu_items_in_dialog(x, items, x + 0x18, 5);
     if(character != SDLK_ESCAPE && character != SDLK_SPACE && !is_return_key(character))
     {
         if(character >= SDLK_1 && character <= SDLK_9)
         {
-            display_char(x + 0x18, 14, character, FONT_WHITE);
+            display_char(x + 0x18, 5, character, FONT_WHITE);
             if(load_savegame_file(character))
             {
                 return 1;

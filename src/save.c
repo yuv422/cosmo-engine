@@ -12,19 +12,6 @@
 
 int cleanup_and_exit();
 
-typedef struct SaveGameData {
-    uint8 health;
-    uint32 score;
-    uint16 num_stars_collected;
-    uint16 current_level;
-    uint16 num_bombs;
-    uint8 num_health_bars;
-    uint16 cheats_used_flag;
-    uint16 has_had_bomb_flag;
-    uint8 show_monster_attack_hint;
-    uint8 knows_about_powerups_flag;
-} SaveGameData;
-
 static SaveGameData temp_save;
 
 uint16 cheats_used_flag = 0;
@@ -89,36 +76,64 @@ bool load_savegame_file(char suffix)
     }
     else
     {
-        File file;
-        char filename[13];
-        sprintf(filename, "COSMO%d.SV%c", get_episode_number(), suffix);
+        SaveGameData data;
+        SaveStatus status = load_savegame_data_from_file(suffix, &data);
 
-        if(!file_open(filename, "rb", &file))
+        if(status == FILE_IO_ERROR)
         {
             return false;
         }
 
-        health = (uint8)file_read2(&file);
-        score = file_read4(&file);
-        num_stars_collected = file_read2(&file);
-        current_level = file_read2(&file);
-        num_bombs = file_read2(&file);
-        num_health_bars = (uint8)file_read2(&file);
-        cheats_used_flag = file_read2(&file);
-        has_had_bomb_flag = file_read2(&file);;
-        show_monster_attack_hint = (uint8)file_read2(&file);;
-        knows_about_powerups_flag = (uint8)file_read2(&file);;
-
-        uint16 checksum = file_read2(&file);
-
-        file_close(&file);
-
-        if(checksum != health + num_stars_collected + current_level + num_bombs + num_health_bars)
+        if(status == CRC_ERROR)
         {
             malformed_savegame_dialog();
             exit(cleanup_and_exit());
         }
+
+        health = data.health;
+        score = data.score;
+        num_stars_collected = data.num_stars_collected;
+        current_level = data.current_level;
+        num_bombs = data.num_bombs;
+        num_health_bars = data.num_health_bars;
+        cheats_used_flag = data.cheats_used_flag;
+        has_had_bomb_flag = data.has_had_bomb_flag;
+        show_monster_attack_hint = data.show_monster_attack_hint;
+        knows_about_powerups_flag = data.knows_about_powerups_flag;
     }
 
     return true;
+}
+
+SaveStatus load_savegame_data_from_file(char suffix, SaveGameData *data) {
+    File file;
+    char filename[13];
+    sprintf(filename, "COSMO%d.SV%c", get_episode_number(), suffix);
+
+    if(!file_open(filename, "rb", &file))
+    {
+        return FILE_IO_ERROR;
+    }
+
+    data->health = (uint8)file_read2(&file);
+    data->score = file_read4(&file);
+    data->num_stars_collected = file_read2(&file);
+    data->current_level = file_read2(&file);
+    data->num_bombs = file_read2(&file);
+    data->num_health_bars = (uint8)file_read2(&file);
+    data->cheats_used_flag = file_read2(&file);
+    data->has_had_bomb_flag = file_read2(&file);;
+    data->show_monster_attack_hint = (uint8)file_read2(&file);;
+    data->knows_about_powerups_flag = (uint8)file_read2(&file);;
+
+    uint16 checksum = file_read2(&file);
+
+    file_close(&file);
+
+    if(checksum != data->health + data->num_stars_collected + data->current_level + data->num_bombs + data->num_health_bars)
+    {
+        return CRC_ERROR;
+    }
+
+    return LOADED;
 }
