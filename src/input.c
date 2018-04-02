@@ -142,7 +142,6 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
                     sound_toggle_dialog();
                     break;
                 case SDLK_q :
-                case SDLK_ESCAPE :
                     if (quit_game_dialog())
                     {
                         return QUIT;
@@ -152,6 +151,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
                     printf("player info x_pos =%d; y_pos = %d;\n", player_x_pos, player_y_pos);
                     break;
                 case SDLK_F1 :
+                case SDLK_ESCAPE :
                     switch(help_menu_dialog())
                     {
                         case 0 : break;
