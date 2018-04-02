@@ -9,6 +9,7 @@
 #include "game.h"
 #include "map.h"
 #include "dialog.h"
+#include "config.h"
 
 int cleanup_and_exit();
 
@@ -34,13 +35,17 @@ void write_savegame_file(char suffix)
     else
     {
         char filename[13];
+        char *path;
         sprintf(filename, "COSMO%d.SV%c", get_episode_number(), suffix);
+        path = get_save_dir_full_path(filename);
         File savefile;
-        if(!file_open(filename, "wb", &savefile))
+        if(!file_open(path, "wb", &savefile))
         {
-            printf("Error: saving file %s\n", filename);
+            printf("Error: saving file %s\n", path);
+            free(path);
             return;
         }
+        free(path);
 
         file_write2(health, &savefile);
         file_write4(score, &savefile);
@@ -108,9 +113,14 @@ bool load_savegame_file(char suffix)
 SaveStatus load_savegame_data_from_file(char suffix, SaveGameData *data) {
     File file;
     char filename[13];
+    char *path;
     sprintf(filename, "COSMO%d.SV%c", get_episode_number(), suffix);
 
-    if(!file_open(filename, "rb", &file))
+    path = get_save_dir_full_path(filename);
+    int status = file_open(path, "rb", &file);
+    free(path);
+
+    if(!status)
     {
         return FILE_IO_ERROR;
     }

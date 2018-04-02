@@ -15,6 +15,10 @@
 #define MAX_SCORE_STRING_LENGTH 13
 #define NUM_SCAN_CODES 89
 
+char *save_directory = NULL;
+char *game_data_directory = NULL;
+const char working_directory[] = ".";
+
 SDL_Keycode scancode_to_keycode(uint8 scan_code);
 uint8 keycode_to_scancode(SDL_Keycode keycode);
 
@@ -68,10 +72,13 @@ const char *get_config_filename()
 
 void load_config_file()
 {
+    char *path = get_save_dir_full_path(get_config_filename());
     File file;
     clear_high_score_table();
+    int config_file_loaded = file_open(path, "rb", &file);
+    free(path);
 
-    if(file_open(get_config_filename(), "rb", &file))
+    if(config_file_loaded)
     {
         set_input_command_key(CMD_KEY_UP, scancode_to_keycode(file_read1(&file)));
         set_input_command_key(CMD_KEY_DOWN, scancode_to_keycode(file_read1(&file)));
@@ -118,8 +125,12 @@ void load_config_file()
 
 void write_config_file()
 {
+    char *path = get_save_dir_full_path(get_config_filename());
     File file;
-    if(!file_open(get_config_filename(), "wb", &file))
+    int status = file_open(path, "wb", &file);
+    free(path);
+
+    if(!status)
     {
         return;
     }
@@ -396,5 +407,25 @@ void load_config_from_command_line(int argc, char **argv)
                 video_set_scale_factor(scale_factor);
             }
         }
+        if(!strcmp(argv[i], "-savedir") && i + 1 < argc)
+        {
+            i++;
+            save_directory = (char *)malloc(strlen(argv[i]) + 1);
+            strcpy(save_directory, argv[i]);
+        }
+        if(!strcmp(argv[i], "-gamedir") && i + 1 < argc)
+        {
+            i++;
+            game_data_directory = (char *)malloc(strlen(argv[i]) + 1);
+            strcpy(game_data_directory, argv[i]);
+        }
     }
+}
+
+char *get_save_dir_full_path(const char *filename)
+{
+    const char *base_dir = save_directory != NULL ? save_directory : working_directory;
+    char *path = (char *)malloc(strlen(base_dir) + strlen(filename) + 2); //2 = path delimiter + \0
+    sprintf(path, "%s%c%s", base_dir, '/', filename); //FIXME handle windows path separator
+    return path;
 }
