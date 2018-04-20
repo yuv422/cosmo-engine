@@ -225,7 +225,7 @@ SDL_Keycode display_menu_items_in_dialog(int x_offset,
     SDL_Keycode key;
     do {
         display_menu_items(x_offset, menu_items);
-        key = wait_for_input(spinner_x, spinner_y);
+        key = wait_for_input_with_repeat(spinner_x, spinner_y, true);
         if(key == SDLK_UP || key == SDLK_DOWN)
         {
             menu_handle_arrow_key(key, menu_items);
@@ -1419,28 +1419,31 @@ void enter_new_key(uint16 x, const char *text, InputCommand command)
     }
 }
 
+static const MenuItem keyboard_config_items[] = {
+        {1, 6, " #1) Up key is:", SDLK_1},
+        {1, 7, " #2) Down key is:", SDLK_2},
+        {1, 8, " #3) Left key is:", SDLK_3},
+        {1, 9, " #4) Right key is:", SDLK_4},
+        {1, 10, " #5) Jump key is:", SDLK_5},
+        {1, 11, " #6) Bomb key is:", SDLK_6},
+        {0, 0, NULL, 0}
+};
 void keyboard_config()
 {
     uint16 x = create_text_dialog_box(3, 15, 0x1b, "Keyboard Config.", "Press ESC to quit.");
 
     for(;;)
     {
-        display_dialog_text(x, 6, " #1) Up key is:");
         display_dialog_text(x + 0x13, 6, get_command_key_string(CMD_KEY_UP));
-        display_dialog_text(x, 7, " #2) Down key is:");
         display_dialog_text(x + 0x13, 7, get_command_key_string(CMD_KEY_DOWN));
-        display_dialog_text(x, 8, " #3) Left key is:");
         display_dialog_text(x + 0x13, 8, get_command_key_string(CMD_KEY_LEFT));
-        display_dialog_text(x, 9, " #4) Right key is:");
         display_dialog_text(x + 0x13, 9, get_command_key_string(CMD_KEY_RIGHT));
-        display_dialog_text(x, 10, " #5) Jump key is:");
         display_dialog_text(x + 0x13, 10, get_command_key_string(CMD_KEY_JUMP));
-        display_dialog_text(x, 11, " #6) Bomb key is:");
         display_dialog_text(x + 0x13, 11, get_command_key_string(CMD_KEY_BOMB));
 
         display_dialog_text(x, 15, "Select key # to change or");
 
-        SDL_Keycode keycode = wait_for_input(x + 0x15, 16);
+        SDL_Keycode keycode = display_menu_items_in_dialog(x, (MenuItem *)keyboard_config_items, x + 0x15, 16);
         switch (keycode)
         {
             case SDLK_ESCAPE : return;
