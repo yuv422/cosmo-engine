@@ -6,7 +6,11 @@
 #include <files/file.h>
 #include <game.h>
 #include <stdlib.h>
+#ifdef EMSCRIPTEN
+#include <SDL2/SDL_mixer.h>
+#else
 #include <SDL_mixer.h>
+#endif
 #include "sfx.h"
 #include "audio.h"
 

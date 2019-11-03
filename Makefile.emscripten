@@ -1,0 +1,35 @@
+TARGET = cosmo.html
+
+.SRCS   =               src/actor.c \
+                        src/main.c \
+                        src/player.c \
+                        src/game.c src/palette.c src/util.c \
+                        src/map.c src/input.c src/dialog.c src/tile.c \
+                        src/files/vol.c src/files/file.c src/video.c \
+                        src/sound/music.c src/backdrop.c src/save.c \
+                        src/status.c src/actor_worktype.c src/actor_worktype.c \
+                        src/effects.c src/actor_collision.c src/actor_toss.c \
+                        src/font.c src/sound/sfx.c src/sound/audio.c \
+                        src/platforms.c src/sound/opl.c src/fullscreen_image.c \
+                        src/cartoon.c src/config.c src/high_scores.c \
+                        src/demo.c src/b800.c \
+
+OBJS = $(.SRCS:.c=.o)
+
+%.o: %.c 
+	emcc -O2 -c -o $@ $< -I src -s USE_SDL=2 -s USE_SDL_MIXER=2
+
+all: $(TARGET)
+
+clean:
+	-rm -f $(TARGET) *.o 
+
+$(TARGET): $(OBJS)
+	emcc -O2 -s USE_SDL=2 -s USE_SDL_MIXER=2 -o $(TARGET) $(OBJS) --preload-file data@/ --source-map-base http://localhost:8080/ -s -s TOTAL_MEMORY=64MB
+
+run: $(TARGET)
+	$(KOS_LOADER) $(TARGET)
+
+dist:
+	rm -f $(OBJS)
+	$(KOS_STRIP) $(TARGET)

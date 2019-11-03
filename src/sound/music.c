@@ -2,7 +2,11 @@
 // Created by efry on 3/11/2017.
 //
 
+#ifdef EMSCRIPTEN
+#include <SDL2/SDL_mixer.h>
+#else
 #include <SDL_mixer.h>
+#endif
 #include <game.h>
 #include "music.h"
 #include "opl.h"

@@ -53,7 +53,9 @@ uint8 *load_image(const char *filename)
     uint8 *pixels = (uint8 *)malloc(320*200);
 
     File image;
-    open_file(filename, &image);
+    if(!open_file(filename, &image)) {
+		printf("failed to open %s\n", filename);
+    }
 
     for(int c=0;c<4;c++) {
 
