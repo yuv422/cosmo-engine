@@ -33,7 +33,7 @@ void audio_init()
     // get and print the audio format in use
     int numtimesopened;
     Uint16 format;
-    numtimesopened=Mix_QuerySpec(&audioConfig.sampleRate, &format, &audioConfig.sampleRate);
+    numtimesopened=Mix_QuerySpec(&audioConfig.sampleRate, &format, &audioConfig.numChannels);
     if(!numtimesopened) {
         printf("Mix_QuerySpec: %s\n",Mix_GetError());
     }
@@ -57,9 +57,9 @@ void audio_init()
                 break;
         }
         printf("audio_init(): opened=%d times  frequency=%dHz  format=%s  channels=%d\n",
-               numtimesopened, audioConfig.sampleRate, format_str, audioConfig.sampleRate);
+               numtimesopened, audioConfig.sampleRate, format_str, audioConfig.numChannels);
 
-        if(format != AUDIO_S16LSB || format != AUDIO_F32LSB)
+        if(format != AUDIO_S16LSB && format != AUDIO_F32LSB)
         {
             printf("WARNING: AUDIO_S16LSB or AUDIO_F32LSB required. found 0x%X\n", format);
         }
