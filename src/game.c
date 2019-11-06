@@ -2,6 +2,9 @@
 // Created by efry on 25/10/2017.
 //
 
+#ifdef __EMSCRIPTEN__
+#include "emscripten.h"
+#endif
 #include <SDL_timer.h>
 #include <SDL_events.h>
 #include <sound/sfx.h>
@@ -31,7 +34,7 @@
 game_play_mode_enum game_play_mode = PLAY_GAME;
 uint32 score;
 uint32 num_stars_collected;
-uint8 cheats_used_flag;
+extern uint8 cheats_used_flag;
 uint8 knows_about_powerups_flag;
 uint8 finished_game_flag_maybe = 0;
 uint8 finished_level_flag_maybe;
@@ -143,89 +146,106 @@ void reset_game_state()
     return;
 }
 
+bool executeTick() {
+    int input_state = 0;
 
+    update_palette_anim();
+
+    input_state = read_input();
+    if (input_state == QUIT) {
+        return false;
+    }
+
+    if (input_state == PAUSED) {
+        return true;
+    }
+
+    handle_player_input_maybe();
+    if (player_hoverboard_counter != 0)
+    {
+        player_hoverboard_update();
+    }
+
+    if (word_32EB2 != 0 || player_walk_anim_index != 0)
+    {
+        player_update_walk_anim(); //TODO check name I think this might be fall anim
+    }
+
+    update_moving_platforms();
+
+    update_mud_fountains();
+
+    map_display();
+
+    if (player_update_sprite() != 0) {
+        return true;
+    }
+
+    display_mud_fountains();
+
+    actor_update_all();
+
+    explode_effect_update_sprites();
+
+    actor_toss_update();
+
+    update_rain_effect();
+
+    struct6_update_sprites();
+
+    effect_update_sprites();
+
+    update_brightness_objs();
+
+    if (game_play_mode != PLAY_GAME)
+    {
+        display_actor_sprite_maybe(0x10a, 0, 17, 4, 6); //DEMO sign.
+    }
+
+    if (show_monster_attack_hint == 1)
+    {
+        show_monster_attack_hint = 2;
+        monster_attack_hint_dialog();
+    }
+    video_update();
+
+    if (finished_level_flag_maybe)
+    {
+        finished_level_flag_maybe = 0;
+        play_sfx(11);
+        select_next_level();
+        load_level(current_level);
+    }
+
+    if (finished_game_flag_maybe)
+    {
+        end_sequence();
+        return false;
+    }
+
+    return true;
+}
+
+#ifdef __EMSCRIPTEN__
+void emScriptenGameLoop() {
+    if (!executeTick()) {
+        emscripten_cancel_main_loop();
+    }
+}
+#endif
 
 void game_loop()
 {
-    int input_state = 0;
-
-    for(;;)
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(emScriptenGameLoop, 10, 1);
+#else
+    for(;executeTick();)
     {
-        do
-        {
-            do
-            {
-                game_wait();
-                //lock to 10 FPS here.
-
-                update_palette_anim();
-
-                input_state = read_input();
-                if (input_state == QUIT)
-                    return;
-
-            } while (input_state == PAUSED);
-
-            handle_player_input_maybe();
-            if (player_hoverboard_counter != 0)
-            {
-                player_hoverboard_update();
-            }
-
-            if (word_32EB2 != 0 || player_walk_anim_index != 0)
-            {
-                player_update_walk_anim(); //TODO check name I think this might be fall anim
-            }
-
-            update_moving_platforms();
-
-            update_mud_fountains();
-
-            map_display();
-        } while(player_update_sprite() != 0);
-
-        display_mud_fountains();
-
-        actor_update_all();
-
-        explode_effect_update_sprites();
-
-        actor_toss_update();
-
-        update_rain_effect();
-
-        struct6_update_sprites();
-
-        effect_update_sprites();
-
-        update_brightness_objs();
-
-        if (game_play_mode != PLAY_GAME)
-        {
-            display_actor_sprite_maybe(0x10a, 0, 17, 4, 6); //DEMO sign.
-        }
-
-        if (show_monster_attack_hint == 1)
-        {
-            show_monster_attack_hint = 2;
-            monster_attack_hint_dialog();
-        }
-        video_update();
-
-        if (finished_level_flag_maybe)
-        {
-            finished_level_flag_maybe = 0;
-            play_sfx(11);
-            select_next_level();
-            load_level(current_level);
-        }
-
-        if (finished_game_flag_maybe)
-        {
-            end_sequence();
-            return;
-        }
+        game_wait();
+        //lock to 10 FPS here.
     }
+#endif
+
 }
 
 uint32 time_left()

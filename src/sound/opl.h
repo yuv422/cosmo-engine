@@ -16,8 +16,10 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+#ifndef COSMO_ENGINE_OPL_H
+#define COSMO_ENGINE_OPL_H
 
-
+#include "sound/audio.h"
 /*
  * Originally based on ADLIBEMU.C, an AdLib/OPL2 emulation library by Ken Silverman
  * Copyright (C) 1998-2001 Ken Silverman
@@ -153,30 +155,6 @@ typedef struct operator_struct {
 #endif
 } op_type;
 
-// per-chip variables
-Bitu chip_num;
-op_type op[MAXOPERATORS];
-
-Bits int_samplerate;
-	
-Bit8u status;
-Bit32u opl_index;
-#if defined(OPLTYPE_IS_OPL3)
-Bit8u adlibreg[512];	// adlib register set (including second set)
-Bit8u wave_sel[44];		// waveform selection
-#else
-Bit8u adlibreg[256];	// adlib register set
-Bit8u wave_sel[22];		// waveform selection
-#endif
-
-
-// vibrato/tremolo increment/counter
-Bit32u vibtab_pos;
-Bit32u vibtab_add;
-Bit32u tremtab_pos;
-Bit32u tremtab_add;
-
-
 // enable an operator
 void enable_operator(Bitu regbase, op_type* op_pt, Bit32u act_type);
 
@@ -195,9 +173,11 @@ void change_feedback(Bitu chanbase, op_type* op_pt);
 // general functions
 void adlib_init(Bit32u samplerate);
 void adlib_write(Bitu idx, Bit8u val);
-void adlib_getsample(Bit16s* sndptr, Bits numsamples, Bit8u is_stereo_output);
+void adlib_getsample(Bit8u* sndptr, Bits numsamples, Bit8u is_stereo_output, AudioFormat audioFormat);
 
 Bitu adlib_reg_read(Bitu port);
 void adlib_write_index(Bitu port, Bit8u val);
 
 static Bit32u generator_add;	// should be a chip parameter
+
+#endif //COSMO_ENGINE_OPL_H

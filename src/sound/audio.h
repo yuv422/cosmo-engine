@@ -6,8 +6,19 @@
 
 #include <defines.h>
 
-extern int audio_sample_rate;
-extern int audio_num_channels;
+typedef enum {
+    AUDIO_INT16_SIGNED_LSB,
+    AUDIO_FLOAT32_SIGNED_LSB
+} AudioFormat;
+
+typedef struct AudioConfig {
+    int sampleRate;
+    int numChannels;
+    AudioFormat format;
+    int bytesPerSample;
+} AudioConfig;
+
+extern struct AudioConfig audioConfig;
 
 void audio_init();
 void audio_shutdown();

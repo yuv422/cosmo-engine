@@ -6,7 +6,7 @@
 #include <files/file.h>
 #include <game.h>
 #include <stdlib.h>
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 #include <SDL2/SDL_mixer.h>
 #else
 #include <SDL_mixer.h>
@@ -50,11 +50,25 @@ int get_num_samples(File *file, int offset, int index, int total)
     return ((file_get_filesize(file) - offset) / 2) - 1;
 }
 
+void writeSample(Uint8 *buf, uint16 index, sint16 sample) {
+    if (audioConfig.format == AUDIO_FLOAT32_SIGNED_LSB) {
+        *(float *)(buf + index * audioConfig.numChannels * audioConfig.bytesPerSample) = (float)sample/234234;
+        if (audioConfig.numChannels == 2) {
+            *(float *)(buf + index * audioConfig.numChannels * audioConfig.bytesPerSample + audioConfig.bytesPerSample) = (float)sample/234234;
+        }
+    } else {
+        *(sint16 *)(buf + index * audioConfig.numChannels * audioConfig.bytesPerSample) = sample;
+        if (audioConfig.numChannels == 2) {
+            *(sint16 *)(buf + index * audioConfig.numChannels * audioConfig.bytesPerSample + audioConfig.bytesPerSample) = sample;
+        }
+    }
+}
+
 Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
 {
-    int sample_length = (audio_sample_rate / SFX_SAMPLE_RATE);
+    int sample_length = (audioConfig.sampleRate / SFX_SAMPLE_RATE);
     Mix_Chunk *chunk = (Mix_Chunk *)malloc(sizeof(Mix_Chunk));
-    chunk->alen = (Uint32)(num_samples * sample_length * audio_num_channels * 2);
+    chunk->alen = (Uint32)(num_samples * sample_length * audioConfig.numChannels * audioConfig.bytesPerSample);
     chunk->abuf = (Uint8 *)malloc(chunk->alen);
     chunk->allocated = 0;
     chunk->volume = 128;
@@ -73,14 +87,11 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
         if (sample)
         {
             float freq = PC_PIT_RATE / (float)sample;
-            int half_cycle_length = (int)(audio_sample_rate / (freq * 2));
+            int half_cycle_length = (int)(audioConfig.sampleRate / (freq * 2));
             //printf("sample %d, freq=%f, half_cycle_len = %d\n", i, freq, half_cycle_length);
             for (int sampleCounter = 0; sampleCounter < sample_length; sampleCounter++) {
-                wave_data[(i*sample_length+sampleCounter)*audio_num_channels] = beepWaveVal;
-                if(audio_num_channels == 2)
-                {
-                    wave_data[(i*sample_length+sampleCounter)*audio_num_channels + 1] = beepWaveVal;
-                }
+                writeSample(chunk->abuf, i*sample_length+sampleCounter, beepWaveVal);
+
 //                beepWaveVal += velocity;
 //                if((velocity < 0 && beepWaveVal < desiredAmplitude) || (velocity > 0 && beepWaveVal > desiredAmplitude))
 //                {
@@ -107,7 +118,7 @@ Mix_Chunk *convert_sfx_to_wave(File *file, int offset, int num_samples)
         }
         else
         {
-            memset(&wave_data[i*sample_length*audio_num_channels], 0, sample_length * audio_num_channels * 2); //silence
+            memset(&wave_data[i*sample_length*audioConfig.numChannels], 0, sample_length * audioConfig.numChannels * audioConfig.bytesPerSample); //silence
         }
     }
 

@@ -7,7 +7,7 @@ TARGET = cosmo.html
                         src/map.c src/input.c src/dialog.c src/tile.c \
                         src/files/vol.c src/files/file.c src/video.c \
                         src/sound/music.c src/backdrop.c src/save.c \
-                        src/status.c src/actor_worktype.c src/actor_worktype.c \
+                        src/status.c src/actor_worktype.c \
                         src/effects.c src/actor_collision.c src/actor_toss.c \
                         src/font.c src/sound/sfx.c src/sound/audio.c \
                         src/platforms.c src/sound/opl.c src/fullscreen_image.c \
@@ -22,10 +22,10 @@ OBJS = $(.SRCS:.c=.o)
 all: $(TARGET)
 
 clean:
-	-rm -f $(TARGET) *.o 
+	-rm -f $(TARGET) $(OBJS) 
 
 $(TARGET): $(OBJS)
-	emcc -O2 -s USE_SDL=2 -s USE_SDL_MIXER=2 -o $(TARGET) $(OBJS) --preload-file data@/ --source-map-base http://localhost:8080/ -s -s TOTAL_MEMORY=64MB
+	emcc -O2 -s USE_SDL=2 -s USE_SDL_MIXER=2 -o $(TARGET) $(OBJS) --preload-file data@/ --source-map-base http://localhost:8080/ -s -s TOTAL_MEMORY=32MB
 
 run: $(TARGET)
 	$(KOS_LOADER) $(TARGET)

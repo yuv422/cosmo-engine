@@ -29,7 +29,30 @@
 #include <stdlib.h> // rand()
 #include <string.h>
 #include "opl.h"
+#include "audio.h"
 
+// per-chip variables
+Bitu chip_num;
+op_type op[MAXOPERATORS];
+
+Bits int_samplerate;
+
+Bit8u status;
+Bit32u opl_index;
+#if defined(OPLTYPE_IS_OPL3)
+Bit8u adlibreg[512];	// adlib register set (including second set)
+Bit8u wave_sel[44];		// waveform selection
+#else
+Bit8u adlibreg[256];	// adlib register set
+Bit8u wave_sel[22];		// waveform selection
+#endif
+
+
+// vibrato/tremolo increment/counter
+Bit32u vibtab_pos;
+Bit32u vibtab_add;
+Bit32u tremtab_pos;
+Bit32u tremtab_add;
 
 static fltype recipsamp;	// inverse of sampling rate
 static Bit16s wavtable[WAVEPREC*3];	// wave form table
@@ -930,6 +953,17 @@ static void OPL_INLINE clipit16(Bit32s ival, Bit16s* outval) {
 	}
 }
 
+static void OPL_INLINE clipitFloat32(Bit32s ival, float* outval) {
+	if (ival<32768) {
+		if (ival>-32769) {
+			*outval = ival>0?(float)ival/0x7FFF:(float)ival/0x8000;
+		} else {
+			*outval = -(float)1;
+		}
+	} else {
+		*outval = (float)1;
+	}
+}
 
 
 // be careful with this
@@ -949,7 +983,7 @@ static void OPL_INLINE clipit16(Bit32s ival, Bit16s* outval) {
 	outbufl[i] += chanval;
 #endif
 
-void adlib_getsample(Bit16s* sndptr, Bits numsamples, Bit8u is_stereo_output) {
+void adlib_getsample(Bit8u* sndptr, Bits numsamples, Bit8u is_stereo_output, AudioFormat audioFormat) {
 	Bits i, endsamples;
 	op_type* cptr;
 
@@ -1452,20 +1486,36 @@ void adlib_getsample(Bit16s* sndptr, Bits numsamples, Bit8u is_stereo_output) {
 			}
 		}
 #else
-		// convert to 16bit samples
-        if(is_stereo_output)
-        {
-            for (i=0;i<endsamples;i++)
-            {
-                clipit16(outbufl[i],sndptr++);
-                clipit16(outbufl[i],sndptr++);
-            }
-        }
-        else
-        {
-            for (i=0;i<endsamples;i++)
-                clipit16(outbufl[i],sndptr++);
-        }
+		if (audioFormat == AUDIO_FLOAT32_SIGNED_LSB) {
+			if (is_stereo_output) {
+				for (i = 0; i < endsamples; i++) {
+					clipitFloat32(outbufl[i], (float *)sndptr);
+					sndptr += 4;
+					clipitFloat32(outbufl[i], (float *)sndptr);
+					sndptr += 4;
+				}
+			} else {
+				for (i = 0; i < endsamples; i++) {
+					clipitFloat32(outbufl[i], (float *)sndptr);
+					sndptr += 4;
+				}
+			}
+		} else {
+			// convert to 16bit samples
+			if (is_stereo_output) {
+				for (i = 0; i < endsamples; i++) {
+					clipit16(outbufl[i], (Bit16s *)sndptr);
+					sndptr +=2;
+					clipit16(outbufl[i], (Bit16s *)sndptr);
+					sndptr +=2;
+				}
+			} else {
+				for (i = 0; i < endsamples; i++) {
+					clipit16(outbufl[i], (Bit16s *)sndptr);
+					sndptr +=2;
+				}
+			}
+		}
 #endif
 
 	}

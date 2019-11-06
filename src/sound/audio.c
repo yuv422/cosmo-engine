@@ -3,7 +3,7 @@
 //
 
 #include <SDL.h>
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
 #include <SDL2/SDL_mixer.h>
 #else
 #include <SDL_mixer.h>
@@ -14,8 +14,7 @@
 #define AUDIO_DESIRED_SAMPLE_RATE 22050
 #define AUDIO_DESIRED_NUM_CHANNELS 1
 
-int audio_sample_rate = 0;
-int audio_num_channels = 1;
+AudioConfig audioConfig;
 
 void audio_init()
 {
@@ -34,7 +33,7 @@ void audio_init()
     // get and print the audio format in use
     int numtimesopened;
     Uint16 format;
-    numtimesopened=Mix_QuerySpec(&audio_sample_rate, &format, &audio_num_channels);
+    numtimesopened=Mix_QuerySpec(&audioConfig.sampleRate, &format, &audioConfig.sampleRate);
     if(!numtimesopened) {
         printf("Mix_QuerySpec: %s\n",Mix_GetError());
     }
@@ -44,16 +43,25 @@ void audio_init()
             case AUDIO_U8: format_str="U8"; break;
             case AUDIO_S8: format_str="S8"; break;
             case AUDIO_U16LSB: format_str="U16LSB"; break;
-            case AUDIO_S16LSB: format_str="S16LSB"; break;
+            case AUDIO_S16LSB:
+                format_str="S16LSB";
+                audioConfig.format = AUDIO_INT16_SIGNED_LSB;
+                audioConfig.bytesPerSample = 2;
+                break;
             case AUDIO_U16MSB: format_str="U16MSB"; break;
             case AUDIO_S16MSB: format_str="S16MSB"; break;
+            case AUDIO_F32LSB:
+                format_str="F32LSB";
+                audioConfig.format = AUDIO_FLOAT32_SIGNED_LSB;
+                audioConfig.bytesPerSample = 4;
+                break;
         }
         printf("audio_init(): opened=%d times  frequency=%dHz  format=%s  channels=%d\n",
-               numtimesopened, audio_sample_rate, format_str, audio_num_channels);
+               numtimesopened, audioConfig.sampleRate, format_str, audioConfig.sampleRate);
 
-        if(format != AUDIO_S16LSB)
+        if(format != AUDIO_S16LSB || format != AUDIO_F32LSB)
         {
-            printf("WARNING: AUDIO_S16LSB required.\n");
+            printf("WARNING: AUDIO_S16LSB or AUDIO_F32LSB required. found 0x%X\n", format);
         }
     }
 

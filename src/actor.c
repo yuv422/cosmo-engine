@@ -50,7 +50,6 @@ uint16 actor_tile_display_func_index = 0;
 
 Tile *actor_tiles;
 Sprite *actor_sprites;
-uint16 num_tile_info_records;
 
 
 const uint16 word_28D9C[] = {
@@ -1218,6 +1217,7 @@ void load_actor(int actor_num, int actorType, int x_pos, int y_pos)
 
 void actor_load_tiles()
 {
+    uint16 num_tile_info_records;
     uint16 num_tiles;
     actor_tiles = load_tiles("ACTORS.MNI", TRANSPARENT, &num_tiles);
     printf("Loaded %d actor tiles.\n", num_tiles);

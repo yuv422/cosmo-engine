@@ -9,10 +9,10 @@
 
 Tile *cartoon_tiles;
 Sprite *sprites;
-uint16 num_tile_info_records;
 
 void load_cartoon_images()
 {
+    uint16 num_tile_info_records;
     uint16 num_tiles;
     cartoon_tiles = load_tiles("CARTOON.MNI", TRANSPARENT, &num_tiles);
     printf("Loading %d cartoon tiles.\n", num_tiles);

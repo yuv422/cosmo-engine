@@ -78,7 +78,6 @@ uint8 show_monster_attack_hint = 0;
 
 Tile *player_tiles;
 Sprite *player_sprites;
-uint16 num_tile_info_records;
 
 void player_reset_push_variables();
 
@@ -1111,6 +1110,7 @@ void player_reset_push_variables()
 
 void player_load_tiles()
 {
+	uint16 num_tile_info_records;
     uint16 num_tiles;
     player_tiles = load_tiles("PLAYERS.MNI", TRANSPARENT, &num_tiles);
     printf("Loading %d player tiles.\n", num_tiles);
