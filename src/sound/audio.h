@@ -16,6 +16,7 @@ typedef struct AudioConfig {
     int numChannels;
     AudioFormat format;
     int bytesPerSample;
+    bool enabled;
 } AudioConfig;
 
 extern struct AudioConfig audioConfig;

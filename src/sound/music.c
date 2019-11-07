@@ -89,6 +89,10 @@ const char music_filename_tbl[][13] = {
 
 void load_music(uint16 new_music_index)
 {
+    if (!audioConfig.enabled) {
+        return;
+    }
+
     adlib_instruction_position = 0;
     delay_counter = 0;
 
@@ -118,12 +122,14 @@ void music_init()
 
 void stop_music()
 {
-    Mix_HookMusic(NULL, NULL);
+    if (audioConfig.enabled) {
+        Mix_HookMusic(NULL, NULL);
+    }
 }
 
 void play_music()
 {
-    if(music_index != -1 && music_on_flag)
+    if(audioConfig.enabled && music_index != -1 && music_on_flag)
     {
         Mix_HookMusic(music_player_function, NULL);
     }

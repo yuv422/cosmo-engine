@@ -18,6 +18,7 @@ AudioConfig audioConfig;
 
 void audio_init()
 {
+    audioConfig.enabled = false;
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
     {
         printf("ERROR: intialising audio!\n");
@@ -61,11 +62,14 @@ void audio_init()
 
         if(format != AUDIO_S16LSB && format != AUDIO_F32LSB)
         {
-            printf("WARNING: AUDIO_S16LSB or AUDIO_F32LSB required. found 0x%X\n", format);
+            printf("ERROR: AUDIO_S16LSB or AUDIO_F32LSB required. found 0x%X\n", format);
+            audio_shutdown();
+            return;
         }
     }
 
     music_init();
+    audioConfig.enabled = true;
 }
 
 void audio_shutdown()
