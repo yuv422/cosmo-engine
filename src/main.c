@@ -68,6 +68,7 @@ int main(int argc, char *argv[]) {
 int cleanup_and_exit()
 {
     write_config_file();
+    config_cleanup();
     video_shutdown();
     audio_shutdown();
     SDL_Quit();

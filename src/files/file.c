@@ -33,7 +33,7 @@ const char *get_full_SDL_path(const char *filename) {
 }
 
 bool file_open(const char *filename, const char *mode, File *file) {
-    file->fp = fopen(get_full_SDL_path(filename),mode);
+    file->fp = fopen(filename, mode);
 
     if(file->fp == NULL)
     {
@@ -49,7 +49,7 @@ bool file_open(const char *filename, const char *mode, File *file) {
 }
 
 bool file_open_at_offset(const char *filename, const char *mode, File *file, uint32 offset, uint32 size) {
-    file->fp = fopen(get_full_SDL_path(filename),mode);
+    file->fp = fopen(filename, mode);
 
     if(file->fp == NULL)
     {

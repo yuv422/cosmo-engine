@@ -3,6 +3,7 @@
 //
 
 #include <SDL_keycode.h>
+#include <SDL_filesystem.h>
 #include "files/file.h"
 #include "sound/music.h"
 #include "sound/sfx.h"
@@ -410,22 +411,51 @@ void load_config_from_command_line(int argc, char **argv)
         if(!strcmp(argv[i], "-savedir") && i + 1 < argc)
         {
             i++;
-            save_directory = (char *)malloc(strlen(argv[i]) + 1);
+            save_directory = (char *)SDL_malloc(strlen(argv[i]) + 1);
             strcpy(save_directory, argv[i]);
         }
         if(!strcmp(argv[i], "-gamedir") && i + 1 < argc)
         {
             i++;
-            game_data_directory = (char *)malloc(strlen(argv[i]) + 1);
+            game_data_directory = (char *)SDL_malloc(strlen(argv[i]) + 1);
             strcpy(game_data_directory, argv[i]);
         }
     }
+
+    if(game_data_directory == NULL)
+    {
+        game_data_directory = SDL_GetBasePath();
+    }
+}
+
+char *get_full_path(const char *base_dir, const char *filename)
+{
+    char *path = (char *)malloc(strlen(base_dir) + strlen(filename) + 2); //2 = path delimiter + \0
+    sprintf(path, "%s%c%s", base_dir, '/', filename); //FIXME handle windows path separator
+    return path;
 }
 
 char *get_save_dir_full_path(const char *filename)
 {
     const char *base_dir = save_directory != NULL ? save_directory : working_directory;
-    char *path = (char *)malloc(strlen(base_dir) + strlen(filename) + 2); //2 = path delimiter + \0
-    sprintf(path, "%s%c%s", base_dir, '/', filename); //FIXME handle windows path separator
-    return path;
+    return get_full_path(base_dir, filename);
+}
+
+char *get_game_dir_full_path(const char *filename)
+{
+    const char *base_dir = game_data_directory != NULL ? game_data_directory : working_directory;
+    return get_full_path(base_dir, filename);
+}
+
+void config_cleanup()
+{
+    if(game_data_directory)
+    {
+        SDL_free(game_data_directory);
+    }
+
+    if(save_directory)
+    {
+        SDL_free(save_directory);
+    }
 }

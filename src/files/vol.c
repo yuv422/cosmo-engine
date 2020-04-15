@@ -4,8 +4,10 @@
 
 #include <stdlib.h>
 #include <memory.h>
+#include <assert.h>
 #include "vol.h"
 #include "file.h"
+#include "config.h"
 
 #define MAX_FILES 200
 #define FILENAME_LEN 12
@@ -51,15 +53,23 @@ uint16 get_index_of_file(File *vol_file, const char *filename)
     return MAX_FILES;
 }
 
+bool open_vol_file(const char *vol_filename, File *vol_file)
+{
+    char *fullpath = get_game_dir_full_path(vol_filename);
+    if(!file_open(fullpath, "rb", vol_file))
+    {
+        SDL_free(fullpath);
+        printf("Error: opening %s\n", vol_filename);
+        return false;
+    }
+    SDL_free(fullpath);
+    return true;
+}
+
 unsigned char *vol_file_extract_by_name(const char *vol_filename, const char *filename, uint32 *bytesRead)
 {
     File vol_file;
-
-    if(!file_open(vol_filename, "rb", &vol_file))
-    {
-        printf("Error: opening %s\n", vol_filename);
-        return NULL;
-    }
+    assert(open_vol_file(vol_filename, &vol_file));
 
     uint16 index = get_index_of_file(&vol_file, filename);
 
@@ -78,12 +88,7 @@ unsigned char *vol_file_extract_by_name(const char *vol_filename, const char *fi
 unsigned char *vol_file_load(const char *vol_filename, const char *filename, unsigned char *buffer, uint32 buffer_size, uint32 *bytesRead)
 {
     File vol_file;
-
-    if(!file_open(vol_filename, "rb", &vol_file))
-    {
-        printf("Error: opening %s\n", vol_filename);
-        return NULL;
-    }
+    assert(open_vol_file(vol_filename, &vol_file));
 
     uint16 index = get_index_of_file(&vol_file, filename);
 
@@ -103,12 +108,7 @@ unsigned char *vol_file_load(const char *vol_filename, const char *filename, uns
 bool vol_file_open(const char *vol_filename, const char *filename, File *file)
 {
     File vol_file;
-
-    if(!file_open(vol_filename, "rb", &vol_file))
-    {
-        printf("Error: opening %s\n", vol_filename);
-        return false;
-    }
+    assert(open_vol_file(vol_filename, &vol_file));
 
     uint16 index = get_index_of_file(&vol_file, filename);
 
@@ -123,10 +123,12 @@ bool vol_file_open(const char *vol_filename, const char *filename, File *file)
     uint32 size = file_read4(&vol_file);
     file_close(&vol_file);
 
-    if(!file_open_at_offset(vol_filename, "rb", file, offset, size))
+    char *fullpath = get_game_dir_full_path(vol_filename);
+    if(!file_open_at_offset(fullpath, "rb", file, offset, size))
     {
+        SDL_free(fullpath);
         return false;
     }
-
+    SDL_free(fullpath);
     return true;
 }

@@ -16,5 +16,8 @@ const char *scancode_to_string(uint8 scan_code);
 void load_config_from_command_line(int argc, char *argv[]);
 
 char *get_save_dir_full_path(const char *filename);
+char *get_game_dir_full_path(const char *filename);
+
+void config_cleanup();
 
 #endif //COSMO_ENGINE_CONFIG_H
