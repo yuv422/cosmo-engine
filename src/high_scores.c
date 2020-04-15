@@ -4,7 +4,7 @@
 
 #include <string.h>
 #include <assert.h>
-#include <sound/sfx.h>
+#include "sound/sfx.h"
 #include "high_scores.h"
 #include "defines.h"
 #include "game.h"

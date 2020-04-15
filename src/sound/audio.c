@@ -39,7 +39,7 @@ void audio_init()
         printf("Mix_QuerySpec: %s\n",Mix_GetError());
     }
     else {
-        char *format_str="Unknown";
+        const char *format_str="Unknown";
         switch(format) {
             case AUDIO_U8: format_str="U8"; break;
             case AUDIO_S8: format_str="S8"; break;

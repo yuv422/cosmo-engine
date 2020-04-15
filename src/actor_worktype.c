@@ -3,7 +3,7 @@
 //
 
 #include <stdlib.h>
-#include <sound/music.h>
+#include "sound/music.h"
 #include "actor_worktype.h"
 #include "player.h"
 #include "effects.h"
@@ -2068,12 +2068,12 @@ void actor_wt_green_pruny_cabbage_ball(ActorData *actor)
         if(actor->data_4 == 0)
         {
             actor->x = actor->x - 1;
-            check_actor_move_left_or_right(actor, 2);
+            check_actor_move_left_or_right(actor, LEFT);
         }
         else
         {
             actor->x = actor->x + 1;
-            check_actor_move_left_or_right(actor, 3);
+            check_actor_move_left_or_right(actor, RIGHT);
         }
 
         actor->data_3++;
@@ -2530,7 +2530,7 @@ void actor_wt_pink_slug(ActorData *actor)
         if(actor->frame_num != 0)
         {
             actor->x--;
-            check_actor_move_left_or_right(actor, 2);
+            check_actor_move_left_or_right(actor, LEFT);
 
             if(actor->has_moved_left_flag == 0)
             {
@@ -2545,7 +2545,7 @@ void actor_wt_pink_slug(ActorData *actor)
     {
         actor->x = actor->x + 1;
         actor->frame_num = 1;
-        check_actor_move_left_or_right(actor, 3);
+        check_actor_move_left_or_right(actor, RIGHT);
 
         if(actor->has_moved_right_flag == 0)
         {

@@ -3,8 +3,8 @@
 //
 
 #include <assert.h>
-#include <files/file.h>
-#include <sound/music.h>
+#include "files/file.h"
+#include "sound/music.h"
 #include "fullscreen_image.h"
 #include "video.h"
 #include "game.h"

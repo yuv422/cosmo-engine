@@ -4,7 +4,7 @@
 
 
 #include <SDL_events.h>
-#include <sound/sfx.h>
+#include "sound/sfx.h"
 #include <SDL_timer.h>
 #include "input.h"
 #include "game.h"

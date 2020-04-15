@@ -7,7 +7,7 @@
 #endif
 #include <SDL_timer.h>
 #include <SDL_events.h>
-#include <sound/sfx.h>
+#include "sound/sfx.h"
 #include "actor.h"
 #include "palette.h"
 #include "player.h"
