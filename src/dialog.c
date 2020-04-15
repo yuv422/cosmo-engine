@@ -3,9 +3,9 @@
 //
 
 
-#include <sound/sfx.h>
+#include "sound/sfx.h"
 #include <SDL_events.h>
-#include <sound/music.h>
+#include "sound/music.h"
 #include "game.h"
 #include "dialog.h"
 #include "input.h"

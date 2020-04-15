@@ -3,8 +3,8 @@
 //
 
 #include <SDL.h>
-#include <sound/audio.h>
-#include <sound/music.h>
+#include "sound/audio.h"
+#include "sound/music.h"
 #include "game.h"
 #include "map.h"
 #include "dialog.h"

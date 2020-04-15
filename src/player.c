@@ -1,4 +1,4 @@
-#include <sound/sfx.h>
+#include "sound/sfx.h"
 #include "actor.h"
 #include "dialog.h"
 #include "map.h"

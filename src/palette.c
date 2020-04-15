@@ -4,7 +4,7 @@
 
 #include <SDL_pixels.h>
 #include <SDL_surface.h>
-#include <sound/sfx.h>
+#include "sound/sfx.h"
 #include "util.h"
 #include "palette.h"
 #include "defines.h"

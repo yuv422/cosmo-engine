@@ -3,9 +3,9 @@
 //
 
 #include <SDL_keycode.h>
-#include <files/file.h>
-#include <sound/music.h>
-#include <sound/sfx.h>
+#include "files/file.h"
+#include "sound/music.h"
+#include "sound/sfx.h"
 #include "config.h"
 #include "high_scores.h"
 #include "input.h"
