@@ -2,6 +2,7 @@
 // Created by Eric Fry on 1/11/2017.
 //
 
+#include <SDL_filesystem.h>
 #include "file.h"
 
 uint32 calculate_filesize(FILE *fp) {
@@ -19,8 +20,20 @@ uint32 file_get_current_position(File *file)
     return file ? file->pos : 0;
 }
 
+const char *get_full_SDL_path(const char *filename) {
+    char *path = SDL_GetBasePath();
+    if (!path) {
+        return filename;
+    } else {
+        const size_t maxlen = SDL_strlen(path) + SDL_strlen(filename) + 1;
+        path = (char *) SDL_realloc(path, maxlen);
+        SDL_strlcat(path, filename, maxlen);
+        return path;
+    }
+}
+
 bool file_open(const char *filename, const char *mode, File *file) {
-    file->fp = fopen(filename,mode);
+    file->fp = fopen(get_full_SDL_path(filename),mode);
 
     if(file->fp == NULL)
     {
@@ -35,9 +48,8 @@ bool file_open(const char *filename, const char *mode, File *file) {
     return true;
 }
 
-bool file_open_at_offset(const char *filename, const char *mode, File *file, uint32 offset, uint32 size)
-{
-    file->fp = fopen(filename,mode);
+bool file_open_at_offset(const char *filename, const char *mode, File *file, uint32 offset, uint32 size) {
+    file->fp = fopen(get_full_SDL_path(filename),mode);
 
     if(file->fp == NULL)
     {
