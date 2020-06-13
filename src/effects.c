@@ -22,7 +22,8 @@ typedef struct effect_sprite
 {
     int is_active_flag;
     int actorInfoIndex;
-    int frame_num;
+    int totalNumFrames;
+    int currentFrameNum;
     int x;
     int y;
     int field_A;
@@ -58,7 +59,6 @@ uint16 num_brightness_objs = 0;
 Brightness brightness_tbl[MAX_BRIGHTNESS_OBJS + 1];
 
 effect_sprite static_effect_sprites[MAX_EFFECT_SPRITES];
-uint16 effect_frame_num_tbl[MAX_EFFECT_SPRITES];
 
 explode_effect_sprite explode_effect_sprites[MAX_EXPLODE_EFFECT_SPRITES];
 
@@ -149,12 +149,12 @@ void effect_add_sprite(int actorInfoIndex, int frame_num, int x_pos, int y_pos, 
         {
             sprite->is_active_flag = 1;
             sprite->actorInfoIndex = actorInfoIndex;
-            sprite->frame_num = frame_num;
+            sprite->totalNumFrames = frame_num;
             sprite->x = x_pos;
             sprite->y = y_pos;
             sprite->field_A = arg_8;
             sprite->counter = counter;
-            effect_frame_num_tbl[i] = 0;
+            sprite->currentFrameNum = 0;
             return;
         }
     }
@@ -168,17 +168,17 @@ void effect_update_sprites()
 
         if(sprite->is_active_flag)
         {
-            if(is_sprite_on_screen(sprite->actorInfoIndex, effect_frame_num_tbl[i], sprite->x, sprite->y))
+            if(is_sprite_on_screen(sprite->actorInfoIndex, sprite->currentFrameNum, sprite->x, sprite->y))
             {
 
                 if(sprite->actorInfoIndex == 0x63)
                 {
                     
-                    display_actor_sprite_maybe(sprite->actorInfoIndex, effect_frame_num_tbl[i], sprite->x, sprite->y, 5);
+                    display_actor_sprite_maybe(sprite->actorInfoIndex, sprite->currentFrameNum, sprite->x, sprite->y, 5);
                 }
                 else
                 {
-                    display_actor_sprite_maybe(sprite->actorInfoIndex, effect_frame_num_tbl[i], sprite->x, sprite->y, 0);
+                    display_actor_sprite_maybe(sprite->actorInfoIndex, sprite->currentFrameNum, sprite->x, sprite->y, 0);
                 }
                 
                 if(sprite->actorInfoIndex == 0x1b)
@@ -188,10 +188,10 @@ void effect_update_sprites()
                 }
                 sprite->x = sprite->x + player_x_offset_tbl[sprite->field_A];
                 sprite->y = sprite->y + player_y_offset_tbl[sprite->field_A];
-                effect_frame_num_tbl[i]++;
-                if(effect_frame_num_tbl[i] == sprite->frame_num)
+                sprite->currentFrameNum++;
+                if(sprite->currentFrameNum == sprite->totalNumFrames)
                 {
-                    effect_frame_num_tbl[i] = 0;
+                    sprite->currentFrameNum = 0;
                     if(sprite->counter != 0)
                     {
                         sprite->counter--;
@@ -208,8 +208,6 @@ void effect_update_sprites()
             }
         }
     }
- 
-    return;
 }
 
 void effect_clear_sprites()
