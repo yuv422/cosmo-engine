@@ -168,7 +168,7 @@ void effect_update_sprites()
 
         if(sprite->is_active_flag)
         {
-            if(is_sprite_on_screen(sprite->actorInfoIndex, sprite->frame_num, sprite->x, sprite->y))
+            if(is_sprite_on_screen(sprite->actorInfoIndex, effect_frame_num_tbl[i], sprite->x, sprite->y))
             {
 
                 if(sprite->actorInfoIndex == 0x63)
