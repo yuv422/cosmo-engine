@@ -383,7 +383,7 @@ Tile *map_get_bg_tile(uint16 tile_num) {
 uint8 map_get_tile_attr(int x, int y) {
 
     if (x < 0 || y < 0 || x >= map_width_in_tiles || x + y * map_width_in_tiles >= MAX_MAP_TILES) {
-        return TILE_ATTR_ALL_BLOCKED;  //return all blocked if we are off the map.
+        return TILE_ATTR_NONE;
     }
 
     return tileattr_mni_data[map_get_tile_cell(x, y) / 8];
