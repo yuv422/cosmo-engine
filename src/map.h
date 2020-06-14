@@ -34,4 +34,6 @@ void map_display();
 
 Tile *map_get_bg_tile(uint16 tile_num);
 
+uint8 map_get_tile_attr(int x, int y);
+
 #endif //COSMO_ENGINE_MAP_H

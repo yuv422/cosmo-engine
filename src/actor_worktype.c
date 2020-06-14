@@ -1785,7 +1785,7 @@ void actor_wt_energy_beam(ActorData *actor)
                 break;
             }
 
-            if((tileattr_mni_data[map_get_tile_cell(actor->x + actor->data_1, actor->y)/8] & TILE_ATTR_BLOCK_RIGHT) != 0)
+            if((map_get_tile_attr(actor->x + actor->data_1, actor->y) & TILE_ATTR_BLOCK_RIGHT) != 0)
             {
                 break;
             }
@@ -1803,7 +1803,7 @@ void actor_wt_energy_beam(ActorData *actor)
                 break;
             }
 
-            if((tileattr_mni_data[map_get_tile_cell(actor->x, actor->y - actor->data_1)/8] & TILE_ATTR_BLOCK_UP) != 0)
+            if((map_get_tile_attr(actor->x, actor->y - actor->data_1) & TILE_ATTR_BLOCK_UP) != 0)
             {
                 break;
             }
@@ -3936,8 +3936,8 @@ uint8 suction_cup_enemy_check_if_blocked(ActorData *actor, uint8 blocking_check)
     {
         for(int si=0;si < 15; si++)
         {
-            if ((tileattr_mni_data[map_get_tile_cell(actor->x, actor->y - si - 4)/8] & TILE_ATTR_BLOCK_LEFT) != 0 &&
-                (tileattr_mni_data[map_get_tile_cell(actor->x + 1 + 1, actor->y - si - 4)/8] & TILE_ATTR_BLOCK_LEFT) != 0)
+            if ((map_get_tile_attr(actor->x, actor->y - si - 4) & TILE_ATTR_BLOCK_LEFT) != 0 &&
+                (map_get_tile_attr(actor->x + 1 + 1, actor->y - si - 4) & TILE_ATTR_BLOCK_LEFT) != 0)
             {
                 return 1;
             }
@@ -3947,8 +3947,8 @@ uint8 suction_cup_enemy_check_if_blocked(ActorData *actor, uint8 blocking_check)
     {
         for(int si=0; si < 15; si++)
         {
-            if((tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + si)/8] & TILE_ATTR_BLOCK_DOWN) != 0 &&
-               (tileattr_mni_data[map_get_tile_cell(actor->x + 1 + 1, actor->y + si)/8] & TILE_ATTR_BLOCK_DOWN) != 0)
+            if((map_get_tile_attr(actor->x, actor->y + si) & TILE_ATTR_BLOCK_DOWN) != 0 &&
+               (map_get_tile_attr(actor->x + 1 + 1, actor->y + si) & TILE_ATTR_BLOCK_DOWN) != 0)
             {
                 return 1;
             }
@@ -3971,7 +3971,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                 actor->frame_num = actor->data_3;
             }
 
-            uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x - 1, actor->y + 1)/8];
+            uint8 tile_attr = map_get_tile_attr(actor->x - 1, actor->y + 1);
             if (sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0)
             {
                 if (suction_cup_enemy_check_if_blocked(actor, 0) == 0)
@@ -4067,7 +4067,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             }
 
             BlockingType blocking_check = sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y);
-            uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x - 1, actor->y - 4)/8];
+            uint8 tile_attr = map_get_tile_attr(actor->x - 1, actor->y - 4);
 
             if(blocking_check == SLOPE)
             {
@@ -4131,7 +4131,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                 actor->frame_num = actor->data_3 + 1 + 1;
             }
 
-            uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + 3, actor->y + 1)/8];
+            uint8 tile_attr = map_get_tile_attr(actor->x + 3, actor->y + 1);
             if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0)
             {
                 if(suction_cup_enemy_check_if_blocked(actor, 0) == 0)
@@ -4223,7 +4223,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                 actor->frame_num = actor->data_3 + 6;
             }
 
-            uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + 3, actor->y - 4)/8];
+            uint8 tile_attr = map_get_tile_attr(actor->x + 3, actor->y - 4);
             if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0)
             {
                 if(suction_cup_enemy_check_if_blocked(actor, 1) == 0)
@@ -4658,15 +4658,15 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
         {
             if(sprite_blocking_check(1, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == NOT_BLOCKED)
             {
-                uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + sprite_width, actor->y + 1) / 8];
+                uint8 tile_attr = map_get_tile_attr(actor->x + sprite_width, actor->y + 1);
                 if((tile_attr & TILE_ATTR_SLOPED) != 0)
                 {
 
-                    tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + sprite_width - 1, actor->y + 1 + 1) / 8];
+                    tile_attr = map_get_tile_attr(actor->x + sprite_width - 1, actor->y + 1 + 1);
                     if((tile_attr & TILE_ATTR_SLOPED) != 0)
                     {
 
-                        tile_attr = tileattr_mni_data[ map_get_tile_cell(actor->x + sprite_width - 1, actor->y + 1) / 8];
+                        tile_attr = map_get_tile_attr(actor->x + sprite_width - 1, actor->y + 1);
                         if((tile_attr & TILE_ATTR_BLOCK_DOWN) != 0)
                         {
                             return;
@@ -4692,7 +4692,7 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
                     return;
                 }
 
-                tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x + sprite_width - 1, actor->y + 1)/ 8];
+                tile_attr = map_get_tile_attr(actor->x + sprite_width - 1, actor->y + 1);
                 if((tile_attr & TILE_ATTR_SLOPED) == 0)
                 {
                     actor->x = actor->x + 1;
@@ -4724,22 +4724,22 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
         {
             if(sprite_blocking_check(1, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == NOT_BLOCKED)
             {
-                uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x - 1, actor->y + 1) /8];
+                uint8 tile_attr = map_get_tile_attr(actor->x - 1, actor->y + 1);
                 if((tile_attr & TILE_ATTR_SLOPED) != 0)
                 {
 
-                    tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1 + 1) / 8];
+                    tile_attr = map_get_tile_attr(actor->x, actor->y + 1 + 1);
                     if((tile_attr & TILE_ATTR_SLOPED) != 0)
                     {
 
-                        tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1) / 8];
+                        tile_attr = map_get_tile_attr(actor->x, actor->y + 1);
                         if((tile_attr & TILE_ATTR_BLOCK_DOWN) != 0)
                         {
                             return;
                         }
 
                         actor->has_moved_right_flag = 1;
-                        tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1) / 8];
+                        tile_attr = map_get_tile_attr(actor->x, actor->y + 1);
                         if((tile_attr & TILE_ATTR_SLOPED) == 0)
                         {
                             actor->y = actor->y + 1;
@@ -4757,7 +4757,7 @@ void check_actor_move_left_or_right(ActorData *actor, Direction direction_of_mov
                 if(actor->non_blocking_flag_maybe == 0 && sprite_blocking_check(3, actor->actorInfoIndex, actor->frame_num, actor->x, actor->y + 1) == NOT_BLOCKED)
                 {
 
-                    tile_attr = tileattr_mni_data[map_get_tile_cell(actor->x, actor->y + 1) / 8];
+                    tile_attr = map_get_tile_attr(actor->x, actor->y + 1);
                     if((tile_attr & TILE_ATTR_SLOPED) == 0)
                     {
 

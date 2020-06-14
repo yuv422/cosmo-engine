@@ -41,6 +41,9 @@ Tile *map_bg_tiles;
 Tile *map_fg_tiles;
 
 uint16 map_get_tile_cell(int x, int y) {
+    assert(x >= 0);
+    assert(y >= 0);
+
     if (x + y * map_width_in_tiles >= MAX_MAP_TILES)
     {
         return 0;
@@ -375,4 +378,13 @@ void write_tile_row_to_tilemap(uint16 map_tile_cell,
 
 Tile *map_get_bg_tile(uint16 tile_num) {
     return &map_bg_tiles[tile_num];
+}
+
+uint8 map_get_tile_attr(int x, int y) {
+
+    if (x < 0 || y < 0 || x >= map_width_in_tiles || x + y * map_width_in_tiles >= MAX_MAP_TILES) {
+        return TILE_ATTR_ALL_BLOCKED;  //return all blocked if we are off the map.
+    }
+
+    return tileattr_mni_data[map_get_tile_cell(x, y) / 8];
 }

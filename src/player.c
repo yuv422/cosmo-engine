@@ -96,7 +96,7 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
             for (int i = 0; i < 3; i++)
             {
-                if (tileattr_mni_data[map_get_tile_cell(x_pos + i, y_pos - 4) / 8] & TILE_ATTR_BLOCK_UP)
+                if (map_get_tile_attr(x_pos + i, y_pos - 4) & TILE_ATTR_BLOCK_UP)
                 {
                     return BLOCKED;
                 }
@@ -109,14 +109,14 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
                 return NOT_BLOCKED;
             }
 
-            tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos, y_pos) / 8];
+            tile_attr = map_get_tile_attr(x_pos, y_pos);
             if ((tile_attr & TILE_ATTR_BLOCK_DOWN) == 0 && (tile_attr & TILE_ATTR_SLOPED) != 0 &&
                 (tile_attr & TILE_ATTR_SLIPPERY) != 0)
             {
                 is_standing_slipry_slope_left_flg = 1;
             }
 
-            tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos + 2, y_pos) / 8];
+            tile_attr = map_get_tile_attr(x_pos + 2, y_pos);
             if ((tile_attr & TILE_ATTR_BLOCK_DOWN) == 0 &&
                 (tile_attr & TILE_ATTR_SLOPED) != 0 &&
                 (tile_attr & TILE_ATTR_SLIPPERY) != 0)
@@ -126,7 +126,7 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
             for (int i = 0; i < 3; i++)
             {
-                uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos + i, y_pos) / 8];
+                uint8 tile_attr = map_get_tile_attr(x_pos + i, y_pos);
                 if (tile_attr & TILE_ATTR_SLOPED)
                 {
                     num_hits_since_touching_ground = 0;
@@ -141,12 +141,12 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
             break;
 
         case 2: // LEFT
-            tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos, y_pos - 2) / 8];
+            tile_attr = map_get_tile_attr(x_pos, y_pos - 2);
             player_is_grabbing_wall_flag = tile_attr & TILE_ATTR_CAN_GRAB_WALL;
 
             for (int i = 0; i < 5; i++)
             {
-                tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos, y_pos - i) / 8];
+                tile_attr = map_get_tile_attr(x_pos, y_pos - i);
                 if (tile_attr & TILE_ATTR_BLOCK_LEFT)
                 {
                     return BLOCKED;
@@ -154,8 +154,8 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
                 if (i == 0)
                 {
-                    if (tileattr_mni_data[map_get_tile_cell(x_pos, y_pos) / 8] & TILE_ATTR_SLOPED &&
-                        (tileattr_mni_data[map_get_tile_cell(x_pos, y_pos - 1) / 8] & TILE_ATTR_BLOCK_LEFT) == 0)
+                    if (map_get_tile_attr(x_pos, y_pos) & TILE_ATTR_SLOPED &&
+                        (map_get_tile_attr(x_pos, y_pos - 1) & TILE_ATTR_BLOCK_LEFT) == 0)
                     {
                         return SLOPE;
                     }
@@ -164,12 +164,12 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
             break;
 
         case 3: // RIGHT
-            tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos + 2, y_pos - 2) / 8];
+            tile_attr = map_get_tile_attr(x_pos + 2, y_pos - 2);
             player_is_grabbing_wall_flag = tile_attr & TILE_ATTR_CAN_GRAB_WALL;
 
             for (int i = 0; i < 5; i++)
             {
-                tile_attr = tileattr_mni_data[map_get_tile_cell(x_pos + 2, y_pos - i) / 8];
+                tile_attr = map_get_tile_attr(x_pos + 2, y_pos - i);
                 if (tile_attr & TILE_ATTR_BLOCK_RIGHT)
                 {
                     return BLOCKED;
@@ -177,8 +177,8 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
                 if (i == 0)
                 {
-                    if (tileattr_mni_data[map_get_tile_cell(x_pos + 2, y_pos) / 8] & TILE_ATTR_SLOPED &&
-                        (tileattr_mni_data[map_get_tile_cell(x_pos + 2, y_pos - 1) / 8] & TILE_ATTR_BLOCK_RIGHT) == 0)
+                    if (map_get_tile_attr(x_pos + 2, y_pos) & TILE_ATTR_SLOPED &&
+                        (map_get_tile_attr(x_pos + 2, y_pos - 1) & TILE_ATTR_BLOCK_RIGHT) == 0)
                     {
                         return SLOPE;
                     }
@@ -272,16 +272,16 @@ void handle_player_input_maybe()
     }
     if(player_hanging_on_wall_direction != 0)
     {
-        int tile_cell = 0;
+        int tile_attr = 0;
         if(player_hanging_on_wall_direction != 2)
         {
-            tile_cell = map_get_tile_cell(player_x_pos + 3, player_y_pos - 2);
+            tile_attr = map_get_tile_attr(player_x_pos + 3, player_y_pos - 2);
         }
         else
         {
-            tile_cell = map_get_tile_cell(player_x_pos - 1, player_y_pos - 2);
+            tile_attr = map_get_tile_attr(player_x_pos - 1, player_y_pos - 2);
         }
-        if((tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_SLIPPERY) != 0 && (tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_CAN_GRAB_WALL) != 0)
+        if((tile_attr & TILE_ATTR_SLIPPERY) != 0 && (tile_attr & TILE_ATTR_CAN_GRAB_WALL) != 0)
         {
             if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED)
             {
@@ -289,16 +289,16 @@ void handle_player_input_maybe()
                 si = 1;
                 if(player_hanging_on_wall_direction != 2)
                 {
-                    tile_cell = map_get_tile_cell(player_x_pos + 3, player_y_pos - 2);
+                    tile_attr = map_get_tile_attr(player_x_pos + 3, player_y_pos - 2);
                 }
                 else
                 {
-                    tile_cell = map_get_tile_cell(player_x_pos - 1, player_y_pos - 2);
+                    tile_attr = map_get_tile_attr(player_x_pos - 1, player_y_pos - 2);
                 }
 
-                if((tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_SLIPPERY) == 0)
+                if((tile_attr & TILE_ATTR_SLIPPERY) == 0)
                 {
-                    if((tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_CAN_GRAB_WALL) == 0)
+                    if((tile_attr & TILE_ATTR_CAN_GRAB_WALL) == 0)
                     {
                         player_hanging_on_wall_direction = 0;
                         si = 0;
@@ -313,7 +313,7 @@ void handle_player_input_maybe()
         }
         else
         {
-            if((tileattr_mni_data[tile_cell >> 3] & TILE_ATTR_CAN_GRAB_WALL) == 0)
+            if((tile_attr & TILE_ATTR_CAN_GRAB_WALL) == 0)
             {
                 player_hanging_on_wall_direction = 0;
             }
@@ -336,9 +336,9 @@ void handle_player_input_maybe()
             {
                 if(player_direction == 0)
                 {
-                    uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(player_x_pos - 1, player_y_pos - 2) >> 3];
+                    uint8 tile_attr = map_get_tile_attr(player_x_pos - 1, player_y_pos - 2);
                     top_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_LEFT;
-                    tile_attr = tileattr_mni_data[map_get_tile_cell(player_x_pos - 2, player_y_pos - 2) >> 3];
+                    tile_attr = map_get_tile_attr(player_x_pos - 2, player_y_pos - 2);
                     int bottom_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_LEFT;
 
                     if(num_bombs != 0 || has_had_bomb_flag != 0)
@@ -377,9 +377,9 @@ void handle_player_input_maybe()
                 }
                 else
                 {
-                    uint8 tile_attr = tileattr_mni_data[map_get_tile_cell(player_x_pos + 3, player_y_pos - 2) >> 3];
+                    uint8 tile_attr = map_get_tile_attr(player_x_pos + 3, player_y_pos - 2);
                     top_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_RIGHT;
-                    tile_attr = tileattr_mni_data[map_get_tile_cell(player_x_pos + 4, player_y_pos - 2) >> 3];
+                    tile_attr = map_get_tile_attr(player_x_pos + 4, player_y_pos - 2);
                     int bottom_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_RIGHT;
 
                     if(num_bombs == 0 && has_had_bomb_flag == 0)
@@ -1159,7 +1159,7 @@ void display_player_sprite(uint8 frame_num, int x_pos, int y_pos, int tile_displ
 
             if(screen_x >= 8 && screen_x <= 304 && //FIXME need a better way of making sure we draw in the borders.
                                  screen_y >= 8 && screen_y < 152 &&
-                    !(tileattr_mni_data[map_get_tile_cell(x_pos+x,y_pos - info->height + y + 1)/8] & TILE_ATTR_IN_FRONT))
+                    !(map_get_tile_attr(x_pos+x,y_pos - info->height + y + 1) & TILE_ATTR_IN_FRONT))
             {
                 if(tile_display_func_index == 2)
                 {
@@ -1725,8 +1725,8 @@ void player_hoverboard_update()
             drop_bomb_state = 2;
             if (player_direction == 0)
             {
-                uint8 tr1 = tileattr_mni_data[map_get_tile_cell(player_x_pos - 1, player_y_pos - 2) / 8];
-                uint8 tr2 = tileattr_mni_data[map_get_tile_cell(player_x_pos - 2, player_y_pos - 2) / 8];
+                uint8 tr1 = map_get_tile_attr(player_x_pos - 1, player_y_pos - 2);
+                uint8 tr2 = map_get_tile_attr(player_x_pos - 2, player_y_pos - 2);
                 if ((tr1 & TILE_ATTR_BLOCK_LEFT) == 0 && (tr2 & TILE_ATTR_BLOCK_LEFT) == 0 && num_bombs > 0)
                 {
                     actor_add_new(0x18, player_x_pos - 2, player_y_pos - 2);
@@ -1741,8 +1741,8 @@ void player_hoverboard_update()
             }
             else
             {
-                uint8 tr1 = tileattr_mni_data[map_get_tile_cell(player_x_pos + 3, player_y_pos - 2) / 8];
-                uint8 tr2 = tileattr_mni_data[map_get_tile_cell(player_x_pos + 4, player_y_pos - 2) / 8];
+                uint8 tr1 = map_get_tile_attr(player_x_pos + 3, player_y_pos - 2);
+                uint8 tr2 = map_get_tile_attr(player_x_pos + 4, player_y_pos - 2);
                 if ((tr1 & TILE_ATTR_BLOCK_RIGHT) == 0 && (tr2 & TILE_ATTR_BLOCK_RIGHT) == 0 && num_bombs > 0)
                 {
                     actor_add_new(0x18, player_x_pos + 3, player_y_pos - 2);

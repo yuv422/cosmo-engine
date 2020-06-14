@@ -233,11 +233,10 @@ void update_rain_effect() //FIXME this rain doesn't look quite right. The lightn
 
     int x = (rand() % 38) + mapwindow_x_offset;
     int y = (rand() % 18) + mapwindow_y_offset;
-    int map_tile_cell = map_get_tile_cell(x, y);
 
     if((rand() & 1) != 0)
     {
-        if((tileattr_mni_data[map_tile_cell / 8] & TILE_ATTR_SLIPPERY) != 0)
+        if((map_get_tile_attr(x, y) & TILE_ATTR_SLIPPERY) != 0)
         {
             effect_add_sprite(0x63, 5, x, y, 0, 1);
         }
@@ -515,7 +514,7 @@ void update_brightness_objs()
         {
             video_draw_highlight_effect((brightness->x - mapwindow_x_offset + 1) * TILE_WIDTH, (brightness->y - mapwindow_y_offset + 1) * TILE_HEIGHT, brightness->type);
 
-            uint16 tile_attr = tileattr_mni_data[map_get_tile_cell(brightness->x,brightness->y + 1)/8];
+            uint16 tile_attr = map_get_tile_attr(brightness->x,brightness->y + 1);
             for(int j = 1; !(tile_attr & TILE_ATTR_BLOCK_DOWN);)
             {
                 if(brightness->x >= mapwindow_x_offset && brightness->x < mapwindow_x_offset + MAP_WINDOW_WIDTH &&
@@ -525,7 +524,7 @@ void update_brightness_objs()
                                                 (brightness->y + j - mapwindow_y_offset + 1) * TILE_HEIGHT, 1);
                 }
                 j++;
-                tile_attr = tileattr_mni_data[map_get_tile_cell(brightness->x,brightness->y + j)/8];
+                tile_attr = map_get_tile_attr(brightness->x,brightness->y + j);
             }
         }
     }

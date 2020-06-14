@@ -40,14 +40,16 @@ typedef struct {
     TileInfo *frames;
 } Sprite;
 
-#define TILE_ATTR_BLOCK_DOWN      0x1
-#define TILE_ATTR_BLOCK_UP        0x2
-#define TILE_ATTR_BLOCK_LEFT      0x4
-#define TILE_ATTR_BLOCK_RIGHT     0x8
-#define TILE_ATTR_SLIPPERY       0x10
-#define TILE_ATTR_IN_FRONT       0x20
-#define TILE_ATTR_SLOPED         0x40
-#define TILE_ATTR_CAN_GRAB_WALL  0x80
+#define TILE_ATTR_BLOCK_DOWN      0x1u
+#define TILE_ATTR_BLOCK_UP        0x2u
+#define TILE_ATTR_BLOCK_LEFT      0x4u
+#define TILE_ATTR_BLOCK_RIGHT     0x8u
+#define TILE_ATTR_SLIPPERY       0x10u
+#define TILE_ATTR_IN_FRONT       0x20u
+#define TILE_ATTR_SLOPED         0x40u
+#define TILE_ATTR_CAN_GRAB_WALL  0x80u
+
+#define TILE_ATTR_ALL_BLOCKED (TILE_ATTR_BLOCK_DOWN | TILE_ATTR_BLOCK_UP | TILE_ATTR_BLOCK_LEFT | TILE_ATTR_BLOCK_RIGHT)
 
 #define TILE_HEIGHT 8
 #define TILE_WIDTH 8
