@@ -21,6 +21,7 @@
 
 //Data
 uint8 show_one_moment_screen_flag = 0;
+sint8 selected_ingame_hint_dialog = -1;
 uint8 byte_28BE3 = 0;
 uint8 byte_2E21C = 0;
 int cur_selected_item = 0;
@@ -1825,4 +1826,15 @@ void end_sequence()
     wait_for_input(x + 0x15, 8);
     ordering_info_dialog();
     display_score_from_level();
+}
+
+void display_ingame_hint_dialog() {
+    if (selected_ingame_hint_dialog != -1) {
+        ingame_hint_dialogs(selected_ingame_hint_dialog);
+        selected_ingame_hint_dialog = -1;
+    }
+}
+
+void show_ingame_hint_dialog(int dialog_num) {
+    selected_ingame_hint_dialog = dialog_num;
 }

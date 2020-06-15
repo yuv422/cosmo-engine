@@ -52,4 +52,8 @@ int warp_mode_dialog();
 
 void end_sequence();
 
+void show_ingame_hint_dialog(int dialog_num);
+
+void display_ingame_hint_dialog();
+
 #endif //COSMO_ENGINE_DIALOG_H

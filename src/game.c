@@ -207,6 +207,9 @@ bool executeTick() {
         show_monster_attack_hint = 2;
         monster_attack_hint_dialog();
     }
+
+    display_ingame_hint_dialog();
+
     video_update();
 
     if (finished_level_flag_maybe)

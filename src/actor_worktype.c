@@ -2233,7 +2233,7 @@ void actor_wt_hint_dialog(ActorData *actor)
         if((up_key_pressed != 0 && player_hoverboard_counter == 0) || byte_2E21C == 0)
         {
             play_sfx(0x1e);
-            ingame_hint_dialogs(actor->data_5);
+            show_ingame_hint_dialog(actor->data_5);
         }
         byte_2E21C = 1;
     }
