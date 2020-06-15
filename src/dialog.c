@@ -983,8 +983,9 @@ void ingame_hint_dialogs(uint16 hint_number) {
 
         case 16:
             x = create_text_dialog_box(2, 10, 0x1c, "COSMIC HINT!", "Press any key to exit.");
+            display_dialog_text(x + 0x17, 7, "\xfe""001002");
             display_dialog_text(x, 9, " Press SPACE to hurry or");
-            display_dialog_text(x + 0x17, 7, "\xfe""001002\n  Collect the STARS to\n  advance to BONUS\n  STAGES.");
+            display_dialog_text(x, 5, "\xfc""003  Collect the STARS to\n  advance to BONUS\n  STAGES.");
             wait_for_input(x + 0x19, 10);
             break;
 
