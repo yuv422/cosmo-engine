@@ -9,6 +9,7 @@
 #include "save.h"
 #include "status.h"
 #include "effects.h"
+#include "player.h"
 
 const sint16 player_x_offset_tbl[] = { 0, 0, 1, 1, 1, 0, -1, -1, -1 };
 const sint16 player_y_offset_tbl[] = { 0, -1, -1, 0, 1, 1, 1, 0, -1 };
@@ -1394,7 +1395,7 @@ int player_bounce_in_the_air(int bounce_height)
             if(num_hits_since_touching_ground == 10)
             {
                 num_hits_since_touching_ground = 0;
-                actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
+                player_add_50000_points_speech_bubble();
             }
         }
         return 1;
@@ -1857,4 +1858,8 @@ void player_move_on_platform(int platform_x_left, int platform_x_right, int x_of
     }
 
     return;
+}
+
+void player_add_50000_points_speech_bubble() {
+    actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
 }

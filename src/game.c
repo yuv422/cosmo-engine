@@ -127,8 +127,8 @@ void reset_game_state()
     player_fall_off_map_bottom_counter = 0;
     word_28BEA = 0;
     byte_2E21C = 0;
-    word_2E1E4 = 0;
-    word_2E1E2 = 0;
+    num_containers = 0;
+    num_eye_plants_remaining_to_blow_up = 0;
     num_hits_since_touching_ground = 0;
 
     //Actor values

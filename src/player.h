@@ -89,4 +89,6 @@ void push_player_around(int push_direction, int push_anim_duration, int push_dur
 
 void player_move_on_platform(int platform_x_left, int platform_x_right, int x_offset_tbl_index, int y_offset_tbl_index);
 
+void player_add_50000_points_speech_bubble();
+
 #endif //COSMO_ENGINE_PLAYER_H

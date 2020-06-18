@@ -34,9 +34,9 @@ uint16 word_32EC2 = 0; //range 0 - 35
 
 uint8 energy_beam_enabled_flag = 0;
 
-uint16 word_2E1E4 = 0; //seems to be related to number of actors in play.
+uint16 num_containers = 0;
 
-uint16 word_2E1E2 = 0;
+uint16 num_eye_plants_remaining_to_blow_up = 0;
 
 uint16 num_moving_platforms = 0;
 
@@ -122,7 +122,7 @@ void actor_init_struct(int actor_init_cur_actor_num,
 {
     if(data_2 == 0x1e || data_2 == 0xb9)
     {
-        word_2E1E4++;
+        num_containers++;
     }
 
     ActorData *actor = &actors[actor_init_cur_actor_num];
@@ -477,10 +477,11 @@ int actor_init(int actor_num, int image_index, int x_pos, int y_pos)
             break;
 
         case 95:
+            // Eye Plant
             actor_init_struct(actor_num, 0x5f, x_pos, y_pos, 0, 1, 0, 0, actor_wt_pink_eye_plant, 0, 0, 0, 0, 0);
-            if(word_2E1E2 < 15)
+            if(num_eye_plants_remaining_to_blow_up < 15)
             {
-                word_2E1E2 = word_2E1E2 + 1;
+                num_eye_plants_remaining_to_blow_up++;
             }
             break;
 

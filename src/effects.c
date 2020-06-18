@@ -123,13 +123,13 @@ int blow_up_actor_with_bomb(int actorInfoIndex, int frame_num, int x_pos, int y_
                 player_add_score_for_actor(actorInfoIndex);
                 if(actorInfoIndex == 0x5f)
                 {
-                    if(word_2E1E2 == 1)
+                    if(num_eye_plants_remaining_to_blow_up == 1)
                     {
-                        actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
+                        player_add_50000_points_speech_bubble();
                     }
                     effect_add_sprite(0x17, 8, x_pos, y_pos, 0, 1);
                     actor_toss_add_new(0x39, x_pos, y_pos);
-                    word_2E1E2--;
+                    num_eye_plants_remaining_to_blow_up--;
                 }
             }
             return 1;

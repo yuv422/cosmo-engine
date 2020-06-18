@@ -50,9 +50,9 @@ extern uint16 word_32EC2;
 
 extern uint8 energy_beam_enabled_flag;
 
-extern uint16 word_2E1E4;
+extern uint16 num_containers;
 
-extern uint16 word_2E1E2;
+extern uint16 num_eye_plants_remaining_to_blow_up;
 
 extern uint16 brightness_effect_enabled_flag;
 extern uint16 obj_switch_151_flag;

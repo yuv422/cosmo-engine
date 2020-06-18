@@ -1091,10 +1091,10 @@ void actor_explode_container(ActorData *actor)
     }
 
     actor_toss_add_new(actor->data_1, actor->x + 1, actor->y);
-    if(word_2E1E4 == 1)
+    if(num_containers == 1)
     {
-        actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
+        player_add_50000_points_speech_bubble();
     }
-    word_2E1E4--;
+    num_containers--;
     return ;
 }
