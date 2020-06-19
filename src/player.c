@@ -59,8 +59,8 @@ uint16 player_push_frame_num = 0;
 uint8 player_dont_push_while_jumping_flag = 0;
 uint16 player_push_check_blocking_flag = 0;
 
-uint8 word_28BEA;
-int word_28F7E;
+uint8 player_has_shown_ouch_bubble_flag;
+int player_idle_counter;
 int word_28F94;
 int word_2E180;
 int word_2E1E8;
@@ -825,7 +825,7 @@ void handle_player_input_maybe()
         {
 // node 0001e615-0001e6a9 #insn=6 use={} def={} in={} out={} pred={ 1E5DC} FALLTHROUGH follow=0001e96f
             //loc_1E615:
-            word_28F7E = 0;
+            player_idle_counter = 0;
             if (up_key_pressed != 0 && player_is_teleporting_flag == 0 && word_32EAC == 0)
             {
                 if (mapwindow_y_offset > 0 && player_y_pos - mapwindow_y_offset < 0x11)
@@ -887,60 +887,7 @@ void handle_player_input_maybe()
                             player_sprite_dir_frame_offset = 4;
                             if(left_key_pressed == 0 && right_key_pressed == 0 && byte_2E2E4 == 0)
                             {
-                                word_28F7E = word_28F7E + 1;
-                                if(word_28F7E <= 0x64 || word_28F7E >= 0x6e)
-                                {
-                                    if(word_28F7E <= 0x8b || word_28F7E >= 0x96)
-                                    {
-                                        if(word_28F7E == 0xb4)
-                                        {
-                                            player_sprite_dir_frame_offset = 0x13;
-                                        }
-                                        else
-                                        {
-                                            if(word_28F7E == 0xb5)
-                                            {
-                                                player_sprite_dir_frame_offset = 0x14;
-                                            }
-                                            else
-                                            {
-                                                if(word_28F7E != 0xb6)
-                                                {
-                                                    if(word_28F7E != 0xb7)
-                                                    {
-                                                        if(word_28F7E != 0xb8)
-                                                        {
-                                                            if(word_28F7E == 0xb9)
-                                                            {
-                                                                word_28F7E = 0;
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            player_sprite_dir_frame_offset = 0x13;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        player_sprite_dir_frame_offset = 0x14;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    player_sprite_dir_frame_offset = 0x15;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        player_sprite_dir_frame_offset = 6;
-                                    }
-                                }
-                                else
-                                {
-                                    player_sprite_dir_frame_offset = 5;
-                                }
+                                player_update_idle_anim();
                             }
                             if(player_sprite_dir_frame_offset != 5 && player_sprite_dir_frame_offset != 6 && (rvalue == 0 || rvalue == 0x1f))
                             {
@@ -953,7 +900,7 @@ void handle_player_input_maybe()
                         {
                             if(byte_2E2E4 == 0)
                             {
-                                word_28F7E = 0;
+                                player_idle_counter = 0;
                                 if((word_28F94 & 1) != 0)
                                 {
                                     if((player_sprite_dir_frame_offset & 1) != 0)
@@ -971,7 +918,7 @@ void handle_player_input_maybe()
                     }
                     else
                     {
-                        word_28F7E = 0;
+                        player_idle_counter = 0;
                         player_sprite_dir_frame_offset = 7;
                         if(player_bounce_flag_maybe != 0 && player_spring_jump_flag != 0)
                         {
@@ -985,7 +932,7 @@ void handle_player_input_maybe()
                 }
                 else
                 {
-                    word_28F7E = 0;
+                    player_idle_counter = 0;
                     if(player_bounce_flag_maybe != 0 || byte_2E2E4 != 0 || byte_2E182 <= 6)
                     {
                         if(word_2E180 < 10 || word_2E180 >= 0x19)
@@ -1020,7 +967,7 @@ void handle_player_input_maybe()
             }
             else
             {
-                word_28F7E = 0;
+                player_idle_counter = 0;
                 if(left_key_pressed == 0)
                 {
                     player_sprite_dir_frame_offset = 9;
@@ -1033,7 +980,7 @@ void handle_player_input_maybe()
         }
         else
         {
-            word_28F7E = 0;
+            player_idle_counter = 0;
             if(right_key_pressed != 0)
             {
                 player_sprite_dir_frame_offset = 10;
@@ -1047,7 +994,7 @@ void handle_player_input_maybe()
     else
     {
         // node 0001e5cd-0001e5d9 #insn=3 use={} def={} in={si} out={si} pred={ 1DC0F} JUMP target=0001e8d8
-        word_28F7E = 0;
+        player_idle_counter = 0;
         player_sprite_dir_frame_offset = 14;
         //goto loc_1E8D8;
     }
@@ -1536,9 +1483,9 @@ void player_decrease_health()
     if(player_death_counter == 0 && god_mode_flag == 0 && hide_player_sprite == 0 && teleporter_state_maybe == 0 && byte_32EB8 == 0 && player_in_pneumatic_tube_flag == 0 && player_invincibility_counter == 0)
     {
         player_hanging_on_wall_direction = 0;
-        if(word_28BEA == 0)
+        if(player_has_shown_ouch_bubble_flag == 0)
         {
-            word_28BEA = 1;
+            player_has_shown_ouch_bubble_flag = 1;
             actor_add_new(0xeb, player_x_pos - 1, player_y_pos - 5);
             if(show_monster_attack_hint == 0)
             {
@@ -1862,4 +1809,64 @@ void player_move_on_platform(int platform_x_left, int platform_x_right, int x_of
 
 void player_add_50000_points_speech_bubble() {
     actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
+}
+
+void player_update_idle_anim() {
+    player_idle_counter++;
+    if(player_idle_counter <= 0x64 || player_idle_counter >= 0x6e)
+    {
+        if(player_idle_counter <= 0x8b || player_idle_counter >= 0x96)
+        {
+            if(player_idle_counter == 0xb4)
+            {
+                //close eyes
+                player_sprite_dir_frame_offset = 0x13;
+            }
+            else
+            {
+                if(player_idle_counter == 0xb5)
+                {
+                    player_sprite_dir_frame_offset = 0x14;
+                }
+                else
+                {
+                    if(player_idle_counter != 0xb6)
+                    {
+                        if(player_idle_counter != 0xb7)
+                        {
+                            if(player_idle_counter != 0xb8)
+                            {
+                                if(player_idle_counter == 0xb9)
+                                {
+                                    player_idle_counter = 0;
+                                }
+                            }
+                            else
+                            {
+                                player_sprite_dir_frame_offset = 0x13;
+                            }
+                        }
+                        else
+                        {
+                            player_sprite_dir_frame_offset = 0x14;
+                        }
+                    }
+                    else
+                    {
+                        player_sprite_dir_frame_offset = 0x15;
+                    }
+                }
+            }
+        }
+        else
+        {
+            //look down
+            player_sprite_dir_frame_offset = 6;
+        }
+    }
+    else
+    {
+        //look up.
+        player_sprite_dir_frame_offset = 5;
+    }
 }

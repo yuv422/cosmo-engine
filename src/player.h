@@ -45,8 +45,8 @@ extern int player_fall_off_map_bottom_counter;
 extern int num_hits_since_touching_ground;
 extern uint8 show_monster_attack_hint;
 
-extern uint8 word_28BEA;
-extern int word_28F7E;
+extern uint8 player_has_shown_ouch_bubble_flag;
+extern int player_idle_counter;
 extern int word_28F94;
 extern int word_2E180;
 extern int word_2E1E8;
@@ -90,5 +90,7 @@ void push_player_around(int push_direction, int push_anim_duration, int push_dur
 void player_move_on_platform(int platform_x_left, int platform_x_right, int x_offset_tbl_index, int y_offset_tbl_index);
 
 void player_add_50000_points_speech_bubble();
+
+void player_update_idle_anim();
 
 #endif //COSMO_ENGINE_PLAYER_H

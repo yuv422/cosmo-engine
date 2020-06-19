@@ -125,7 +125,7 @@ void reset_game_state()
     palette_index = 0;
     word_32EC2 = 0;
     player_fall_off_map_bottom_counter = 0;
-    word_28BEA = 0;
+    player_has_shown_ouch_bubble_flag = 0;
     byte_2E21C = 0;
     num_containers = 0;
     num_eye_plants_remaining_to_blow_up = 0;
