@@ -1342,7 +1342,7 @@ int player_bounce_in_the_air(int bounce_height)
             if(num_hits_since_touching_ground == 10)
             {
                 num_hits_since_touching_ground = 0;
-                player_add_50000_points_speech_bubble();
+                player_add_speech_bubble(POINTS_50000);
             }
         }
         return 1;
@@ -1486,7 +1486,7 @@ void player_decrease_health()
         if(player_has_shown_ouch_bubble_flag == 0)
         {
             player_has_shown_ouch_bubble_flag = 1;
-            actor_add_new(0xeb, player_x_pos - 1, player_y_pos - 5);
+            player_add_speech_bubble(OUCH);
             if(show_monster_attack_hint == 0)
             {
                 show_monster_attack_hint = 1;
@@ -1807,10 +1807,6 @@ void player_move_on_platform(int platform_x_left, int platform_x_right, int x_of
     return;
 }
 
-void player_add_50000_points_speech_bubble() {
-    actor_add_new(0xf6, player_x_pos - 1, player_y_pos - 5);
-}
-
 void player_update_idle_anim() {
     player_idle_counter++;
     if(player_idle_counter <= 0x64 || player_idle_counter >= 0x6e)
@@ -1869,4 +1865,8 @@ void player_update_idle_anim() {
         //look up.
         player_sprite_dir_frame_offset = 5;
     }
+}
+
+void player_add_speech_bubble(SpeechBubbleType type) {
+    actor_add_new(type, player_x_pos - 1, player_y_pos - 5);
 }

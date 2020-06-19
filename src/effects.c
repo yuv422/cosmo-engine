@@ -125,7 +125,7 @@ int blow_up_actor_with_bomb(int actorInfoIndex, int frame_num, int x_pos, int y_
                 {
                     if(num_eye_plants_remaining_to_blow_up == 1)
                     {
-                        player_add_50000_points_speech_bubble();
+                        player_add_speech_bubble(POINTS_50000);
                     }
                     effect_add_sprite(0x17, 8, x_pos, y_pos, 0, 1);
                     actor_toss_add_new(0x39, x_pos, y_pos);

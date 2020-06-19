@@ -24,7 +24,7 @@ void actor_wt_133_boss_purple_15411(ActorData *actor)
     if(word_2E21E == 0)
     {
         word_2E21E = 1;
-        actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+        player_add_speech_bubble(WHOA);
         stop_music();
         load_music(2);
     }
@@ -3586,7 +3586,7 @@ void actor_wt_silver_robot(ActorData *actor)
                 if(word_2E238 == 0)
                 {
                     word_2E238 = 1;
-                    actor_add_new(0xf5, player_x_pos - 1, player_y_pos - 5);
+                    player_add_speech_bubble(UMPH);
                 }
                 return;
             }
@@ -3626,7 +3626,7 @@ void actor_wt_silver_robot(ActorData *actor)
                 if(word_2E238 == 0)
                 {
                     word_2E238 = 1;
-                    actor_add_new(0xf5, player_x_pos - 1, player_y_pos - 5);
+                    player_add_speech_bubble(UMPH);
                 }
                 return;
             }
@@ -4340,7 +4340,7 @@ void actor_wt_switch_multi_use(ActorData *actor)
                     if(word_2E228 == 0)
                     {
                         word_2E228 = 1;
-                        actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+                        player_add_speech_bubble(WHOA);
                     }
                     break;
 
@@ -4461,7 +4461,7 @@ void actor_wt_teleporter(ActorData *actor)
     if(word_2E23C == 0)
     {
         word_2E23C = 1;
-        actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+        player_add_speech_bubble(WHOA);
     }
     return;
 }

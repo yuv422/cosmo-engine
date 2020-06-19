@@ -60,6 +60,12 @@ extern int word_32EB2;
 extern unsigned char byte_2E182;
 extern unsigned char byte_2E2E4;
 
+typedef enum SpeechBubbleType {
+    WHOA = 0xf4,
+    UMPH = 0xf5,
+    POINTS_50000 = 0xf6,
+    OUCH = 0xeb
+} SpeechBubbleType;
 
 void handle_player_input_maybe();
 void player_hoverboard_update();
@@ -89,8 +95,8 @@ void push_player_around(int push_direction, int push_anim_duration, int push_dur
 
 void player_move_on_platform(int platform_x_left, int platform_x_right, int x_offset_tbl_index, int y_offset_tbl_index);
 
-void player_add_50000_points_speech_bubble();
-
 void player_update_idle_anim();
+
+void player_add_speech_bubble(SpeechBubbleType type);
 
 #endif //COSMO_ENGINE_PLAYER_H

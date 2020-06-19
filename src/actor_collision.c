@@ -56,7 +56,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                     if (word_2E246 == 0)
                     {
                         word_2E246 = 1;
-                        actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+                        player_add_speech_bubble(WHOA);
                     }
                     actor->data_1 = 3;
                 }
@@ -398,7 +398,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 if (word_2E236 == 0)
                 {
                     word_2E236 = 1;
-                    actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+                    player_add_speech_bubble(WHOA);
                 }
                 return 0;
             }
@@ -729,7 +729,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 if (word_2E24C == 0)
                 {
                     word_2E24C = 1;
-                    actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+                    player_add_speech_bubble(WHOA);
                 }
                 return 0;
             }
@@ -796,7 +796,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             if (word_2E232 == 0)
             {
                 word_2E232 = 1;
-                actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+                player_add_speech_bubble(WHOA);
             }
             return 0;
 
@@ -846,7 +846,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 if (word_2E220 == 0)
                 {
                     word_2E220 = 1;
-                    actor_add_new(0xf5, player_x_pos - 1, player_y_pos - 5);
+                    player_add_speech_bubble(UMPH);
                 }
                 return 0;
             }
@@ -907,7 +907,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             }
             if (word_2E22A == 0)
             {
-                actor_add_new(0xf4, player_x_pos - 1, player_y_pos - 5);
+                player_add_speech_bubble(WHOA);
                 word_2E22A = 1;
             }
             update_health_bar_display();
@@ -1010,7 +1010,7 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             if (word_2E234 == 0)
             {
                 word_2E234 = 1;
-                actor_add_new(0xf5, player_x_pos - 1, player_y_pos - 5);
+                player_add_speech_bubble(UMPH);
             }
             if (actor->x != player_x_pos + 2)
             {
@@ -1093,7 +1093,7 @@ void actor_explode_container(ActorData *actor)
     actor_toss_add_new(actor->data_1, actor->x + 1, actor->y);
     if(num_containers == 1)
     {
-        player_add_50000_points_speech_bubble();
+        player_add_speech_bubble(POINTS_50000);
     }
     num_containers--;
     return ;
