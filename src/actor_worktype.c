@@ -3267,7 +3267,7 @@ void actor_wt_rocket(ActorData *actor)
                     player_bounce_height_counter = 0x10;
                     player_bounce_flag_maybe = 1;
                     sub_11062();
-                    word_2E1DE = 0;
+                    player_spring_jump_flag = 0;
                     if(actor->y - 7 == player_y_pos)
                     {
                         player_y_pos = player_y_pos + 1;
