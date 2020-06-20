@@ -13,6 +13,7 @@
 //Data
 extern uint16 current_level;
 extern int map_width_in_tiles;
+extern int map_height_in_tiles;
 extern int map_stride_bit_shift_amt;
 
 extern int mapwindow_x_offset;
@@ -35,5 +36,7 @@ void map_display();
 Tile *map_get_bg_tile(uint16 tile_num);
 
 uint8 map_get_tile_attr(int x, int y);
+
+bool move_map_window(int dx, int dy);
 
 #endif //COSMO_ENGINE_MAP_H

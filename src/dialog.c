@@ -1790,6 +1790,22 @@ void music_toggle_dialog()
     wait_for_input(x + 0x15, 4);
 }
 
+void hack_mover_toggle_dialog()
+{
+    uint16 x;
+    if(cheat_hack_mover_enabled)
+    {
+        cheat_hack_mover_enabled = false;
+        x = create_text_dialog_box(2, 4, 0x1e, "Hack Mover Toggle", "Hack Mover is now OFF!");
+    }
+    else
+    {
+        cheat_hack_mover_enabled = true;
+        x = create_text_dialog_box(2, 4, 0x1e, "Hack Mover Toggle", "Hack Mover is now ON!");
+    }
+
+    wait_for_input(x + 0x1b, 4);
+}
 void end_sequence()
 {
     cosmo_wait(5);

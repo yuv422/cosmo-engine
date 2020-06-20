@@ -47,6 +47,7 @@ void game_redefine();
 
 void sound_toggle_dialog();
 void music_toggle_dialog();
+void hack_mover_toggle_dialog();
 
 int warp_mode_dialog();
 

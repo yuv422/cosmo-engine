@@ -60,6 +60,8 @@ extern int word_32EB2;
 extern unsigned char byte_2E182;
 extern unsigned char byte_2E2E4;
 
+extern bool cheat_hack_mover_enabled;
+
 typedef enum SpeechBubbleType {
     WHOA = 0xf4,
     UMPH = 0xf5,
@@ -99,4 +101,5 @@ void player_update_idle_anim();
 
 void player_add_speech_bubble(SpeechBubbleType type);
 
+void player_hack_mover_update();
 #endif //COSMO_ENGINE_PLAYER_H

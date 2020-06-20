@@ -76,6 +76,7 @@ unsigned char byte_2E2E4;
 
 uint8 god_mode_flag = 0;
 uint8 show_monster_attack_hint = 0;
+bool cheat_hack_mover_enabled = false;
 
 Tile *player_tiles;
 Sprite *player_sprites;
@@ -257,6 +258,11 @@ void handle_player_input_maybe()
     int var_4=0;
     int top_bomb_check_flag = 0;
     BlockingType player_movement_status = NOT_BLOCKED;
+
+    if (cheat_hack_mover_enabled) {
+        player_hack_mover_update();
+        return;
+    }
 
     int si = 0;
     player_is_grabbing_wall_flag = 0;
@@ -1869,4 +1875,33 @@ void player_update_idle_anim() {
 
 void player_add_speech_bubble(SpeechBubbleType type) {
     actor_add_new(type, player_x_pos - 1, player_y_pos - 5);
+}
+
+void player_hack_mover_update() {
+    if (left_key_pressed) {
+        if (player_x_pos > 0) {
+            player_x_pos = player_x_pos - 1;
+        }
+        move_map_window(-1, 0);
+    }
+    if (right_key_pressed) {
+        if (player_x_pos + 3 < map_width_in_tiles - 1) {
+            player_x_pos = player_x_pos + 1;
+        }
+        move_map_window(1, 0);
+    }
+
+    if (up_key_pressed) {
+        if (player_y_pos > 0) {
+            player_y_pos = player_y_pos - 1;
+        }
+        move_map_window(0, -1);
+    }
+
+    if (down_key_pressed) {
+        if (player_y_pos < map_height_in_tiles - 1) {
+            player_y_pos = player_y_pos + 1;
+        }
+        move_map_window(0, 1);
+    }
 }

@@ -28,6 +28,7 @@
 uint16 current_level;
 
 int map_width_in_tiles = 0;
+int map_height_in_tiles = 0;
 int map_stride_bit_shift_amt;
 int mapwindow_x_offset = 0;
 int mapwindow_y_offset = 0;
@@ -260,6 +261,7 @@ void load_level_data(int level_number)
 
     file_seek(&map_file, 2);
     map_width_in_tiles = file_read2(&map_file);
+    map_height_in_tiles = 32768 / map_width_in_tiles - 1;
 
     printf("map width (in tiles): %d\n", map_width_in_tiles);
 
@@ -387,4 +389,20 @@ uint8 map_get_tile_attr(int x, int y) {
     }
 
     return tileattr_mni_data[map_get_tile_cell(x, y) / 8];
+}
+
+bool move_map_window(int dx, int dy) {
+    int new_x = mapwindow_x_offset + dx;
+    int new_y = mapwindow_y_offset + dy;
+
+    if (new_x < 0 || new_y < 0
+    || new_x + MAP_WINDOW_WIDTH >= map_width_in_tiles
+    || new_y + MAP_WINDOW_HEIGHT >= map_height_in_tiles) {
+        return false;
+    }
+
+    mapwindow_x_offset = new_x;
+    mapwindow_y_offset = new_y;
+
+    return true;
 }

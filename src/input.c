@@ -32,7 +32,7 @@ uint8 right_key_pressed = 0;
 //key pressed state.
 uint8 input_up_key_pressed = 0;
 
-uint8 byte_2E17C; //modifies the left, right and jump key presses
+uint8 byte_2E17C; //modifies the left, right and jump key presses TODO this isn't wired up yet. It might disable player input.
 
 void wait_for_time_or_key(int delay_in_game_cycles)
 {
@@ -146,6 +146,9 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
                     {
                         return QUIT;
                     }
+                    break;
+                case SDLK_h :
+                    hack_mover_toggle_dialog();
                     break;
                 case SDLK_i : //FIXME testing code
                     printf("player info x_pos =%d; y_pos = %d;\n", player_x_pos, player_y_pos);
