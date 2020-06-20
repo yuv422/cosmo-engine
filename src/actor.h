@@ -32,17 +32,17 @@ typedef struct ActorData
 //Data
 extern int total_num_actors;
 extern uint16 word_2E17E;
-extern uint16 word_2E22A;
-extern uint16 word_2E236;
-extern uint16 word_2E228;
-extern uint16 word_2E220;
-extern uint16 word_2E238;
-extern uint16 word_2E21E;
-extern uint16 word_2E24C;
-extern uint16 word_2E23C;
-extern uint16 word_2E232;
-extern uint16 word_2E234;
-extern uint16 word_2E246;
+extern bool speech_bubble_hamburger_shown_flag;
+extern bool speech_bubble_red_plant_shown_flag;
+extern bool speech_bubble_switch_61_shown_flag;
+extern bool speech_bubble_clam_trap_shown_flag;
+extern bool speech_bubble_silver_robot_shown_flag;
+extern bool speech_bubble_purple_boss_shown_flag;
+extern bool speech_bubble_pipe_shown_flag;
+extern bool speech_bubble_teleporter_shown_flag;
+extern bool speech_bubble_hoverboard_shown_flag;
+extern bool speech_bubble_rubber_wall_shown_flag;
+extern bool speech_bubble_floor_spring_shown_flag;
 
 extern uint8 byte_32EB8;
 

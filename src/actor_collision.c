@@ -53,9 +53,9 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 if (actor->count_down_timer == 0 && player_bounce_in_the_air(0x28) != 0)
                 {
                     play_sfx(6);
-                    if (word_2E246 == 0)
+                    if (!speech_bubble_floor_spring_shown_flag)
                     {
-                        word_2E246 = 1;
+                        speech_bubble_floor_spring_shown_flag = true;
                         player_add_speech_bubble(WHOA);
                     }
                     actor->data_1 = 3;
@@ -395,9 +395,9 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 actor->data_2 = 0;
                 actor->data_1 = 1;
                 player_y_pos = player_y_pos - 2;
-                if (word_2E236 == 0)
+                if (!speech_bubble_red_plant_shown_flag)
                 {
-                    word_2E236 = 1;
+                    speech_bubble_red_plant_shown_flag = true;
                     player_add_speech_bubble(WHOA);
                 }
                 return 0;
@@ -726,9 +726,9 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
                 word_32EB2 = 1;
                 player_in_pneumatic_tube_flag = 0;
                 player_reset_push_variables();
-                if (word_2E24C == 0)
+                if (!speech_bubble_pipe_shown_flag)
                 {
-                    word_2E24C = 1;
+                    speech_bubble_pipe_shown_flag = true;
                     player_add_speech_bubble(WHOA);
                 }
                 return 0;
@@ -793,9 +793,9 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             word_2E1E8 = 0;
             player_bounce_height_counter = 0;
             num_hits_since_touching_ground = 0;
-            if (word_2E232 == 0)
+            if (!speech_bubble_hoverboard_shown_flag)
             {
-                word_2E232 = 1;
+                speech_bubble_hoverboard_shown_flag = true;
                 player_add_speech_bubble(WHOA);
             }
             return 0;
@@ -843,9 +843,9 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             {
                 actor->data_2 = 1;
                 byte_2E17C = 1;
-                if (word_2E220 == 0)
+                if (!speech_bubble_clam_trap_shown_flag)
                 {
-                    word_2E220 = 1;
+                    speech_bubble_clam_trap_shown_flag = true;
                     player_add_speech_bubble(UMPH);
                 }
                 return 0;
@@ -905,10 +905,10 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             {
                 num_health_bars++;
             }
-            if (word_2E22A == 0)
+            if (!speech_bubble_hamburger_shown_flag)
             {
                 player_add_speech_bubble(WHOA);
-                word_2E22A = 1;
+                speech_bubble_hamburger_shown_flag = true;
             }
             update_health_bar_display();
             return 1;
@@ -1007,9 +1007,9 @@ int actor_update_impl(ActorData *actor, int actorInfoIndex, int frame_num, int x
             return 0;
 
         case 63: // 95  OBJECT: Rubber Wall (can blow it up, throws Cosmo backwards when touched)
-            if (word_2E234 == 0)
+            if (!speech_bubble_rubber_wall_shown_flag)
             {
-                word_2E234 = 1;
+                speech_bubble_rubber_wall_shown_flag = true;
                 player_add_speech_bubble(UMPH);
             }
             if (actor->x != player_x_pos + 2)

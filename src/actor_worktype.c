@@ -21,9 +21,9 @@ static const sint16 purple_boss_y_offset_tbl[] = {2, 2, 1, 0, -1, -2, -2, -2, -2
 void actor_wt_133_boss_purple_15411(ActorData *actor)
 {
     actor_tile_display_func_index = 1;
-    if(word_2E21E == 0)
+    if(!speech_bubble_purple_boss_shown_flag)
     {
-        word_2E21E = 1;
+        speech_bubble_purple_boss_shown_flag = true;
         player_add_speech_bubble(WHOA);
         stop_music();
         load_music(2);
@@ -3583,9 +3583,9 @@ void actor_wt_silver_robot(ActorData *actor)
                 player_direction = 0x17;
                 actor->data_4 = 3;
                 actor_tile_display_func_index = 0;
-                if(word_2E238 == 0)
+                if(!speech_bubble_silver_robot_shown_flag)
                 {
-                    word_2E238 = 1;
+                    speech_bubble_silver_robot_shown_flag = true;
                     player_add_speech_bubble(UMPH);
                 }
                 return;
@@ -3623,9 +3623,9 @@ void actor_wt_silver_robot(ActorData *actor)
                 player_direction = 0;
                 actor->data_4 = 3;
                 actor_tile_display_func_index = 0;
-                if(word_2E238 == 0)
+                if(!speech_bubble_silver_robot_shown_flag)
                 {
-                    word_2E238 = 1;
+                    speech_bubble_silver_robot_shown_flag = true;
                     player_add_speech_bubble(UMPH);
                 }
                 return;
@@ -4337,9 +4337,9 @@ void actor_wt_switch_multi_use(ActorData *actor)
 
                 case 61:
                     word_2E17E = 4;
-                    if(word_2E228 == 0)
+                    if(!speech_bubble_switch_61_shown_flag)
                     {
-                        word_2E228 = 1;
+                        speech_bubble_switch_61_shown_flag = true;
                         player_add_speech_bubble(WHOA);
                     }
                     break;
@@ -4458,9 +4458,9 @@ void actor_wt_teleporter(ActorData *actor)
     teleporter_state_maybe = 0;
     teleporter_counter = 0;
     player_bounce_flag_maybe = 0;
-    if(word_2E23C == 0)
+    if(!speech_bubble_teleporter_shown_flag)
     {
-        word_2E23C = 1;
+        speech_bubble_teleporter_shown_flag = true;
         player_add_speech_bubble(WHOA);
     }
     return;

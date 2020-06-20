@@ -16,17 +16,17 @@ ActorData actors[MAX_ACTORS];
 int total_num_actors = 0;
 
 uint16 word_2E17E = 0;
-uint16 word_2E22A = 0;
-uint16 word_2E236 = 0;
-uint16 word_2E228 = 0;
-uint16 word_2E220 = 0;
-uint16 word_2E238 = 0;
-uint16 word_2E21E = 0;
-uint16 word_2E24C = 0;
-uint16 word_2E23C = 0;
-uint16 word_2E232 = 0;
-uint16 word_2E234 = 0;
-uint16 word_2E246 = 0;
+bool speech_bubble_hamburger_shown_flag = false;
+bool speech_bubble_red_plant_shown_flag = false;
+bool speech_bubble_switch_61_shown_flag = false;
+bool speech_bubble_clam_trap_shown_flag = false;
+bool speech_bubble_silver_robot_shown_flag = false;
+bool speech_bubble_purple_boss_shown_flag = false;
+bool speech_bubble_pipe_shown_flag = false;
+bool speech_bubble_teleporter_shown_flag = false;
+bool speech_bubble_hoverboard_shown_flag = false;
+bool speech_bubble_rubber_wall_shown_flag = false;
+bool speech_bubble_floor_spring_shown_flag = false;
 
 uint8 byte_32EB8 = 0;
 

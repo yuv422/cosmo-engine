@@ -132,18 +132,17 @@ void reset_game_state()
     num_hits_since_touching_ground = 0;
 
     //Actor values
-    word_2E22A = 0;
-    word_2E236 = 0;
-    word_2E228 = 0;
-    word_2E220 = 0;
-    word_2E238 = 0;
-    word_2E21E = 0;
-    word_2E24C = 0;
-    word_2E23C = 0;
-    word_2E232 = 0;
-    word_2E234 = 0;
-    word_2E246 = 0;
-    return;
+    speech_bubble_hamburger_shown_flag = false;
+    speech_bubble_red_plant_shown_flag = false;
+    speech_bubble_switch_61_shown_flag = false;
+    speech_bubble_clam_trap_shown_flag = false;
+    speech_bubble_silver_robot_shown_flag = false;
+    speech_bubble_purple_boss_shown_flag = false;
+    speech_bubble_pipe_shown_flag = false;
+    speech_bubble_teleporter_shown_flag = false;
+    speech_bubble_hoverboard_shown_flag = false;
+    speech_bubble_rubber_wall_shown_flag = false;
+    speech_bubble_floor_spring_shown_flag = false;
 }
 
 bool executeTick() {
