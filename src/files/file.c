@@ -59,9 +59,9 @@ bool file_open_at_offset(const char *filename, const char *mode, File *file, uin
 
     uint32 actual_size = calculate_filesize(file->fp);
 
-    if(offset + size >= actual_size)
+    if(offset + size > actual_size)
     {
-        printf("Failed opening '%s' offset + size >= actual_size\n",filename);
+        printf("Failed opening '%s' offset + size > actual_size\n",filename);
         fclose(file->fp);
         return false;
     }
