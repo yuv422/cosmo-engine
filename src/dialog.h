@@ -48,6 +48,7 @@ void game_redefine();
 void sound_toggle_dialog();
 void music_toggle_dialog();
 void hack_mover_toggle_dialog();
+void god_mode_toggle_dialog();
 
 int warp_mode_dialog();
 
@@ -56,5 +57,7 @@ void end_sequence();
 void show_ingame_hint_dialog(int dialog_num);
 
 void display_ingame_hint_dialog();
+
+void commercial_ordering_information_dialog();
 
 #endif //COSMO_ENGINE_DIALOG_H

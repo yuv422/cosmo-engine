@@ -74,7 +74,7 @@ int word_32EB2;
 unsigned char byte_2E182;
 unsigned char byte_2E2E4;
 
-uint8 god_mode_flag = 0;
+bool god_mode_flag = false;
 uint8 show_monster_attack_hint = 0;
 bool cheat_hack_mover_enabled = false;
 
@@ -1486,7 +1486,7 @@ void player_add_score_for_actor(int actorInfoIndex)
 
 void player_decrease_health()
 {
-    if(player_death_counter == 0 && god_mode_flag == 0 && hide_player_sprite == 0 && teleporter_state_maybe == 0 && byte_32EB8 == 0 && player_in_pneumatic_tube_flag == 0 && player_invincibility_counter == 0)
+    if(player_death_counter == 0 && !god_mode_flag && hide_player_sprite == 0 && teleporter_state_maybe == 0 && byte_32EB8 == 0 && player_in_pneumatic_tube_flag == 0 && player_invincibility_counter == 0)
     {
         player_hanging_on_wall_direction = 0;
         if(player_has_shown_ouch_bubble_flag == 0)

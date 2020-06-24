@@ -60,6 +60,8 @@ extern int word_32EB2;
 extern unsigned char byte_2E182;
 extern unsigned char byte_2E2E4;
 
+extern bool god_mode_flag;
+
 extern bool cheat_hack_mover_enabled;
 
 typedef enum SpeechBubbleType {

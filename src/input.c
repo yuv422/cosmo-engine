@@ -132,6 +132,9 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
                     num_bombs++;
                     display_num_bombs_left();
                     break;
+                case SDLK_g :
+                    god_mode_toggle_dialog(); //TODO should be protected by cheat mode
+                    break;
                 case SDLK_m :
                     music_toggle_dialog();
                     break;

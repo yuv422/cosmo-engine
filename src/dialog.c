@@ -1790,6 +1790,23 @@ void music_toggle_dialog()
     wait_for_input(x + 0x15, 4);
 }
 
+void god_mode_toggle_dialog()
+{
+    uint16 x;
+    if(god_mode_flag)
+    {
+        god_mode_flag = false;
+        x = create_text_dialog_box(2, 4, 0x1c, "God Toggle", "The god mode is now OFF!");
+    }
+    else
+    {
+        god_mode_flag = true;
+        x = create_text_dialog_box(2, 4, 0x1c, "God Toggle", "The god mode is now ON!");
+    }
+
+    wait_for_input(x + 0x19, 4);
+}
+
 void hack_mover_toggle_dialog()
 {
     uint16 x;
@@ -1873,7 +1890,7 @@ void end_sequence_ep2() {
     x = create_text_dialog_box(6, 4, 0x18, "Thank you", " for playing!");
     fade_in_from_black_with_delay_3();
     wait_for_input(x + 0x15, 8);
-    //TODO show ordering info page here.
+    commercial_ordering_information_dialog();
 }
 
 void end_sequence_ep3() {
@@ -1898,4 +1915,24 @@ void display_ingame_hint_dialog() {
 
 void show_ingame_hint_dialog(int dialog_num) {
     selected_ingame_hint_dialog = dialog_num;
+}
+
+void commercial_ordering_information_dialog() {
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+    int x = create_text_dialog_box(0,0x18,0x26,"Ordering Information", "Press ANY key.");
+    display_dialog_text(x,4,"      COSMO\'S COSMIC ADVENTURE");
+    display_dialog_text(x,6,"  This game IS commercial software.");
+    display_dialog_text(x,8,"    This episode of Cosmo is NOT");
+    display_dialog_text(x,9," available as shareware.  It is not");
+    display_dialog_text(x,10,"  freeware, nor public domain.  It");
+    display_dialog_text(x,0xb,"  is only available from Apogee or");
+    display_dialog_text(x,0xc,"        authorized dealers.");
+    display_dialog_text(x,0xe," If you are a registered player, we");
+    display_dialog_text(x,0xf,"    thank you for your patronage.");
+    display_dialog_text(x,0x11,"  Please report any illegal selling");
+    display_dialog_text(x,0x12,"  and distribution of this game to");
+    display_dialog_text(x,0x13,"  Apogee by calling 1-800-GAME123.");
+    fade_in_from_black(1);
+    wait_for_input(x + 0x23,0x16);
 }
