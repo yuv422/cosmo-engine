@@ -820,7 +820,11 @@ game_play_mode_enum main_menu() {
                             break;
 
                         case SDLK_o :
-                            ordering_info_dialog();
+                            if (get_episode_number() == 1) {
+                                ordering_info_dialog();
+                            } else {
+                                commercial_ordering_information_dialog();
+                            }
                             break;
 
                         case SDLK_f :
