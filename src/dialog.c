@@ -1806,8 +1806,8 @@ void hack_mover_toggle_dialog()
 
     wait_for_input(x + 0x1b, 4);
 }
-void end_sequence()
-{
+
+void end_sequence_ep1() {
     cosmo_wait(5);
     fade_to_black_speed_3();
     display_fullscreen_image(4);
@@ -1842,6 +1842,51 @@ void end_sequence()
     wait_for_input(x + 0x15, 8);
     ordering_info_dialog();
     display_score_from_level();
+}
+
+void end_sequence_ep2() {
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+    uint16 x = create_text_dialog_box(1, 0x18, 0x26, "", "Press ANY key.");
+    display_dialog_text(x + 0x19, 0xf, "\xfb""021");
+    fade_in_from_black_with_delay_3();
+    display_dialog_text(x + 1, 7, "\xfc""003 Young Cosmo leaps ");
+    display_dialog_text(x + 1, 9, "\xfc""003 through a small hole ");
+    display_dialog_text(x + 1, 0xb, "\xfc""003 in the cave ceiling, ");
+    display_dialog_text(x + 1, 0xd, "\xfc""003 and finally sees what ");
+    display_dialog_text(x + 1, 0xf, "\xfc""003 he's searching for... ");
+    wait_for_input(x + 0x23, 0x17);
+    display_fullscreen_image(4);
+    load_music(7);
+    x = create_text_dialog_box(0x12, 5, 0x26, "", "");
+    display_dialog_text(x + 1, 0x13, "\xfc""003 ...the city where his parents are ");
+    display_dialog_text(x + 1, 0x14, "\xfc""003  held captive--undoubtedly being");
+    display_dialog_text(x + 1, 0x15, "\xfc""003     readied for the big feast!");
+    wait_for_input(0x25, 0x15);
+    x = create_text_dialog_box(0x12, 5, 0x26, "", "");
+    display_dialog_text(x + 1, 0x13, "\xfc""003    Cosmo knows what he must do.");
+    display_dialog_text(x + 1, 0x14, "\xfc""003    Enter the city and save his ");
+    display_dialog_text(x + 1, 0x15, "\xfc""003   parents before it's too late!");
+    wait_for_input(0x25, 0x15);
+    fade_to_white(7);
+    video_fill_screen_with_black();
+    x = create_text_dialog_box(6, 4, 0x18, "Thank you", " for playing!");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x15, 8);
+    //TODO show ordering info page here.
+}
+
+void end_sequence_ep3() {
+    //TODO
+}
+
+void end_sequence() {
+    switch(get_episode_number()) {
+        case 1 : end_sequence_ep1(); break;
+        case 2 : end_sequence_ep2(); break;
+        case 3 : end_sequence_ep3(); break;
+        default : break;
+    }
 }
 
 void display_ingame_hint_dialog() {
