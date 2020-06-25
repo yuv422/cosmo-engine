@@ -1898,7 +1898,126 @@ void end_sequence_ep2() {
 }
 
 void end_sequence_ep3() {
-    //TODO
+    load_music(8);
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+    uint16 x = create_text_dialog_box(1, 0x16, 0x26, "", "Press ANY key.");
+    display_dialog_text(x + 1, 0x11, "\xfb""018");
+    display_dialog_text(x + 0x11, 0x6, "The creature is");
+    display_dialog_text(x + 0x11, 0x7, "finally defeated");
+    display_dialog_text(x + 0x11, 0x8, "and flies away.");
+    display_dialog_text(x + 0x11, 0x9, "Suddenly, a door");
+    display_dialog_text(x + 0x11, 0xa, "opens and Cosmo");
+    display_dialog_text(x + 0x11, 0xb, "enters slowly.");
+    display_dialog_text(x + 0x11, 0xd, "A big, scary blue");
+    display_dialog_text(x + 0x11, 0xe, "alien creature");
+    display_dialog_text(x + 0x11, 0xf, "wraps his arm");
+    display_dialog_text(x + 0x11, 0x10, "around Cosmo...");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x15);
+    fade_to_black_speed_3();
+
+    x = create_text_dialog_box(1, 0x16, 0x26, "", "Press ANY key.");
+    display_dialog_text(x + 1, 0x10, "\xfb""019");
+    display_dialog_text(x + 10, 3, "\"Hi Cosmo,\" says the blue");
+    display_dialog_text(x + 10, 4, "alien, \"I'm Zonk,\" and");
+    display_dialog_text(x + 10, 5, "we've been looking all");
+    display_dialog_text(x + 10, 6, "over the planet for you\"");
+    display_dialog_text(x + 10, 8, "\"This is a very dangerous");
+    display_dialog_text(x + 10, 9, "planet, and when we found");
+    display_dialog_text(x + 10, 10, "your parents, we brought");
+    display_dialog_text(x + 10, 0xb, "them here for safety.\"");
+    display_dialog_text(x + 10, 0xd, "\"We have been looking for");
+    display_dialog_text(x + 10, 0xe, "you all this time, but");
+    display_dialog_text(x + 10, 0xf, "it looks like you did a");
+    display_dialog_text(x + 10, 0x10, "better job finding us!\"");
+    display_dialog_text(x + 10, 0x12, "\"Here, I got a surprise");
+    display_dialog_text(x + 10, 0x13, "for you...\"");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x15);
+    fade_to_black_speed_3();
+
+    x = create_text_dialog_box(1, 0x16, 0x26, "", "Press ANY key.");
+    display_dialog_text(x + 0x1b, 0xe, "\xfb""020");
+    display_dialog_text(x + 2, 7, "\"Mommy!  Daddy!\"");
+    display_dialog_text(x + 2, 8, "Cosmo and his parents");
+    display_dialog_text(x + 2, 9, "are finally reunited,");
+    display_dialog_text(x + 2, 10, "and hugs are passed");
+    display_dialog_text(x + 2, 0xb, "all around.");
+    display_dialog_text(x + 2, 0xd, "Daddy explains that");
+    display_dialog_text(x + 2, 0xe, "Zonk helped fix their");
+    display_dialog_text(x + 2, 0xf, "ship, and they can");
+    display_dialog_text(x + 2, 0x10, "resume their trip to");
+    display_dialog_text(x + 2, 0x11, "Disney World.");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x15);
+    fade_to_black_speed_3();
+
+    x = create_text_dialog_box(1, 0x16, 0x26, "", "Press ANY key.");
+    display_dialog_text(x + 0x1b, 0x13, "\xfb""003");
+    display_dialog_text(x + 1, 10, "\xfb""011");
+    display_dialog_text(x + 0xc, 6, "After saying goodbye");
+    display_dialog_text(x + 0xc, 7, "to Zonk,");
+    display_dialog_text(x + 1, 0x11, "Cosmo and his family");
+    display_dialog_text(x + 1, 0x12, "blast off toward earth...");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x15);
+    fade_to_black_speed_3();
+
+    x = create_text_dialog_box(1, 0x16, 0x26, "", "Press ANY key.");
+    display_dialog_text(x + 0xd, 0x13, "\xfb""012");
+    display_dialog_text(x + 2, 5, "    ...and arrive just four");
+    display_dialog_text(x + 2, 6, "     galactic hours later!!");
+    display_dialog_text(x + 2, 7, "Using their inviso-cloak device,");
+    display_dialog_text(x + 2, 8, " they park their ship on top of");
+    display_dialog_text(x + 2, 9, "        Space Mountain.");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x15);
+    fade_to_black_speed_3();
+
+    x = create_text_dialog_box(1, 0x16, 0x26, "", "Press ANY key.");
+    display_dialog_text(x + 0xc, 0xc, "\xfb""013");
+    display_dialog_text(x + 2, 0xf, "  Disney World has always been");
+    display_dialog_text(x + 2, 0x10, "    a great place for aliens");
+    display_dialog_text(x + 2, 0x11, "  to visit on their vacations!");
+    fade_in_from_black_with_delay_3();
+    wait_for_input(x + 0x23, 0x15);
+    display_fullscreen_image(4);
+    x = create_text_dialog_box(0, 3, 0x18, "WEEEEEEEE!", "");
+    play_sfx(0x2a);
+    cosmo_wait(200);
+    load_music(0x12);
+    wait_for_input(x + 0x15, 1);
+    fade_to_white(4);
+    x = create_text_dialog_box(0, 5, 0x18, "Cosmo has the best", "The End!");
+    display_dialog_text(x + 1, 2, "birthday of his life.");
+    fade_in_from_black_with_delay_3();
+    cosmo_wait(100);
+    wait_for_input(x + 0x15, 3);
+
+    //congratulations page
+    fade_to_black_speed_3();
+    video_fill_screen_with_black();
+    x = create_text_dialog_box(0, 0x17, 0x26, "CONGRATULATIONS!", "Press ANY key.");
+    x += 2;
+    display_dialog_text(x, 3, "You saved Cosmo's parents and");
+    display_dialog_text(x, 4, "landed at Disney World for the");
+    display_dialog_text(x, 5, "best birthday of your life.");
+    display_dialog_text(x, 7, "After a great birthday on Earth,");
+    display_dialog_text(x, 8, "you headed home and told all of");
+    display_dialog_text(x, 9, "your friends about your amazing");
+    display_dialog_text(x, 10, "adventure--no one believed you!");
+    display_dialog_text(x, 0xc, "Maybe on your next adventure you");
+    display_dialog_text(x, 0xd, "can take pictures!");
+    display_dialog_text(x, 0xf, "Coming Dec. 92: Duke Nukum II --");
+    display_dialog_text(x, 0x10, "The amazing sequel to the first");
+    display_dialog_text(x, 0x11, "Nukum trilogy, in which Duke is");
+    display_dialog_text(x, 0x12, "kidnapped by an alien race to");
+    display_dialog_text(x, 0x13, "save them from termination...");
+    fade_in_from_black(1);
+    wait_for_input(x + 0x23, 0x15);
+
+    commercial_ordering_information_dialog();
 }
 
 void end_sequence() {

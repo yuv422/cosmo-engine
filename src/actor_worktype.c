@@ -41,7 +41,11 @@ void actor_wt_133_boss_purple_15411(ActorData *actor)
         actor->falling_counter = 0;
         if(actor->has_moved_right_flag == 1 || actor->y == 0 || (is_sprite_on_screen(0x66, 0, actor->x, actor->y) == 0 && actor->has_moved_right_flag < 0x1e))
         {
-            finished_level_flag_maybe = 1;
+            if (get_episode_number() == 3) {
+                finished_game_flag_maybe = 1;
+            } else {
+                finished_level_flag_maybe = 1;
+            }
             player_add_to_score(0x186a0);
         }
 
