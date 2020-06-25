@@ -2015,7 +2015,7 @@ void end_sequence_ep3() {
     display_dialog_text(x, 0x12, "kidnapped by an alien race to");
     display_dialog_text(x, 0x13, "save them from termination...");
     fade_in_from_black(1);
-    wait_for_input(x + 0x23, 0x15);
+    wait_for_input(x + 0x21, 0x15);
 
     commercial_ordering_information_dialog();
 }
