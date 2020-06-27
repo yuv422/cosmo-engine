@@ -176,6 +176,9 @@ void update_palette_anim()
         case 4:
             palette_cycle_reg_5_from_tbl(palette_anim_type_4_tbl);
             break;
+        case 5:
+            set_palette_color(5, 0); //TODO this only needs to be set once. We need to fade with a seperate palette to fix this
+            break;
     }
 
     return;
