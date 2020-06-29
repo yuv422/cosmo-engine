@@ -7,6 +7,12 @@
 #include <SDL_keycode.h>
 #include "defines.h"
 
+#if defined(WIN32) || defined(_WIN32)
+#define PATH_SEPARATOR '\\'
+#else
+#define PATH_SEPARATOR '/'
+#endif
+
 void load_config_file();
 void write_config_file();
 

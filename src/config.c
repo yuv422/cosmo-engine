@@ -431,7 +431,7 @@ void load_config_from_command_line(int argc, char **argv)
 char *get_full_path(const char *base_dir, const char *filename)
 {
     char *path = (char *)malloc(strlen(base_dir) + strlen(filename) + 2); //2 = path delimiter + \0
-    sprintf(path, "%s%c%s", base_dir, '/', filename); //FIXME handle windows path separator
+    sprintf(path, "%s%c%s", base_dir, PATH_SEPARATOR, filename);
     return path;
 }
 
