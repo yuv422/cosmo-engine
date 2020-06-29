@@ -78,8 +78,13 @@ bool video_init()
     renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
     if(renderer == NULL)
     {
-        printf("Error: creating render. %s\n", SDL_GetError());
-        return false;
+        //Fallback to software renderer if accelerated fails
+        renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_SOFTWARE );
+        if(renderer == NULL)
+        {
+            printf("Error: creating render. %s\n", SDL_GetError());
+            return false;
+        }
     }
 
     init_surface(&game_surface, SCREEN_WIDTH, SCREEN_HEIGHT);
