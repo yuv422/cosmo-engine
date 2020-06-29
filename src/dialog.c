@@ -899,7 +899,7 @@ void now_entering_level_n_dialog(uint16 level_number)
     }
 }
 
-void ingame_hint_dialogs(uint16 hint_number) {
+void ingame_hint_dialogs_ep1(uint16 hint_number) {
     cosmo_wait(0x1e);
     flush_input();
     uint16 x;
@@ -1013,6 +1013,93 @@ void ingame_hint_dialogs(uint16 hint_number) {
     if(hint_number != 0 && hint_number < 15)
     {
         wait_for_input(x + 0x19, 9);
+    }
+}
+
+void ingame_hint_dialogs_ep2(uint16 hint_number) {
+    cosmo_wait(0x1e);
+    flush_input();
+    uint16 x = create_text_dialog_box(2, 9, 0x1c, "COSMIC HINT!", "Press any key to exit.");
+    display_dialog_text(x, 8, " Press SPACE to hurry or");
+
+    switch (hint_number) {
+        case 0 :
+            display_dialog_text(x, 5, "\xfc""003 Look out for enemies");
+            display_dialog_text(x, 6, "\xfc""003 from above!");
+            break;
+        case 1 :
+            display_dialog_text(x, 5, "\xfc""003    Don't...");
+            break;
+        case 2 :
+            display_dialog_text(x, 5, "\xfc""003    step...");
+            break;
+        case 3 :
+            display_dialog_text(x, 5, "\xfc""003    on...");
+            break;
+        case 4 :
+            display_dialog_text(x, 5, "\xfc""003    worms...");
+            break;
+        case 5 :
+            display_dialog_text(x, 5, "\xfc""003 There is a secret area");
+            display_dialog_text(x, 6, "\xfc""003 in this level!");
+            break;
+        case 6 :
+            display_dialog_text(x, 5, "\xfc""003 You found the secret");
+            display_dialog_text(x, 6, "\xfc""003 area.  Well done.");
+            break;
+        case 7 :
+            display_dialog_text(x, 5, "\xfc""    Out of order.");
+            break;
+        default :
+            break;
+    }
+
+    wait_for_input(x + 0x19, 9);
+}
+
+void ingame_hint_dialogs_ep3(uint16 hint_number) {
+    cosmo_wait(0x1e);
+    flush_input();
+    uint16 x = create_text_dialog_box(2, 9, 0x1c, "COSMIC HINT!", "Press any key to exit.");
+    display_dialog_text(x, 8, " Press SPACE to hurry or");
+
+    switch (hint_number) {
+        case 0 :
+            display_dialog_text(x, 5, "\xfc""003 Did you find the");
+            display_dialog_text(x, 6, "\xfc""003 hamburger in this level?");
+            break;
+        case 1 :
+            display_dialog_text(x, 5, "\xfc""003 This hint globe being");
+            display_dialog_text(x, 6, "\xfc""003 upgraded to a 80986.");
+            break;
+        case 2 :
+            display_dialog_text(x, 5, "\xfc""003 WARNING:  Robots shoot");
+            display_dialog_text(x, 6, "\xfc""003 when the lights are on!");
+            break;
+        case 3 :
+            display_dialog_text(x, 5, "\xfc""003 There is a hidden scooter");
+            display_dialog_text(x, 6, "\xfc""003 in this level.");
+            break;
+        case 4 :
+            display_dialog_text(x, 5, "\xfc""003 Did you find the");
+            display_dialog_text(x, 6, "\xfc""003 hamburger in level 8!");
+            break;
+        case 5 :
+            display_dialog_text(x, 5, "\xfc""003   Out of order...!");
+            break;
+        default :
+            break;
+    }
+
+    wait_for_input(x + 0x19, 9);
+}
+
+void ingame_hint_dialogs(uint16 hint_number) {
+    switch (get_episode_number()) {
+        case 1 : ingame_hint_dialogs_ep1(hint_number); break;
+        case 2 : ingame_hint_dialogs_ep2(hint_number); break;
+        case 3 : ingame_hint_dialogs_ep3(hint_number); break;
+        default : break;
     }
 }
 
