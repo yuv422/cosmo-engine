@@ -90,9 +90,11 @@ HintDialogInput hint_dialog_get_input(HintDialogInput input)
     SDL_Event event;
     while(SDL_PollEvent(&event))
     {
-        if (event.type == SDL_KEYDOWN)
+        if (event.type == SDL_KEYDOWN ||
+            event.type == SDL_CONTROLLERBUTTONDOWN)
         {
-            if(event.key.keysym.sym == SDLK_SPACE)
+            if (event.key.keysym.sym == SDLK_SPACE ||
+                event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
             {
                 return FAST_FORWARD;
             }
@@ -101,7 +103,8 @@ HintDialogInput hint_dialog_get_input(HintDialogInput input)
                 return EXIT;
             }
         }
-        if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE)
+        if ((event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE) ||
+            (event.type == SDL_CONTROLLERBUTTONUP && event.cbutton.button == SDL_CONTROLLER_BUTTON_A))
         {
             return NO_INPUT;
         }

@@ -14,6 +14,7 @@
 #include "high_scores.h"
 #include "demo.h"
 #include "b800.h"
+#include "input.h"
 
 int cleanup_and_exit();
 
@@ -26,6 +27,7 @@ int main(int argc, char *argv[]) {
 
     video_init();
     audio_init();
+    input_init();
     game_init();
 
     video_fill_screen_with_black();
@@ -71,6 +73,7 @@ int cleanup_and_exit()
     config_cleanup();
     video_shutdown();
     audio_shutdown();
+    input_shutdown();
     SDL_Quit();
 
     return 0;

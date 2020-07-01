@@ -35,6 +35,9 @@ extern uint8 right_key_pressed;
 
 extern uint8 byte_2E17C;
 
+void input_init();
+void input_shutdown();
+
 void wait_for_time_or_key(int delay_in_game_cycles);
 input_state_enum read_input();
 void reset_player_control_inputs();

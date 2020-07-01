@@ -3,6 +3,7 @@
 //
 
 
+#include <SDL.h>
 #include <SDL_events.h>
 #include "sound/sfx.h"
 #include <SDL_timer.h>
@@ -13,6 +14,8 @@
 #include "dialog.h"
 #include "demo.h"
 #include "config.h"
+
+SDL_GameController* gamepad;
 
 SDL_Keycode cfg_up_key;
 SDL_Keycode cfg_down_key;
@@ -34,6 +37,73 @@ uint8 input_up_key_pressed = 0;
 
 uint8 byte_2E17C; //modifies the left, right and jump key presses TODO this isn't wired up yet. It might disable player input.
 
+static SDL_Keycode gamecontroller_to_keyboard(SDL_Event *event)
+{
+    SDL_Keycode kb_button;
+    SDL_ControllerButtonEvent e = event->cbutton;
+    switch (e.button)
+    {
+    case SDL_CONTROLLER_BUTTON_A:
+        kb_button = cfg_jump_key;
+        break;
+    case SDL_CONTROLLER_BUTTON_B:
+    case SDL_CONTROLLER_BUTTON_X:
+        kb_button = cfg_bomb_key;
+        break;
+    case SDL_CONTROLLER_BUTTON_DPAD_UP:
+        kb_button = cfg_up_key;
+        break;
+    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+        kb_button = cfg_down_key;
+        break;
+    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+        kb_button = cfg_left_key;
+        break;
+    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+        kb_button = cfg_right_key;
+        break;
+    case SDL_CONTROLLER_BUTTON_START:
+        kb_button = SDLK_RETURN;
+        break;
+    case SDL_CONTROLLER_BUTTON_BACK:
+        kb_button = SDLK_q;
+        break;
+    case SDL_CONTROLLER_BUTTON_Y:
+        kb_button = SDLK_ESCAPE;
+        break;
+    default:
+        kb_button = SDLK_UNKNOWN;
+        break;
+    }
+    return kb_button;
+}
+
+void input_init()
+{
+    flush_input();
+    if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
+    {
+        printf("ERROR: intialising gamecontroller!\n");
+        return;
+    }
+
+    SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
+    for (int i = 0; i < SDL_NumJoysticks(); i++)
+    {
+        gamepad = SDL_GameControllerOpen(i);
+        if (gamepad != NULL)
+            return;
+    }
+}
+
+void input_shutdown()
+{
+    if (gamepad != NULL)
+        SDL_GameControllerClose(gamepad);
+
+    SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER);
+}
+
 void wait_for_time_or_key(int delay_in_game_cycles)
 {
     reset_player_control_inputs();
@@ -42,7 +112,8 @@ void wait_for_time_or_key(int delay_in_game_cycles)
         SDL_Event event;
         while(SDL_PollEvent(&event))
         {
-            if (event.type == SDL_KEYDOWN && !event.key.repeat)
+            if ((event.type == SDL_KEYDOWN && !event.key.repeat) ||
+                 event.type == SDL_CONTROLLERBUTTONDOWN)
             {
                 return;
             }
@@ -101,9 +172,9 @@ InputCommand get_input_command_from_keycode(SDL_Keycode keycode)
     return CMD_KEY_OTHER;
 }
 
-input_state_enum handle_key_down(SDL_KeyboardEvent event)
+input_state_enum handle_key_down(SDL_Keycode key)
 {
-    InputCommand command = get_input_command_from_keycode(event.keysym.sym);
+    InputCommand command = get_input_command_from_keycode(key);
 
     switch(command)
     {
@@ -126,7 +197,7 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
             bomb_key_pressed = 1;
             break;
         default :
-            switch(event.keysym.sym)
+            switch(key)
             {
                 case SDLK_b : //FIXME testing code
                     num_bombs++;
@@ -174,9 +245,9 @@ input_state_enum handle_key_down(SDL_KeyboardEvent event)
     return CONTINUE;
 }
 
-input_state_enum handle_key_up(SDL_KeyboardEvent event)
+input_state_enum handle_key_up(SDL_Keycode key)
 {
-    InputCommand command = get_input_command_from_keycode(event.keysym.sym);
+    InputCommand command = get_input_command_from_keycode(key);
 
     switch(command)
     {
@@ -222,12 +293,21 @@ input_state_enum read_input()
         }
         else if (event.type == SDL_KEYDOWN)
         {
-            if(handle_key_down(event.key) == QUIT)
+            if(handle_key_down(event.key.keysym.sym) == QUIT)
                 return QUIT;
         }
         else if (event.type == SDL_KEYUP)
         {
-            handle_key_up(event.key);
+            handle_key_up(event.key.keysym.sym);
+        }
+        else if (event.type == SDL_CONTROLLERBUTTONDOWN)
+        {
+            if(handle_key_down(gamecontroller_to_keyboard(&event)) == QUIT)
+                return QUIT;
+        }
+        else if (event.type == SDL_CONTROLLERBUTTONUP)
+        {
+            handle_key_up(gamecontroller_to_keyboard(&event));
         }
     }
 
@@ -255,6 +335,8 @@ SDL_Keycode poll_for_key_press(bool allow_key_repeat)
     {
         if (event.type == SDL_KEYDOWN && (allow_key_repeat || !event.key.repeat))
             return event.key.keysym.sym;
+        if (event.type == SDL_CONTROLLERBUTTONDOWN)
+            return gamecontroller_to_keyboard(&event);
     }
     return SDLK_UNKNOWN;
 }
