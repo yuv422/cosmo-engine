@@ -60,4 +60,6 @@ void display_ingame_hint_dialog();
 
 void commercial_ordering_information_dialog();
 
+void cosmo_duke_dialog();
+
 #endif //COSMO_ENGINE_DIALOG_H

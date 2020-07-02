@@ -2146,3 +2146,68 @@ void commercial_ordering_information_dialog() {
     fade_in_from_black(1);
     wait_for_input(x + 0x23,0x16);
 }
+
+int cosmo_speaking_dialog() {
+    int x = create_text_dialog_box(2,8,0x22,"", "Press a key to continue.");
+    display_dialog_text(x + 0x1d,7,"\xfd""004");
+    return x + 1;
+}
+
+int duke_speaking_dialog() {
+    int x = create_text_dialog_box(2,8,0x22,"", "Press a key to continue.");
+    display_dialog_text(x + 1,7,"\xfe""221003");
+    return x + 4;
+}
+
+void cosmo_duke_dialog() {
+    int x = cosmo_speaking_dialog();
+    display_dialog_text(x,5,"\xfc""003  Yikes, who are you?");
+    wait_for_input(x + 0x1b,8);
+
+    x = duke_speaking_dialog();
+    display_dialog_text(x, 4, "\xfc""003 I'm Duke Nukum, green");
+    display_dialog_text(x, 5, "\xfc""003 alien dude.              ");
+    wait_for_input(x + 0x1b,8);
+
+    x = duke_speaking_dialog();
+    display_dialog_text(x, 4, "\xfc""003 Until you rescued me, I");
+    display_dialog_text(x, 5, "\xfc""003 was stopped cold by an");
+    display_dialog_text(x, 6, "\xfc""003 alien invasion force!");
+    wait_for_input(x + 0x1b,8);
+
+    x = cosmo_speaking_dialog();
+    display_dialog_text(x,4,"\xfc""003 Wow!  Can you help rescue ");
+    display_dialog_text(x,5,"\xfc""003 my parents?");
+    wait_for_input(x + 0x1b,8);
+
+    x = duke_speaking_dialog();
+    display_dialog_text(x, 4, "\xfc""003 Sorry, kid, I've got to");
+    display_dialog_text(x, 5, "\xfc""003 save the galaxy...");
+    wait_for_input(x + 0x1b,8);
+
+    x = duke_speaking_dialog();
+    display_dialog_text(x, 4, "\xfc""003 ...but, I can give you");
+    display_dialog_text(x, 5, "\xfc""003 something that will help");
+    display_dialog_text(x, 6, "\xfc""003 you out.");
+    wait_for_input(x + 0x1b,8);
+
+    x = cosmo_speaking_dialog();
+    display_dialog_text(x,4,"\xfc""003 Thanks, Mr. Nukum, and");
+    display_dialog_text(x,5,"\xfc""003 good luck on your mission.");
+    wait_for_input(x + 0x1b,8);
+
+    x = duke_speaking_dialog();
+    display_dialog_text(x, 4, "\xfc""003 Just look for me in my");
+    display_dialog_text(x, 5, "\xfc""003 next exciting adventure,");
+    display_dialog_text(x, 6, "\xfc""003 Duke Nukum II!");
+    wait_for_input(x + 0x1b,8);
+
+    x = cosmo_speaking_dialog();
+    display_dialog_text(x,5,"\xfc""003             Bye.");
+    wait_for_input(x + 0x1b,8);
+
+    x = duke_speaking_dialog();
+    display_dialog_text(x, 4, "\xfc""003 See ya... and have those");
+    display_dialog_text(x, 5, "\xfc""003 spots checked...!");
+    wait_for_input(x + 0x1b,8);
+}

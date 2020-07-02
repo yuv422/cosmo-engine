@@ -1867,7 +1867,86 @@ void actor_wt_extending_arrow(ActorData *actor)
 
 void actor_wt_frozen_duke_nukum(ActorData *actor)
 {
-    //TODO
+    actor_tile_display_func_index = 1;
+    switch (actor->data_1) {
+        case 0:
+            if (!struct6_1B4FC(0xdd, 0, actor->x, actor->y)) {
+                display_actor_sprite_maybe(0xdd, 0, actor->x, actor->y, 0);
+            } else {
+                explode_effect_add_sprite(0xdd, 6, actor->x, actor->y - 6);
+                explode_effect_add_sprite(0xdd, 7, actor->x + 4, actor->y);
+                explode_effect_add_sprite(0xdd, 8, actor->x, actor->y - 5);
+                explode_effect_add_sprite(0xdd, 9, actor->x, actor->y - 4);
+                explode_effect_add_sprite(0xdd, 10, actor->x + 5, actor->y - 6);
+                explode_effect_add_sprite(0xdd, 11, actor->x + 5, actor->y - 4);
+                play_sfx(0x32);
+                actor->data_1 = 1;
+                actor->x++;
+            }
+            break;
+        case 1:
+            actor->data_2++;
+            if (actor->data_2 & 1) {
+                actor->y--;
+            }
+            int data_5 = actor->data_5;
+            actor->data_5++;
+            display_actor_sprite_maybe(0xdd, (data_5 & 1) + 4, actor->x, actor->y + 5, 0);
+            display_actor_sprite_maybe(0xdd, 2, actor->x, actor->y, 0);
+            effect_add_sprite(0x61, 6, actor->x, actor->y + 6, 5, 1);
+
+            if (actor->data_2 == 10) {
+                actor->data_1 = 2;
+                actor->data_2 = 0;
+            }
+            break;
+        case 2:
+            display_actor_sprite_maybe(0xdd, (actor->data_5 & 1) + 4, actor->x, actor->y + 5, 0);
+            display_actor_sprite_maybe(0xdd, 1, actor->x, actor->y, 0);
+            actor->data_5++;
+            actor->data_2++;
+            if (actor->data_2 == 0x1e) {
+                cosmo_duke_dialog();
+                actor->data_1 = 3;
+                actor->data_2 = 0;
+            }
+            break;
+        case 3:
+            display_actor_sprite_maybe(0xdd, (actor->data_5 & 1) + 4, actor->x, actor->y + 5, 0);
+            actor->data_5++;
+            actor->data_2++;
+            if (actor->data_2 < 10) {
+                display_actor_sprite_maybe(0xdd, 1, actor->x, actor->y, 0);
+            } else {
+                display_actor_sprite_maybe(0xdd, 2, actor->x, actor->y, 0);
+                effect_add_sprite(0x61, 6, actor->x, actor->y + 6, 5, 1);
+            }
+            if (actor->data_2 == 0xf) {
+                actor->data_1 = 4;
+                actor->data_2 = 0;
+            }
+            break;
+        case 4:
+            actor->data_2++;
+            if (actor->data_2 == 1) {
+                actor_add_new(0x52, actor->x, actor->y); //TODO make hamburger drop only after duke leaves the screen.
+            }
+            actor->y--;
+            if (actor->data_2 < 0x33 && is_sprite_on_screen(0xdd, 2, actor->x, actor->y)) {
+                int data_5 = actor->data_5;
+                actor->data_5++;
+                display_actor_sprite_maybe(0xdd, (data_5 & 1) + 4, actor->x, actor->y + 5, 0);
+                display_actor_sprite_maybe(0xdd, 2, actor->x, actor->y, 0);
+                effect_add_sprite(0x61, 6, actor->x, actor->y + 6, 5, 1);
+                play_sfx(0x31);
+            } else {
+                actor->is_deactivated_flag_maybe = 1;
+            }
+            break;
+        default:
+            actor_tile_display_func_index = 1;
+            break;
+    }
 }
 
 void actor_wt_ghost(ActorData *actor)
