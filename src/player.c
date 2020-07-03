@@ -255,8 +255,6 @@ sint16 word_28F80[10] = {-2, -1, -1, -1, -1, -1, -1, 0, 0, 0};
 void handle_player_input_maybe()
 {
     static int local_bomb_key_counter = 0;
-    int var_4=0;
-    int top_bomb_check_flag = 0;
     BlockingType player_movement_status = NOT_BLOCKED;
 
     if (cheat_hack_mover_enabled) {
@@ -344,25 +342,25 @@ void handle_player_input_maybe()
                 if(player_direction == 0)
                 {
                     uint8 tile_attr = map_get_tile_attr(player_x_pos - 1, player_y_pos - 2);
-                    top_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_LEFT;
+                    bool top_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_LEFT;
                     tile_attr = map_get_tile_attr(player_x_pos - 2, player_y_pos - 2);
-                    int bottom_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_LEFT;
+                    bool bottom_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_LEFT;
 
                     if(num_bombs != 0 || has_had_bomb_flag != 0)
                     {
-                        if(top_bomb_check_flag != 0)
+                        if(top_bomb_check_flag)
                         {
                             play_sfx(0x1c);
                         }
                         else
                         {
-                            if(bottom_bomb_check_flag != 0)
+                            if(bottom_bomb_check_flag)
                             {
                                 play_sfx(0x1c);
                             }
                             else
                             {
-                                if(num_bombs <= 0)
+                                if(num_bombs == 0)
                                 {
                                     play_sfx(0x1c);
                                 }
@@ -385,22 +383,22 @@ void handle_player_input_maybe()
                 else
                 {
                     uint8 tile_attr = map_get_tile_attr(player_x_pos + 3, player_y_pos - 2);
-                    top_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_RIGHT;
+                    bool top_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_RIGHT;
                     tile_attr = map_get_tile_attr(player_x_pos + 4, player_y_pos - 2);
-                    int bottom_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_RIGHT;
+                    bool bottom_bomb_check_flag = tile_attr & TILE_ATTR_BLOCK_RIGHT;
 
                     if(num_bombs == 0 && has_had_bomb_flag == 0)
                     {
                         has_had_bomb_flag = 1;
                         you_havent_found_any_bombs_dialog();
                     }
-                    if(top_bomb_check_flag != 0)
+                    if(top_bomb_check_flag)
                     {
                         play_sfx(0x1c);
                     }
                     else
                     {
-                        if(bottom_bomb_check_flag == 0)
+                        if(!bottom_bomb_check_flag)
                         {
                             if(num_bombs > 0)
                             {
@@ -604,6 +602,7 @@ void handle_player_input_maybe()
                 (jump_key_pressed != 0 && byte_2E2E4 == 0 && player_input_jump_related_flag == 0) ||
                 (player_hanging_on_wall_direction != 0 && jump_key_pressed != 0 && player_input_jump_related_flag == 0))
         {
+            bool var_4 = false;
             if(player_bounce_flag_maybe != 0 && player_bounce_height_counter > 0)
             {
                 player_bounce_height_counter = player_bounce_height_counter - 1;
@@ -627,7 +626,6 @@ void handle_player_input_maybe()
                         player_y_pos = player_y_pos - 1;
                     }
                 }
-                var_4 = 0;
                 if(player_bounce_height_counter == 0)
                 {
                     byte_2E182 = 0;
@@ -676,13 +674,13 @@ void handle_player_input_maybe()
                     player_y_pos = player_y_pos + 1;
                 }
                 player_bounce_flag_maybe = 0;
-                var_4 = 1;
+                var_4 = true;
             }
             player_hanging_on_wall_direction = 0;
             BlockingType blockingCheck = player_check_movement(0, player_x_pos, player_y_pos);
             if(blockingCheck == NOT_BLOCKED)
             {
-                if(var_4 != 0 && byte_2E182 == 0)
+                if(var_4 && byte_2E182 == 0)
                 {
                     play_sfx(2);
                 }
@@ -1321,7 +1319,7 @@ int player_bounce_in_the_air(int bounce_height)
         return 0;
     }
 
-    if((player_bounce_flag_maybe == 0 || (player_bounce_flag_maybe != 0 && player_bounce_height_counter < 2)) &&
+    if((player_bounce_flag_maybe == 0 || player_bounce_height_counter < 2) &&
             ((byte_2E2E4 != 0 && word_2E180 >= 0) || byte_2E182 > 6) &&
             word_2E1E8 != 0)
     {

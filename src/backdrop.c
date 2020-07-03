@@ -85,14 +85,14 @@ void backdrop_display()
     {
         x_offset = mapwindow_x_offset % (BACKGROUND_WIDTH*2);
         x_offset /= 2;
-        sub_tile_x = mapwindow_x_offset & 1 ? 4 : 0;
+        sub_tile_x = (mapwindow_x_offset & 1) ? 4 : 0;
     }
 
     if(background_y_scroll_flag)
     {
         y_offset = mapwindow_y_offset % (BACKGROUND_HEIGHT*2);
         y_offset /= 2;
-        sub_tile_y = mapwindow_y_offset & 1 ? 4 : 0;
+        sub_tile_y = (mapwindow_y_offset & 1) ? 4 : 0;
     }
 
     for(int y=0; y < MAP_WINDOW_HEIGHT + 1; y++)

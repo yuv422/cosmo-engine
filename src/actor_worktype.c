@@ -858,7 +858,6 @@ void actor_wt_blue_ball(ActorData *actor)
         actor->data_2 = 0x14;
         if(actor->falling_counter < 2)
         {
-            actor->frame_num = 1;
             actor->frame_num = 10;
             return;
         }
@@ -1114,7 +1113,7 @@ void actor_wt_blue_cube_platform(ActorData *actor)
 
 void actor_wt_blue_mobile_trampoline_car(ActorData *actor)
 {
-    if(actor->data_1 <= 0)
+    if(actor->data_1 == 0)
     {
         actor->frame_num = (actor->frame_num ? -1 : 0) + 1;
         if(actor->data_2 == 0)
@@ -4055,7 +4054,8 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             }
 
             uint8 tile_attr = map_get_tile_attr(actor->x - 1, actor->y + 1);
-            if (sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0)
+            if (sprite_blocking_check(2, 0x6a, 0, actor->x - 1, actor->y) != NOT_BLOCKED
+            || ((tile_attr & 1u) ? -1 : 0) + 1 != 0)
             {
                 if (suction_cup_enemy_check_if_blocked(actor, 0) == 0)
                 {
@@ -4162,7 +4162,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
                     return;
                 }
             }
-            if (blocking_check != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0)
+            if (blocking_check != NOT_BLOCKED || ((tile_attr & 4) ? -1 : 0) + 1 != 0)
             {
                 if (suction_cup_enemy_check_if_blocked(actor, 1) == 0)
                 {
@@ -4215,7 +4215,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             }
 
             uint8 tile_attr = map_get_tile_attr(actor->x + 3, actor->y + 1);
-            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 1 ? -1 : 0) + 1 != 0)
+            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || ((tile_attr & 1u) ? -1 : 0) + 1 != 0)
             {
                 if(suction_cup_enemy_check_if_blocked(actor, 0) == 0)
                 {
@@ -4307,7 +4307,7 @@ void actor_wt_suction_cup_alien_enemy(ActorData *actor)
             }
 
             uint8 tile_attr = map_get_tile_attr(actor->x + 3, actor->y - 4);
-            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || (tile_attr & 4 ? -1 : 0) + 1 != 0)
+            if (sprite_blocking_check(3, 0x6a, 0, actor->x + 1, actor->y) != NOT_BLOCKED || ((tile_attr & 4u) ? -1 : 0) + 1 != 0)
             {
                 if(suction_cup_enemy_check_if_blocked(actor, 1) == 0)
                 {
