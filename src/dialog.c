@@ -62,7 +62,12 @@ SDL_Keycode wait_for_input_with_repeat(int spinner_x, int spinner_y, bool allow_
     return keycode;
 }
 
-SDL_Keycode wait_for_input(int spinner_x, int spinner_y)
+void wait_for_input(int spinner_x, int spinner_y)
+{
+    wait_for_input_with_repeat(spinner_x, spinner_y, false);
+}
+
+SDL_Keycode wait_for_input_get_key(int spinner_x, int spinner_y)
 {
     return wait_for_input_with_repeat(spinner_x, spinner_y, false);
 }
@@ -77,37 +82,6 @@ uint16 dialog_text_extract_num(const char *text)
     buf[3] = 0;
 
     return (uint16)strtol(buf, NULL, 10);
-}
-
-typedef enum {
-    FAST_FORWARD,
-    EXIT,
-    NO_INPUT
-} HintDialogInput;
-
-HintDialogInput hint_dialog_get_input(HintDialogInput input)
-{
-    SDL_Event event;
-    while(SDL_PollEvent(&event))
-    {
-        if (event.type == SDL_KEYDOWN)
-        {
-            if(event.key.keysym.sym == SDLK_SPACE)
-            {
-                return FAST_FORWARD;
-            }
-            else
-            {
-                return EXIT;
-            }
-        }
-        if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE)
-        {
-            return NO_INPUT;
-        }
-    }
-
-    return input;
 }
 
 void display_dialog_text_with_color(uint16 x_pos, uint16 y_pos, const char *text, uint8 text_color)
@@ -274,7 +248,7 @@ void monster_attack_hint_dialog()
 int quit_game_dialog()
 {
     uint16 x = create_text_dialog_box(11, 4, 0x12, "Are you sure you", "want to quit? ");
-    SDL_Keycode key = wait_for_input(x + 14, 13);
+    SDL_Keycode key = wait_for_input_get_key(x + 14, 13);
     if (key == SDLK_y || is_return_key(key))
     {
         return 1;
@@ -711,10 +685,10 @@ void instructions_dialog()
 
         fade_in_from_black(1);
 
-        SDL_Keycode keycode = wait_for_input(0x25, 0x16);
+        SDL_Keycode keycode = wait_for_input_get_key(0x25, 0x16);
         while(page_num == 1 && (keycode == SDLK_PAGEUP || keycode == SDLK_UP))
         {
-            keycode = wait_for_input(0x25, 0x16);
+            keycode = wait_for_input_get_key(0x25, 0x16);
         }
 
         if(keycode == SDLK_ESCAPE)
@@ -1505,7 +1479,7 @@ void enter_new_key(uint16 x, const char *text, InputCommand command)
 {
     display_dialog_text(x + 4, 12, text);
     display_dialog_text(x + 4, 13, "Enter new key:");
-    SDL_Keycode keycode = wait_for_input(x + 0x12, 13);
+    SDL_Keycode keycode = wait_for_input_get_key(x + 0x12, 13);
     if(keycode != SDLK_ESCAPE)
     {
         set_input_command_key(command, keycode);
@@ -1824,14 +1798,14 @@ void display_high_score_dialog(bool use_fading)
         {
             fade_in_from_black_with_delay_3();
         }
-        SDL_Keycode keycode = wait_for_input(x + 0x1b, 0x11);
+        SDL_Keycode keycode = wait_for_input_get_key(x + 0x1b, 0x11);
         if (keycode != SDLK_F10)
         {
             break;
         }
 
         x = create_text_dialog_box(5, 4, 0x1c, "Are you sure you want to", "ERASE High Scores?");
-        keycode = wait_for_input(x + 0x16, 7);
+        keycode = wait_for_input_get_key(x + 0x16, 7);
         if (keycode == SDLK_y)
         {
             clear_high_score_table();

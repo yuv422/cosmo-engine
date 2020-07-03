@@ -15,6 +15,7 @@ const char *scancode_to_string(uint8 scan_code);
 
 void load_config_from_command_line(int argc, char *argv[]);
 
+char *get_data_dir_full_path(const char *filename);
 char *get_save_dir_full_path(const char *filename);
 char *get_game_dir_full_path(const char *filename);
 

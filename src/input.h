@@ -23,8 +23,15 @@ typedef enum
     CMD_KEY_RIGHT,
     CMD_KEY_JUMP,
     CMD_KEY_BOMB,
+    CMD_KEY_MENU,
     CMD_KEY_OTHER
 } InputCommand;
+
+typedef enum {
+    FAST_FORWARD,
+    EXIT,
+    NO_INPUT
+} HintDialogInput;
 
 extern uint8 bomb_key_pressed;
 extern uint8 jump_key_pressed;
@@ -34,6 +41,9 @@ extern uint8 left_key_pressed;
 extern uint8 right_key_pressed;
 
 extern uint8 byte_2E17C;
+
+bool input_init();
+void input_shutdown();
 
 void wait_for_time_or_key(int delay_in_game_cycles);
 input_state_enum read_input();
@@ -48,5 +58,7 @@ const char *get_command_key_string(InputCommand command);
 void flush_input();
 
 bool is_return_key(SDL_Keycode key);
+
+HintDialogInput hint_dialog_get_input(HintDialogInput input);
 
 #endif //COSMO_ENGINE_INPUT_H
