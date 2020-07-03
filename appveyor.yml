@@ -42,7 +42,7 @@ before_build:
   - cmd: cmake -G "Visual Studio 14 2015" ..
 
 after_build:
-  - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Release\cosmo_engine.exe c:\sdl_root\SDL2_mixer-2.0.2\lib\x86\*.dll c:\sdl_root\SDL2-2.0.7\lib\x86\*.dll
+  - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Release\cosmo_engine.exe c:\projects\cosmo-engine\data\* c:\sdl_root\SDL2_mixer-2.0.2\lib\x86\*.dll c:\sdl_root\SDL2-2.0.7\lib\x86\*.dll
 
 artifacts:
   - path: cosmo-engine.zip
