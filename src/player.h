@@ -6,8 +6,8 @@ extern const sint16 player_x_offset_tbl[];
 extern const sint16 player_y_offset_tbl[];
 
 //Data
-extern int player_is_grabbing_wall_flag;
-extern int player_death_counter;
+extern bool player_is_grabbing_wall_flag;
+extern uint16 player_death_counter;
 extern int player_walk_anim_index;
 extern int player_is_being_pushed_flag;
 extern int player_hanging_on_wall_direction;
@@ -17,7 +17,7 @@ extern int player_x_pos;
 extern int player_direction;
 extern int player_direction_related_32E98;
 
-extern int player_sprite_dir_frame_offset;
+extern uint16 player_sprite_dir_frame_offset;
 extern int player_input_jump_related_flag;
 
 extern int player_bounce_height_counter;
@@ -38,7 +38,7 @@ extern int teleporter_counter;
 
 extern uint8 player_in_pneumatic_tube_flag;
 
-extern int player_invincibility_counter;
+extern uint16 player_invincibility_counter;
 
 extern int player_fall_off_map_bottom_counter;
 
@@ -47,7 +47,7 @@ extern uint8 show_monster_attack_hint;
 
 extern uint8 player_has_shown_ouch_bubble_flag;
 extern int player_idle_counter;
-extern int word_28F94;
+extern uint16 word_28F94;
 extern int word_2E180;
 extern int word_2E1E8;
 extern int hide_player_sprite;

@@ -14,8 +14,8 @@
 const sint16 player_x_offset_tbl[] = { 0, 0, 1, 1, 1, 0, -1, -1, -1 };
 const sint16 player_y_offset_tbl[] = { 0, -1, -1, 0, 1, 1, 1, 0, -1 };
 
-int player_is_grabbing_wall_flag = 0;
-int player_death_counter = 0;
+bool player_is_grabbing_wall_flag = false;
+uint16 player_death_counter = 0;
 int player_walk_anim_index = 0;
 int player_is_being_pushed_flag = 0;
 int player_hanging_on_wall_direction = 0;
@@ -25,7 +25,7 @@ int player_x_pos = 0;
 int player_direction = 0;
 int player_direction_related_32E98 = 0;
 
-int player_sprite_dir_frame_offset = 0;
+uint16 player_sprite_dir_frame_offset = 0;
 int player_input_jump_related_flag = 0;
 
 int player_bounce_height_counter = 0;
@@ -46,7 +46,7 @@ int teleporter_counter = 0;
 
 uint8 player_in_pneumatic_tube_flag = 0;
 
-int player_invincibility_counter = 0;
+uint16 player_invincibility_counter = 0;
 
 int player_fall_off_map_bottom_counter = 0;
 int num_hits_since_touching_ground = 0;
@@ -61,7 +61,7 @@ uint16 player_push_check_blocking_flag = 0;
 
 uint8 player_has_shown_ouch_bubble_flag;
 int player_idle_counter;
-int word_28F94;
+uint16 word_28F94;
 int word_2E180;
 int word_2E1E8;
 int hide_player_sprite;
@@ -80,8 +80,6 @@ bool cheat_hack_mover_enabled = false;
 
 Tile *player_tiles;
 Sprite *player_sprites;
-
-void player_reset_push_variables();
 
 BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 {
@@ -128,7 +126,7 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
             for (int i = 0; i < 3; i++)
             {
-                uint8 tile_attr = map_get_tile_attr(x_pos + i, y_pos);
+                tile_attr = map_get_tile_attr(x_pos + i, y_pos);
                 if (tile_attr & TILE_ATTR_SLOPED)
                 {
                     num_hits_since_touching_ground = 0;
@@ -144,7 +142,7 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
         case 2: // LEFT
             tile_attr = map_get_tile_attr(x_pos, y_pos - 2);
-            player_is_grabbing_wall_flag = tile_attr & TILE_ATTR_CAN_GRAB_WALL;
+            player_is_grabbing_wall_flag = (tile_attr & TILE_ATTR_CAN_GRAB_WALL);
 
             for (int i = 0; i < 5; i++)
             {
@@ -167,7 +165,7 @@ BlockingType player_check_movement(int direction, int x_pos, int y_pos)
 
         case 3: // RIGHT
             tile_attr = map_get_tile_attr(x_pos + 2, y_pos - 2);
-            player_is_grabbing_wall_flag = tile_attr & TILE_ATTR_CAN_GRAB_WALL;
+            player_is_grabbing_wall_flag = (tile_attr & TILE_ATTR_CAN_GRAB_WALL);
 
             for (int i = 0; i < 5; i++)
             {
@@ -247,7 +245,6 @@ void push_player()
     {
         player_reset_push_variables();
     }
-    return;
 }
 
 sint16 word_28F80[10] = {-2, -1, -1, -1, -1, -1, -1, 0, 0, 0};
@@ -263,7 +260,7 @@ void handle_player_input_maybe()
     }
 
     int si = 0;
-    player_is_grabbing_wall_flag = 0;
+    player_is_grabbing_wall_flag = false;
     if(player_death_counter != 0 || teleporter_state_maybe != 0 || player_hoverboard_counter != 0 || player_walk_anim_index != 0 || hide_player_sprite != 0)
     {
         return;
@@ -277,7 +274,7 @@ void handle_player_input_maybe()
     }
     if(player_hanging_on_wall_direction != 0)
     {
-        int tile_attr = 0;
+        uint8 tile_attr = 0;
         if(player_hanging_on_wall_direction != 2)
         {
             tile_attr = map_get_tile_attr(player_x_pos + 3, player_y_pos - 2);
@@ -494,7 +491,7 @@ void handle_player_input_maybe()
                 if(player_movement_status == BLOCKED)
                 {
                     player_x_pos = player_x_pos + 1;
-                    if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED && player_is_grabbing_wall_flag != 0)
+                    if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED && player_is_grabbing_wall_flag)
                     {
                         player_hanging_on_wall_direction = 2;
                         player_bounce_flag_maybe = 0;
@@ -553,7 +550,7 @@ void handle_player_input_maybe()
                 if(player_movement_status == BLOCKED)
                 {
                     player_x_pos = player_x_pos - 1;
-                    if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED && player_is_grabbing_wall_flag != 0)
+                    if(player_check_movement(1, player_x_pos, player_y_pos + 1) == NOT_BLOCKED && player_is_grabbing_wall_flag)
                     {
                         player_hanging_on_wall_direction = 3;
                         player_bounce_flag_maybe = 0;
@@ -905,9 +902,9 @@ void handle_player_input_maybe()
                             if(byte_2E2E4 == 0)
                             {
                                 player_idle_counter = 0;
-                                if((word_28F94 & 1) != 0)
+                                if((word_28F94 & 1u) != 0)
                                 {
-                                    if((player_sprite_dir_frame_offset & 1) != 0)
+                                    if((player_sprite_dir_frame_offset & 1u) != 0)
                                     {
                                         play_sfx(0x13);
                                     }
@@ -1041,7 +1038,6 @@ void sub_11062()
 {
     word_32EB2 = 0;
     player_walk_anim_index = 0;
-    return;
 }
 
 void player_reset_push_variables()
@@ -1057,7 +1053,6 @@ void player_reset_push_variables()
     player_bounce_height_counter = 0;
     byte_2E2E4 = 1;
     word_2E180 = 0;
-    return;
 }
 
 void player_load_tiles()
@@ -1094,7 +1089,7 @@ void display_player_sprite(uint8 frame_num, int x_pos, int y_pos, int tile_displ
         return;
     }
 
-    if(player_push_frame_num == 0xff || teleporter_state_maybe || (player_invincibility_counter & 1) || hide_player_sprite)
+    if(player_push_frame_num == 0xff || teleporter_state_maybe || (player_invincibility_counter & 1u) || hide_player_sprite)
     {
         return;
     }
@@ -1230,7 +1225,7 @@ int player_update_sprite()
                     player_y_pos = player_y_pos - 1;
                     player_death_counter = player_death_counter + 1;
 
-                    display_player_sprite((player_death_counter & 1) + 0x2e, player_x_pos - 1, player_y_pos, 5);
+                    display_player_sprite((player_death_counter & 1u) + 0x2e, player_x_pos - 1, player_y_pos, 5);
                     if (player_death_counter > 0x24)
                     {
                         load_savegame_file('T');
@@ -1247,7 +1242,7 @@ int player_update_sprite()
                 }
                 player_death_counter = player_death_counter + 1;
 
-                display_player_sprite((player_death_counter & 1) + 0x2e, player_x_pos - 1, player_y_pos, 5);
+                display_player_sprite((player_death_counter & 1u) + 0x2e, player_x_pos - 1, player_y_pos, 5);
             }
         }
     }
@@ -1284,8 +1279,6 @@ void player_update_walk_anim()
             sub_11062();
         }
     }
-
-    return;
 }
 
 int player_check_collision_with_actor(int actorInfoIndex, int frame_num, int x_pos, int y_pos) {
@@ -1307,7 +1300,6 @@ int player_check_collision_with_actor(int actorInfoIndex, int frame_num, int x_p
         }
     }
     return 0;
-
 }
 
 int player_bounce_in_the_air(int bounce_height)
@@ -1479,7 +1471,6 @@ void player_add_score_for_actor(int actorInfoIndex)
 
         default: break;
     }
-    return ;
 }
 
 void player_decrease_health()
@@ -1509,8 +1500,6 @@ void player_decrease_health()
             player_hoverboard_counter = 0;
         }
     }
-
-    return;
 }
 
 void push_player_around(int push_direction, int push_anim_duration, int push_duration, int player_frame_num,
@@ -1528,7 +1517,6 @@ void push_player_around(int push_direction, int push_anim_duration, int push_dur
     player_bounce_flag_maybe = 0;
     player_bounce_height_counter = 0;
     sub_11062();
-    return ;
 }
 
 void player_hoverboard_update()
@@ -1737,7 +1725,6 @@ void player_hoverboard_update()
             mapwindow_x_offset = mapwindow_x_offset - 1;
         }
     }
-    return;
 }
 
 void player_move_on_platform(int platform_x_left, int platform_x_right, int x_offset_tbl_index, int y_offset_tbl_index)
@@ -1807,8 +1794,6 @@ void player_move_on_platform(int platform_x_left, int platform_x_right, int x_of
     {
         mapwindow_y_offset = mapwindow_y_offset - 1;
     }
-
-    return;
 }
 
 void player_update_idle_anim() {
