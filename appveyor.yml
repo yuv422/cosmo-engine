@@ -17,7 +17,7 @@ clone_folder: C:\projects\cosmo-engine
 install:
   # SDL2
   - ps: |
-      $SDL_VERSION = "2.0.7"
+      $SDL_VERSION = "2.0.12"
       $SDL2DIR = "C:\sdl_root\SDL2-$SDL_VERSION"
       if (!(Test-Path -Path $SDL2DIR)) {
         Start-FileDownload https://libsdl.org/release/SDL2-devel-$SDL_VERSION-VC.zip
@@ -26,7 +26,7 @@ install:
       $env:SDL2DIR = $SDL2DIR
   # SDL2_mixer
   - ps: |
-      $SDL_MIXER_VERSION = "2.0.2"
+      $SDL_MIXER_VERSION = "2.0.4"
       $SDL2MIXERDIR = "C:\sdl_root\SDL2_mixer-$SDL_MIXER_VERSION"
       if (!(Test-Path -Path $SDL2MIXERDIR)) {
         Start-FileDownload https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-$SDL_MIXER_VERSION-VC.zip
@@ -42,7 +42,7 @@ before_build:
   - cmd: cmake -G "Visual Studio 14 2015" ..
 
 after_build:
-  - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Release\cosmo_engine.exe c:\projects\cosmo-engine\data\* c:\sdl_root\SDL2_mixer-2.0.2\lib\x86\*.dll c:\sdl_root\SDL2-2.0.7\lib\x86\*.dll
+  - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Release\cosmo_engine.exe c:\projects\cosmo-engine\data\* $SDL2MIXERDIR\lib\x86\*.dll $SDL2DIR\lib\x86\*.dll
 
 artifacts:
   - path: cosmo-engine.zip
