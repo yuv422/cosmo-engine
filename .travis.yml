@@ -1,0 +1,22 @@
+language:
+  - c
+
+addons:
+  apt:
+    packages:
+      - libsdl2-dev
+      - libsdl2-mixer-dev
+
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+    - os: linux
+      compiler: clang
+
+dist: bionic
+
+script:
+  - cmake .
+  - make -j 2
