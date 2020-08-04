@@ -11,6 +11,7 @@
 #include "high_scores.h"
 #include "input.h"
 #include "game.h"
+#include "util.h"
 #include "video.h"
 
 #define MAX_SCORE_STRING_LENGTH 13
@@ -151,7 +152,7 @@ void write_config_file()
         char buf[32];
         HighScore high_score = get_high_score(i);
         sprintf(buf, "%d %s", high_score.score, high_score.name);
-        for(int j=0;j < strlen(buf); j++)
+        for(int j=0;j < cosmo_strnlen(buf, sizeof(buf)); j++)
         {
             file_write1((uint8)buf[j], &file);
         }

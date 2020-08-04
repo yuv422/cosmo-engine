@@ -6,6 +6,7 @@
 #include <string.h>
 #include "font.h"
 #include "tile.h"
+#include "util.h"
 #include "video.h"
 
 Tile *font_tiles;
@@ -22,9 +23,9 @@ void display_number(int x_pos, int y_pos, uint32 number)
     uint8 font_color = FONT_WHITE;
     char buf[32];
     sprintf(buf, "%d", number);
-    for(int i=0;i < strlen(buf); i++)
+    for(int i=0;i < cosmo_strnlen(buf, sizeof(buf)); i++)
     {
-        video_draw_font_tile(&font_tiles[buf[i]-48+26], (x_pos - strlen(buf) + i + 1) * 8, y_pos * 8, font_color);
+        video_draw_font_tile(&font_tiles[buf[i]-48+26], (x_pos - cosmo_strnlen(buf, sizeof(buf)) + i + 1) * 8, y_pos * 8, font_color);
     }
 }
 
@@ -53,7 +54,7 @@ void display_text(int x_pos, int y_pos, const char *text)
 
 void display_text_with_color(int x_pos, int y_pos, const char *text, uint8 color)
 {
-    int len = strlen(text);
+    int len = (int)strlen(text);
     for(int i=0; i < len; i++)
     {
         display_char(x_pos + i, y_pos, text[i], color);
