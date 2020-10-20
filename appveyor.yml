@@ -2,7 +2,7 @@
 version: "{build}"
 
 # Operating system (build VM template)
-os: Visual Studio 2019
+os: Visual Studio 2017
 
 # build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
 platform: 
@@ -39,7 +39,7 @@ before_build:
   - cmd: cd C:\projects\cosmo-engine
   - cmd: md build
   - cmd: cd build
-  - cmd: cmake -G "Visual Studio 16 2019" ..
+  - cmd: cmake -G "Visual Studio 15 2017" ..
 
 after_build:
   - cmd: 7z a c:\projects\cosmo-engine\cosmo-engine.zip c:\projects\cosmo-engine\build\Release\cosmo_engine.exe c:\projects\cosmo-engine\data\* C:\sdl_root\SDL2_mixer-2.0.4\lib\x86\*.dll C:\sdl_root\SDL2-2.0.12\lib\x86\*.dll
