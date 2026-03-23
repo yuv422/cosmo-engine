@@ -18,7 +18,7 @@
  *
  */
 
-#include <stdlib.h>
+#include <SDL.h>
 #include "save.h"
 #include "defines.h"
 #include "player.h"
@@ -58,10 +58,10 @@ void write_savegame_file(char suffix)
         if(!file_open(path, "wb", &savefile))
         {
             printf("Error: saving file %s\n", path);
-            free(path);
+            SDL_free(path);
             return;
         }
-        free(path);
+        SDL_free(path);
 
         file_write2(health, &savefile);
         file_write4(score, &savefile);
@@ -134,7 +134,7 @@ SaveStatus load_savegame_data_from_file(char suffix, SaveGameData *data) {
 
     path = get_save_dir_full_path(filename);
     int status = file_open(path, "rb", &file);
-    free(path);
+    SDL_free(path);
 
     if(!status)
     {

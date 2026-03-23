@@ -64,7 +64,7 @@ bool input_init() {
     char * mappingFilename = get_data_dir_full_path("gamecontrollerdb.txt");
     int numMappings = SDL_GameControllerAddMappingsFromFile(mappingFilename);
     SDL_Log("Game controllers found: %d Mappings: \'%s\' Count: %d", SDL_NumJoysticks(), mappingFilename, numMappings);
-    free(mappingFilename);
+    SDL_free(mappingFilename);
 
     for (int i = 0; i < SDL_NumJoysticks(); ++i) {
         if (SDL_IsGameController(i)) {

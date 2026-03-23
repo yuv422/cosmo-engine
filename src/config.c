@@ -95,7 +95,7 @@ void load_config_file()
     File file;
     clear_high_score_table();
     int config_file_loaded = file_open(path, "rb", &file);
-    free(path);
+    SDL_free(path);
 
     if(config_file_loaded)
     {
@@ -147,7 +147,7 @@ void write_config_file()
     char *path = get_save_dir_full_path(get_config_filename());
     File file;
     int status = file_open(path, "wb", &file);
-    free(path);
+    SDL_free(path);
 
     if(!status)
     {
@@ -458,7 +458,7 @@ void load_config_from_command_line(int argc, char **argv)
 
 char *get_full_path(const char *base_dir, const char *filename)
 {
-    char *path = (char *)malloc(strlen(base_dir) + strlen(filename) + 2); //2 = path delimiter + \0
+    char *path = (char *)SDL_malloc(strlen(base_dir) + strlen(filename) + 2); //2 = path delimiter + \0
     sprintf(path, "%s%c%s", base_dir, '/', filename); //FIXME handle windows path separator
     return path;
 }
